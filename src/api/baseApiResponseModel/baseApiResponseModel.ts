@@ -19,12 +19,3 @@ export class Error {
   message?: string;
 }
 
-export default {
-  BaseApiResponseModel,
-  Error,
-};
-
-export type Result = {
-  type?: "success" | "error";
-  message?: string;
-};

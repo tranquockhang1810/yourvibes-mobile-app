@@ -48,6 +48,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       changeLanguage,
       language,
       setLanguage,
+      
     }}
     >
       {children}

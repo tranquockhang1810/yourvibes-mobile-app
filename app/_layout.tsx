@@ -17,7 +17,7 @@ export default function RootLayout() {
   const {
     brandPrimary,
     brandPrimaryTap,
-    backgroundColor
+    backgroundColor,
   } = useColor();
 
   return (

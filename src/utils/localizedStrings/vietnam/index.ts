@@ -1,3 +1,4 @@
 export const VnLocalizedStrings = {
-  Login: "Đăng nhập"
+  Login: "Đăng nhập",
+  Hello: "Xin chào"
 }

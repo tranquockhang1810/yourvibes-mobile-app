@@ -18,6 +18,9 @@ import { useRouter } from 'expo-router';
 import useColor from '@/src/hooks/useColor';
 import { useAuth } from '@/src/context/useAuth';
 import Toast from 'react-native-toast-message';
+import LoginViewModel from '../viewModel/LoginViewModel';
+import { defaultAuthenRepo } from '@/src/api/features/authenticate/AuthenRepo';
+import { LoginRequestModel } from '@/src/api/features/authenticate/model/LoginModel';
 
 const LoginFeature = () => {
   const router = useRouter();
@@ -25,7 +28,8 @@ const LoginFeature = () => {
   const { backgroundColor } = useColor();
   const [signInForm] = Form.useForm();
   const { brandPrimary } = useColor();
-  const { login, localStrings, changeLanguage, language } = useAuth();
+  const { localStrings, changeLanguage, language } = useAuth();
+  const { loading, login} = LoginViewModel(defaultAuthenRepo)
 
   return (
     <KeyboardAvoidingView
@@ -57,6 +61,11 @@ const LoginFeature = () => {
             </View>
             <WhiteSpace size="xl" />
             <WhiteSpace size="md" />
+            <Button onPress={() => {
+              changeLanguage(language === 'en' ? 'vi' : 'en')
+            }}>
+              <Text>Đổi ngôn ngữ</Text>
+            </Button>
             <Form
               layout='vertical'
               style={{
@@ -111,19 +120,18 @@ const LoginFeature = () => {
                   signInForm
                     .validateFields()
                     .then(() => {
-                      console.log('values', signInForm.getFieldsValue());
-                      login();
-                      Toast.show({
-                        type: 'success',
-                        text1: 'Đăng nhập thành công!',
-                      })
-                      router.push('/(tabs)');
+                      const { email, password } = signInForm.getFieldsValue();
+                      const data: LoginRequestModel = {
+                        email: email,
+                        password: password,
+                      }
+                      login(data);
                     })
                     .catch(() => {
                       console.log('error');
                     });
                 }}>
-                  {localStrings?.Login}
+                  {localStrings.Login}
                 </Button>
               </Form.Item>
               <WhiteSpace size="xl" />

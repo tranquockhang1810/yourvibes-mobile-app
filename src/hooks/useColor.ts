@@ -8,7 +8,7 @@ const useColor = () => {
     brandPrimary,
     brandPrimaryTap,
     backgroundColor,
-    lightGray
+    lightGray,
   }
 }
 
