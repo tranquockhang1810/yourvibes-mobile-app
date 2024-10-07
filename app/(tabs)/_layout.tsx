@@ -1,37 +1,80 @@
+import useColor from '@/src/hooks/useColor';
+import { AntDesign, FontAwesome, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { ReactNode } from 'react';
+import { Image, View, Platform, StatusBar } from 'react-native';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const TabLayout = () => {
+  const { brandPrimary, brandPrimaryTap } = useColor();
+  const iconSize = 27;
+  const addIconSize = 35;
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const tabs: { name: string; icon: ReactNode, focusIcon: ReactNode }[] = [
+    {
+      name: "index",
+      icon: <Ionicons size={iconSize} name={"home-outline"} />,
+      focusIcon: <Ionicons size={iconSize} name={"home"} />,
+    },
+    {
+      name: "search",
+      icon: <AntDesign size={iconSize} name={"search1"} />,
+      focusIcon: <FontAwesome5 size={iconSize} name={"search"} />,
+    },
+    {
+      name: "add",
+      icon: <AntDesign size={addIconSize} name={"pluscircle"} />,
+      focusIcon: <AntDesign size={addIconSize} name={"pluscircle"} />,
+    },
+    {
+      name: "notification",
+      icon: <FontAwesome size={iconSize} name={"bell-o"} />,
+      focusIcon: <FontAwesome size={iconSize} name={"bell"} />,
+    },
+    {
+      name: "profile",
+      icon: <FontAwesome size={iconSize} name={"user-circle-o"} />,
+      focusIcon: <FontAwesome size={iconSize} name={"user-circle"} />,
+    },
+  ]
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+    <>
+      <StatusBar barStyle="dark-content" />
+      <Tabs screenOptions={{
+        tabBarActiveTintColor: brandPrimary,
         headerShown: false,
+        headerStyle: {
+          height: 80
+        },
+        headerTitle: "",
+        headerLeft: () => (
+          <View>
+            <Image
+              source={require('@/assets/images/yourvibes_black.png')}
+              style={{
+                width: 120,
+                objectFit: 'contain',
+                marginLeft: 10,
+              }}
+            />
+          </View>
+        )
       }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+        {tabs.map((tab) => (
+          <Tabs.Screen
+            key={tab?.name}
+            name={tab?.name}
+            options={{
+              tabBarIcon: ({ focused }) => (focused ? tab?.focusIcon : tab?.icon),
+              tabBarShowLabel: false,
+              tabBarInactiveTintColor: brandPrimaryTap,
+              tabBarStyle: { height: Platform.OS === 'ios' ? 80 : 55 },
+            }}
+          />
+        ))}
+      </Tabs>
+    </>
   );
 }
+
+export default TabLayout
