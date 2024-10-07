@@ -148,6 +148,8 @@ const HomeScreen = () => {
     setRefreshing(false);
   };
 
+  //Test nhánh
+
   useEffect(
     useCallback(() => {
       loadPosts();
