@@ -135,7 +135,7 @@ const SignUpFeature = () => {
                   onPress={(e) => {
                     setShowPicker(true)
                   }}
-                  readOnly
+                  readOnly={Platform.OS === 'ios'}
                 />
               </Form.Item>
               {/* Email and OTP */}
