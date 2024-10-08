@@ -8,12 +8,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
   const [localStrings, setLocalStrings] = useState(VnLocalizedStrings);
   const [language, setLanguage] = useState<"vi" | "en">("vi");
-
-  const login = () => setIsLogin(true);
-  const logout = () => setIsLogin(false);
+  const [user, setUser] = useState<any>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const checkLanguage = async () => {
     const storedLanguage = await AsyncStorage.getItem('language');
@@ -35,20 +33,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
+  const onLogin = (user: any) => {
+    // Lưu user, hai token vào AsyncStorage
+    // Đổi trạng thái đăng nhập
+    // Lưu thông tin vào biến
+  }
+
+  const onLogout = () => {
+    //Xóa dữ liệu trong storage và trong biến
+  }
+
   useEffect(() => {
     checkLanguage();
   }, [language]);
 
   return (
     <AuthContext.Provider value={{
-      isLogin,
-      login,
-      logout,
+      onLogin,
+      onLogout,
       localStrings,
       changeLanguage,
       language,
       setLanguage,
-      
+      isAuthenticated,
+      user
     }}
     >
       {children}
