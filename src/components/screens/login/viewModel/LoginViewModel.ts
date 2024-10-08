@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 
-const LoginViewModel = (repo: AuthenRepo) => {
+const LoginViewModel = (repo: AuthenRepo, onLogin:(user: any)=>void ) => {
   const [loading, setLoading] = useState(false);
 
   const login = async (data: LoginRequestModel) => {
@@ -12,12 +12,15 @@ const LoginViewModel = (repo: AuthenRepo) => {
       setLoading(true);
       console.log('data', data);
       const res = await repo.login(data);
+      console.log('res', res);
+      
       if (res?.data) {
-        router.push('/(tabs)');
+        onLogin(res.data);
+        router.push('/(tabs)/');
         Toast.show({
           type: 'success',
           text1: 'Đăng nhập thành công',
-        })
+        });
       }
     } catch (error) {
       console.error(error);

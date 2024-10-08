@@ -6,6 +6,9 @@ import { useAuth } from '@/src/context/useAuth';
 const App = () => {
   const { isAuthenticated } = useAuth();
 
+  console.log('Is Authenticated:', isAuthenticated); // Log authentication status
+  
+
   return (
     <>
       {isAuthenticated ? (

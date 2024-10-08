@@ -4,7 +4,7 @@ export interface LoginRequestModel {
 }
 
 export interface LoginResponseModel {
-  token?: string
+  accesstoken?: string
   user?: {
     id?: string
     name?: string

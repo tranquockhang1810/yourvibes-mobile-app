@@ -28,8 +28,8 @@ const LoginFeature = () => {
   const { backgroundColor } = useColor();
   const [signInForm] = Form.useForm();
   const { brandPrimary } = useColor();
-  const { localStrings, changeLanguage, language } = useAuth();
-  const { loading, login} = LoginViewModel(defaultAuthenRepo)
+  const {onLogin, localStrings, changeLanguage, language } = useAuth();
+  const { loading, login} = LoginViewModel(defaultAuthenRepo, onLogin);
 
   return (
     <KeyboardAvoidingView
@@ -76,12 +76,14 @@ const LoginFeature = () => {
             >
               <Form.Item
                 name="email"
+                initialValue={'phera23104@gmail.com'}
                 rules={[
                   { required: true, message: 'Vui lòng nhập email!' },
                   { type: 'email', message: 'Email không hợp lệ!' }
                 ]}
               >
                 <MyInput
+                value='phera23104@gmail.com'
                   placeholder="Email"
                   variant="outlined"
                   type='email-address'
@@ -90,9 +92,11 @@ const LoginFeature = () => {
               <Form.Item
                 name="password"
                 rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                initialValue={'123456abc'}
               >
                 <MyInput
                   placeholder="Mật khẩu"
+                  value='123456abc'
                   type={seePassword ? "text" : "password"}
                   variant="outlined"
                   suffix={
@@ -116,7 +120,7 @@ const LoginFeature = () => {
               </WingBlank>
               <WhiteSpace size="md" />
               <Form.Item>
-                <Button type="primary" onPress={() => {
+                <Button type="primary" loading={loading} onPress={() => {
                   signInForm
                     .validateFields()
                     .then(() => {

@@ -4,8 +4,11 @@ import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Kiểm tra giá trị SERVER_ENDPOINT
+console.log('Server Endpoint:', process.env.SERVER_ENDPOINT);
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_ENDPOINT_URL!,
+  //baseURL: process.env.SERVER_ENDPOINT!,
   timeout: 30000,
 });
 
