@@ -182,10 +182,15 @@ const SignUpFeature = () => {
                 <MyInput
                   placeholder="Ngày sinh"
                   variant="outlined"
-                  moreStyle={{ width: "100%", height: 54 }}
-                  value={signUpForm.getFieldValue("birthdate")}
-                  onPress={() => setShowPicker(true)}
-                  readOnly={Platform.OS === "ios"}
+                  moreStyle={{
+                    width: '100%',
+                    height: 54,
+                  }}
+                  value={signUpForm.getFieldValue('birthdate')}
+                  onPress={(e) => {
+                    setShowPicker(true)
+                  }}
+                  readOnly={Platform.OS === 'ios'}
                 />
               </Form.Item>
               {/* Email and OTP */}

@@ -4,11 +4,11 @@ import HomeScreen from '@/src/components/screens/home/views/HomeScreen';
 import { useAuth } from '@/src/context/useAuth';
 
 const App = () => {
-  const { isLogin } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <>
-      {isLogin ? (
+      {isAuthenticated ? (
         <HomeScreen />
       ) : (
         <Redirect href={'/login'} />
