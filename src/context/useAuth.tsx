@@ -4,6 +4,7 @@ import { VnLocalizedStrings } from "@/src/utils/localizedStrings/vietnam";
 import { ENGLocalizedStrings } from "@/src/utils/localizedStrings/english";
 import translateLanguage from '../utils/i18n/translateLanguage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -15,7 +16,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const checkLanguage = async () => {
     const storedLanguage = await AsyncStorage.getItem('language');
-    console.log('Stored Language:', storedLanguage); // Log stored language
   
     if (storedLanguage === "vi") {
       setLanguage("vi");
@@ -41,9 +41,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     await AsyncStorage.setItem('accesstoken', user.access_token);
     // AsyncStorage.setItem('refreshtoken', user.refreshtoken);
     // Đổi trạng thái đăng nhập
-    setIsAuthenticated(true);
+    await setIsAuthenticated(true);
     // Lưu thông tin vào biến
     setUser(user.user);
+
     
     console.log('User Logged In:', user.user); // Log user login
     console.log('Access Token:', user.access_token); // Log access token

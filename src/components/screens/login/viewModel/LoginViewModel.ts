@@ -12,7 +12,6 @@ const LoginViewModel = (repo: AuthenRepo, onLogin:(user: any)=>void ) => {
       setLoading(true);
       console.log('data', data);
       const res = await repo.login(data);
-      console.log('res', res);
       
       if (res?.data) {
         onLogin(res.data);
