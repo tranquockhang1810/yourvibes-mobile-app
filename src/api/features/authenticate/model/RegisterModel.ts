@@ -1,14 +1,28 @@
+// export interface RegisterRequestModel {
+//     family_name: string;
+//     name : string;
+//     phone_number : string;
+//     birthday : string;
+//     email: string;
+//     password: string;
+//     confirmPassword: string;
+//     otp: string;
+//     checkbox: boolean;
+// }
+
+import dayjs from "dayjs";
+
 export interface RegisterRequestModel {
-    familyName: string;
-    firstName: string;
-    phone: string;
-    birthdate: string;
+    family_name: string;  // Thay vì familyName
+    name: string;        // Thay vì firstName
     email: string;
     password: string;
     confirmPassword: string;
+    phone_number: string; // Thay vì phone
+    birthday: dayjs.Dayjs;    // Thay vì birthdate
     otp: string;
-    checkbox: boolean;
-}
+  }
+  
 
 export interface RegisterResponseModel {
     token?: string;

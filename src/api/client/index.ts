@@ -5,7 +5,7 @@ import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_ENDPOINT_URL!,
+  baseURL: process.env.SERVER_ENDPOINT!,
   timeout: 30000,
 });
 

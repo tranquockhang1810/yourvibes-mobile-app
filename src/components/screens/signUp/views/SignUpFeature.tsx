@@ -30,6 +30,7 @@ import { ApiPath } from "@/src/api/ApiPath";
 import SignUpViewModel from "../viewModel/signUpViewModel";
 import { defaultAuthenRepo } from "@/src/api/features/authenticate/AuthenRepo";
 
+
 const SignUpFeature = () => {
   const router = useRouter();
   const [seePassword, setSeePassword] = useState(false);
@@ -40,44 +41,9 @@ const SignUpFeature = () => {
   const { brandPrimary } = useColor();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const { handleSignUp } = SignUpViewModel(defaultAuthenRepo);
+  const { handleSignUp, verifyOTP } = SignUpViewModel(defaultAuthenRepo);
 
 
-  const [loading, setLoading] = useState(false);
-
-  const handleSendOtp = async () => {
-    if (!email) {
-      showNotification("error", "Vui lòng nhập email!");
-      return;
-    }
-
-    setLoading(true); // Bắt đầu loading
-    try {
-      console.log("response");
-      const response = await axios.post(ApiPath.VERIFIED_EMAIL, { email });
-      if (response.status === 200) {
-        showNotification("success", "OTP đã được gửi đến email của bạn!");
-      } else {
-        showNotification("error", "Không thể gửi OTP. Vui lòng thử lại sau!");
-      }
-    } catch (error: any) {
-      console.error(
-        "Lỗi khi gửi OTP:",
-        error.response ? error.response.data : error.message
-      );
-      showNotification("error", "Có lỗi xảy ra khi gửi OTP!");
-    } finally {
-      setLoading(false); // Kết thúc loading
-    }
-  };
-
-  // Function to show notifications
-  const showNotification = (type: "success" | "error", message: string) => {
-    Toast.show({
-      type,
-      text1: message,
-    });
-  };
 
   return (
     <KeyboardAvoidingView
@@ -131,7 +97,7 @@ const SignUpFeature = () => {
                 {/* familyName */}
                 <View style={{ width: "50%" }}>
                   <Form.Item
-                    name="familyName"
+                    name="family_name"
                     rules={[{ required: true, message: "Vui lòng nhập họ!" }]}
                   >
                     <MyInput
@@ -145,7 +111,7 @@ const SignUpFeature = () => {
                 {/* firstName */}
                 <View style={{ width: "50%" }}>
                   <Form.Item
-                    name="firstName"
+                    name="name"
                     rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
                   >
                     <MyInput
@@ -159,7 +125,7 @@ const SignUpFeature = () => {
               </View>
               {/* Phone */}
               <Form.Item
-                name="phone"
+                name="phone_number"
                 rules={[
                   { required: true, message: "Vui lòng nhập số điện thoại!" },
                   { pattern: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ!" },
@@ -174,7 +140,7 @@ const SignUpFeature = () => {
               </Form.Item>
               {/* birthdate */}
               <Form.Item
-                name="birthdate"
+                name="birthday"
                 rules={[
                   { required: true, message: "Vui lòng chọn ngày sinh!" },
                 ]}
@@ -186,7 +152,7 @@ const SignUpFeature = () => {
                     width: '100%',
                     height: 54,
                   }}
-                  value={signUpForm.getFieldValue('birthdate')}
+                  value={signUpForm.getFieldValue('birthday')}
                   onPress={(e) => {
                     setShowPicker(true)
                   }}
@@ -228,7 +194,9 @@ const SignUpFeature = () => {
                     <Button
                       type="primary"
                       style={{ width: "100%" }}
-                      onPress={handleSendOtp}
+                      onPress={() => {
+                        verifyOTP({ email: signUpForm.getFieldValue("email") });
+                    }}
                     >
                       <Text
                         style={{
@@ -295,9 +263,9 @@ const SignUpFeature = () => {
                 <MyInput
                   placeholder="Mã OTP"
                   variant="outlined"
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.nativeEvent.text)}
+                  // type="text"
+                  // value={otp}
+                  // onChange={(e) => setOtp(e.nativeEvent.text)}
                 />
               </Form.Item>
               {/* Checkbox */}
@@ -314,6 +282,13 @@ const SignUpFeature = () => {
                   .then(() => {
                     handleSignUp(signUpForm.getFieldsValue());
                   })
+                  // signUpForm.validateFields()
+                  // .then(() => {
+                  //   const formData = signUpForm.getFieldsValue();
+                  //   console.log('Form data:', formData);
+                  //   handleSignUp(formData);
+                  // })
+
                   .catch((error) => {
                     Toast.show({
                       type: "error",
@@ -363,10 +338,10 @@ const SignUpFeature = () => {
               mode="single"
               onChange={(date: any) => {
                 signUpForm.setFieldValue(
-                  "birthdate",
+                  "birthday",
                   dayjs(date?.date).format("DD/MM/YYYY")
                 );
-                signUpForm.validateFields(["birthdate"]);
+                signUpForm.validateFields(["birthday"]);
                 setShowPicker(false);
               }}
               selectedItemColor={brandPrimary}

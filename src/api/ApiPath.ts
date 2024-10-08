@@ -6,5 +6,7 @@ export const ApiPath = {
 }
 
 function getApiPath(path: string) {
-  return `${process.env.SERVER_ENDPOINT}/v1/2024/${path}`
+  
+  // return `${process.env.SERVER_ENDPOINT}/v1/2024/${path}`
+  return `http://192.168.43.180:8080/v1/2024/${path}`
 }
