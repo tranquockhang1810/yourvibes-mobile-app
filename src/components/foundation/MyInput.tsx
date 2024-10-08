@@ -6,7 +6,7 @@ import { InputProps, TextAreaProps } from '@ant-design/react-native/lib/input/Pr
 interface MyInputProps extends InputProps {
   variant?: "outlined" | "borderless" | "filled";
   textArea?: TextAreaProps;
-  moreStyle?: ViewStyle;
+  moreStyle?: ViewStyle; 
 }
 
 const MyInput: React.FC<MyInputProps> = (props: MyInputProps) => {
