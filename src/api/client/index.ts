@@ -3,9 +3,15 @@ import { BaseApiResponseModel } from "../baseApiResponseModel/baseApiResponseMod
 import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from 'expo-constants';
+
+const { expoConfig } = Constants;
+const { SERVER_ENDPOINT } = expoConfig?.extra || {};
+
+console.log(SERVER_ENDPOINT!);
 
 const api = axios.create({
-  baseURL: process.env.SERVER_ENDPOINT!,
+  baseURL: SERVER_ENDPOINT!,
   timeout: 30000,
 });
 

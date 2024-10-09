@@ -1,3 +1,8 @@
+import Constants from 'expo-constants';
+
+const { expoConfig } = Constants;
+const { SERVER_ENDPOINT } = expoConfig?.extra || {};
+
 export const ApiPath = {
   // Auth
   LOGIN: getApiPath('users/login'),
@@ -6,6 +11,5 @@ export const ApiPath = {
 }
 
 function getApiPath(path: string) {
-  // console.log(process.env.SERVER_ENDPOINT!);
-  return `${process.env.SERVER_ENDPOINT!}/v1/2024/${path}`
+  return `${SERVER_ENDPOINT!}/v1/2024/${path}`
 }
