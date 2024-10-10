@@ -10,8 +10,10 @@ npm-debug.*
 *.orig.*
 web-build/
 .vscode
+android/
+ios/
 
-.env.local
+/env-config.ts
 
 # macOS
 .DS_Store

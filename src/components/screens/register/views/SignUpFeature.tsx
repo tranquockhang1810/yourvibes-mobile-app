@@ -25,6 +25,7 @@ import Toast from "react-native-toast-message";
 import { defaultAuthenRepo } from "@/src/api/features/authenticate/AuthenRepo";
 import SignUpViewModel from "../viewModel/signUpViewModel";
 import MyDateTimePicker from "@/src/components/foundation/MyDateTimePicker";
+import { useAuth } from "@/src/context/useAuth";
 
 var customParseFormat = require("dayjs/plugin/customParseFormat");
 dayjs.extend(customParseFormat)
@@ -39,20 +40,21 @@ const SignUpFeature = () => {
   const { brandPrimary } = useColor();
   const { handleSignUp, verifyOTP, loading, otpLoading } = SignUpViewModel(defaultAuthenRepo);
   const [isOtpClicked, setIsOtpClicked] = useState(false);
+  const { localStrings } = useAuth();
 
-  useEffect(() => {
-    signUpForm.setFieldsValue({
-      family_name: "Trần",
-      name: "Quốc Khang",
-      phone_number: "0829137177",
-      email: "fantacymaster1@gmail.com",
-      otp: "911916",
-      password: "tranquockhang1",
-      confirmPassword: "tranquockhang1",
-      agree: true,
-      birthday: "18/10/2004"
-    })
-  }, []);
+  // useEffect(() => {
+  //   signUpForm.setFieldsValue({
+  //     family_name: "Trần",
+  //     name: "Quốc Khang",
+  //     phone_number: "0829137177",
+  //     email: "fantacymaster1@gmail.com",
+  //     otp: "911916",
+  //     password: "tranquockhang1",
+  //     confirmPassword: "tranquockhang1",
+  //     agree: true,
+  //     birthday: "18/10/2004"
+  //   })
+  // }, []);
 
   return (
     <KeyboardAvoidingView
@@ -85,7 +87,7 @@ const SignUpFeature = () => {
                 color: brandPrimaryTap,
               }}
             >
-              ĐĂNG KÝ
+              {localStrings.SignUp.SignUpButton.toUpperCase()}
             </Text>
             <WhiteSpace size="xl" />
             <Form
@@ -107,10 +109,10 @@ const SignUpFeature = () => {
                 <View style={{ width: "50%" }}>
                   <Form.Item
                     name="family_name"
-                    rules={[{ required: true, message: "Vui lòng nhập họ!" }]}
+                    rules={[{ required: true, message: localStrings.Form.RequiredMessages.FamilyNameRequiredMessage }]}
                   >
                     <MyInput
-                      placeholder="Họ"
+                      placeholder={localStrings.Form.Label.FamilyName}
                       variant="outlined"
                       type="text"
                       moreStyle={{ width: "100%" }}
@@ -121,10 +123,10 @@ const SignUpFeature = () => {
                 <View style={{ width: "50%" }}>
                   <Form.Item
                     name="name"
-                    rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
+                    rules={[{ required: true, message: localStrings.Form.RequiredMessages.NameRequiredMessage }]}
                   >
                     <MyInput
-                      placeholder="Tên"
+                      placeholder={localStrings.Form.Label.Name}
                       variant="outlined"
                       type="text"
                       moreStyle={{ width: "100%" }}
@@ -136,12 +138,12 @@ const SignUpFeature = () => {
               <Form.Item
                 name="phone_number"
                 rules={[
-                  { required: true, message: "Vui lòng nhập số điện thoại!" },
-                  { pattern: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ!" },
+                  { required: true, message: localStrings.Form.RequiredMessages.PhoneRequiredMessage },
+                  { pattern: /^[0-9]{10}$/, message: localStrings.Form.TypeMessage.PhoneTypeMessage },
                 ]}
               >
                 <MyInput
-                  placeholder="Số điện thoại"
+                  placeholder={localStrings.Form.Label.Phone}
                   variant="outlined"
                   type="number"
                   maxLength={10}
@@ -157,11 +159,11 @@ const SignUpFeature = () => {
                 <Form.Item
                   name="birthday"
                   rules={[
-                    { required: true, message: "Vui lòng chọn ngày sinh!" },
+                    { required: true, message: localStrings.Form.RequiredMessages.BirthDayRequiredMessage },
                   ]}
                 >
                   <MyInput
-                    placeholder="Ngày sinh"
+                    placeholder={localStrings.Form.Label.BirthDay}
                     variant="outlined"
                     moreStyle={{
                       width: '100%',
@@ -190,12 +192,12 @@ const SignUpFeature = () => {
                   <Form.Item
                     name="email"
                     rules={[
-                      { required: true, message: "Vui lòng nhập email!" },
-                      { type: "email", message: "Email không hợp lệ!" },
+                      { required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage },
+                      { type: "email", message: localStrings.Form.TypeMessage.EmailTypeMessage },
                     ]}
                   >
                     <MyInput
-                      placeholder="Email"
+                      placeholder={localStrings.Form.Label.Email}
                       variant="outlined"
                       type="email-address"
                     />
@@ -221,7 +223,7 @@ const SignUpFeature = () => {
                           fontWeight: "semibold",
                         }}
                       >
-                        Nhận OTP
+                        {localStrings.Form.Label.GetOTP}
                       </Text>
                     </Button>
                   </Form.Item>
@@ -231,12 +233,12 @@ const SignUpFeature = () => {
               <Form.Item
                 name="otp"
                 rules={[
-                  { required: true, message: "Vui lòng nhập mã OTP!" },
-                  { pattern: /^[0-9]{6}$/, message: "Mã OTP phải là chuỗi 6 số!" },
+                  { required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage },
+                  { pattern: /^[0-9]{6}$/, message: localStrings.Form.TypeMessage.OTPTypeMessage },
                 ]}
               >
                 <MyInput
-                  placeholder="Mã OTP"
+                  placeholder={localStrings.Form.Label.OTP}
                   variant="outlined"
                   type="number"
                   maxLength={6}
@@ -249,10 +251,10 @@ const SignUpFeature = () => {
                   {
                     validator: (_, value) => {
                       if (!value) {
-                        return Promise.reject("Vui lòng nhập mật khẩu!")
+                        return Promise.reject(localStrings.Form.RequiredMessages.PasswordRequiredMessage);
                       }
                       if (value.length < 8) {
-                        return Promise.reject("Mật khẩu phải trên 8 kí tự!");
+                        return Promise.reject(localStrings.Form.TypeMessage.PasswordTypeMessage);
                       }
                       return Promise.resolve();
                     }
@@ -260,7 +262,7 @@ const SignUpFeature = () => {
                 ]}
               >
                 <MyInput
-                  placeholder="Mật khẩu"
+                  placeholder={localStrings.Form.Label.Password}
                   type={seePassword ? "text" : "password"}
                   variant="outlined"
                   suffix={
@@ -283,21 +285,21 @@ const SignUpFeature = () => {
                   {
                     validator: (_, value) => {
                       if (!value) {
-                        return Promise.reject("Vui lòng nhập lại mật khẩu!")
+                        return Promise.reject(localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage);
                       }
                       if (value.length < 6) {
-                        return Promise.reject("Mật không hợp lệ!");
+                        return Promise.reject(localStrings.Form.TypeMessage.PasswordTypeMessage);
                       }
                       if (value === signUpForm.getFieldValue("password")) {
                         return Promise.resolve();
                       }
-                      return Promise.reject("Xác nhận mật khẩu không hợp lệ!");
+                      return Promise.reject(localStrings.Form.TypeMessage.ConfirmPasswordTypeMessage);
                     }
                   }
                 ]}
               >
                 <MyInput
-                  placeholder="Xác nhận mật khẩu"
+                  placeholder={localStrings.Form.Label.ConfirmPassword}
                   type={seeConfirmPassword ? "text" : "password"}
                   variant="outlined"
                   suffix={
@@ -322,14 +324,14 @@ const SignUpFeature = () => {
                       if (value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject("Vui lòng đồng ý với các điều khoản!");
+                      return Promise.reject(localStrings.Form.RequiredMessages.AgreeRequiredMessage);
                     }
                   }
                 ]}
                 valuePropName="checked"
               >
                 <Checkbox>
-                  <Text>Tôi đồng ý các điều khoản của YourVibes</Text>
+                  <Text>{localStrings.SignUp.AgreePolicies}</Text>
                 </Checkbox>
               </Form.Item>
               <WhiteSpace size="lg" />
@@ -341,7 +343,7 @@ const SignUpFeature = () => {
                       if (!isOtpClicked) {
                         Toast.show({
                           type: "error",
-                          text1: "Vui lý nhận mã OTP!",
+                          text1: localStrings.Form.RequiredMessages.OTPPressRequiredMessage,
                         })
                         return;
                       }
@@ -361,7 +363,7 @@ const SignUpFeature = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    ĐĂNG KÝ
+                    {localStrings.SignUp.SignUpButton.toUpperCase()}
                   </Text>
                 </Button>
               </WingBlank>
@@ -373,8 +375,8 @@ const SignUpFeature = () => {
               style={{ alignItems: 'center', justifyContent: 'center' }}
             >
               <Text>
-                Bạn đã có tài khoản?
-                <Text style={{ fontWeight: 'bold' }}> Đăng nhập ngay!</Text>
+                {localStrings.SignUp.AlreadyHaveAccount}
+                <Text style={{ fontWeight: 'bold' }}>{" " + localStrings.SignUp.LoginNow}</Text>
               </Text>
             </TouchableOpacity>
           </ScrollView>

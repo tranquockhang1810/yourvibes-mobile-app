@@ -4,7 +4,7 @@ import { useAuth } from '@/src/context/useAuth';
 import { Button } from '@ant-design/react-native';
 
 const Profile = () => {
-  const { onLogout } = useAuth();
+  const { onLogout, changeLanguage, localStrings } = useAuth();
 
   const handleLogout = () => {
     onLogout();
@@ -18,6 +18,13 @@ const Profile = () => {
         onPress={handleLogout}
       >
         Đăng xuất
+      </Button>
+      <Button
+        type="primary"
+        onPress={() => changeLanguage()}
+        style={{ marginTop: 10 }}
+      >
+        {localStrings.Public.Language}
       </Button>
     </View>
   );

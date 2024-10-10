@@ -4,13 +4,17 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import * as Google from 'expo-auth-session/providers/google';
+import ENV from "@/env-config";
+import { useAuth } from "@/src/context/useAuth";
 
-const LoginViewModel = (repo: AuthenRepo, onLogin:(user: any)=>void ) => {
+const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const { localStrings } = useAuth();
   const [request, response, promtAsync] = Google.useAuthRequest({
-    webClientId: "1043707259288-skk9gvug9tlvahvfduf1km8p7dar0osf.apps.googleusercontent.com",
-    androidClientId: "1043707259288-u2rc90r329lmsfrceogq8ti1ouvtm5e2.apps.googleusercontent.com",
-    iosClientId: "1043707259288-8ae2okgbb1mlmg57br60hlh9g0hgmrfr.apps.googleusercontent.com"
+    webClientId: ENV.WEB_CLIENT_ID!,
+    androidClientId: ENV.ANDROID_CLIENT_ID!,
+    iosClientId: ENV.IOS_CLIENT_ID!,
   })
 
   const login = async (data: LoginRequestModel) => {
@@ -22,7 +26,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin:(user: any)=>void ) => {
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Đăng nhập thất bại!',
+          text1: localStrings.Login.LoginFailed,
           text2: res?.error?.message
         })
       }
@@ -30,7 +34,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin:(user: any)=>void ) => {
       console.error(error);
       Toast.show({
         type: 'error',
-        text1: 'Đăng nhập thất bại!',
+        text1: localStrings.Login.LoginFailed,
         text2: error?.message
       })
     } finally {
@@ -38,12 +42,52 @@ const LoginViewModel = (repo: AuthenRepo, onLogin:(user: any)=>void ) => {
     }
   }
 
-  // useEffect(() => {
-  //   console.log("response", response);
-  // }, [response]);  
+  const handleGoogleLogin = async () => {
+    if (response?.type === "success") {
+      console.log("handleGoogleLogin: ", response);
+      const token = response?.authentication?.accessToken;
+      if (token) {
+        getGoogleUserInfo(token);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Login.LoginFailed
+        })
+      }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Login.LoginFailed
+      })
+    }
+  }
+
+  const getGoogleUserInfo = async (token: string) => {
+    if (!token) return;
+    try {
+      const response = await fetch(
+        'https://www.googleapis.com/userinfo/v2/me',
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = await response.json();
+      console.log("google data: ", data);
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if (response)
+      handleGoogleLogin();
+  }, [response]);
 
   return {
     login,
+    googleLoading,
+    setGoogleLoading,
     loading,
     promtAsync
   }

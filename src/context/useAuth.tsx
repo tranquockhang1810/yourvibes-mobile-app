@@ -25,7 +25,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }
 
-  const changeLanguage = (lng: "vi" | "en") => {
+  const changeLanguage = async () => {
+    const lng = language === "vi" ? "en" : "vi";
     translateLanguage(lng).then(() => {
       AsyncStorage.setItem('language', lng);
       setLanguage(lng);

@@ -3,23 +3,19 @@ import { BaseApiResponseModel } from "../baseApiResponseModel/baseApiResponseMod
 import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Constants from 'expo-constants';
-
-const { expoConfig } = Constants;
-const { SERVER_ENDPOINT } = expoConfig?.extra || {};
-
-console.log(SERVER_ENDPOINT!);
+import ENV from "@/env-config"
 
 const api = axios.create({
-  baseURL: SERVER_ENDPOINT!,
+  baseURL: ENV.SERVER_ENDPOINT!,
   timeout: 30000,
 });
 
 //Request interceptors
 api.interceptors.request.use(
   async (config) => {
+    console.log("API URL: ", config.url);
     // Get from async storage
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('accesstoken');
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`
     }
@@ -34,7 +30,7 @@ api.interceptors.response.use(
     return response?.data;
   },
   (error) => {
-    console.log(error)
+    console.error(error)
     return Promise.resolve(error?.response?.data);
   }
 );

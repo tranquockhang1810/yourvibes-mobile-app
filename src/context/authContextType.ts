@@ -5,7 +5,7 @@ export interface AuthContextType {
   onLogin: (user: any) => void;
   onLogout: () => void;
   localStrings: typeof VnLocalizedStrings | typeof ENGLocalizedStrings; 
-  changeLanguage: (lng: "vi" | "en") => void;
+  changeLanguage: () => void;
   language: "vi" | "en";
   setLanguage: (lng: "vi" | "en") => void;
   user: any;

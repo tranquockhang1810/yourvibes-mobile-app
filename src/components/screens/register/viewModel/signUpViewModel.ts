@@ -5,6 +5,7 @@ import { RegisterRequestModel } from "@/src/api/features/authenticate/model/Regi
 import { VerifyOTPRequestModel } from "@/src/api/features/authenticate/model/VerifyOTPModel";
 import dayjs from 'dayjs';
 import { router } from "expo-router";
+import { useAuth } from "@/src/context/useAuth";
 const customParseFormat = require("dayjs/plugin/customParseFormat");
 dayjs.extend(customParseFormat)
 
@@ -12,6 +13,7 @@ dayjs.extend(customParseFormat)
 const SignUpViewModel = (repo: AuthenRepo) => {
   const [loading, setLoading] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
+  const { localStrings } = useAuth(); 
 
   const handleSignUp = async (data: RegisterRequestModel) => {
     try {
@@ -30,13 +32,13 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       if (!response?.error) {
         Toast.show({
           type: "success",
-          text1: "Đăng ký thành công! Vui lòng đăng nhập lại",
+          text1: localStrings.SignUp.SignUpSuccess,
         });
         router.push("/login");
       } else {
         Toast.show({
           type: "error",
-          text1: "Đăng ký thất bại!",
+          text1: localStrings.SignUp.SignUpFailed,
           text2: response?.error?.message,
         });
       }
@@ -44,7 +46,7 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       console.error("Error:", error);
       Toast.show({
         type: "error",
-        text1: "Đăng ký thất bại!",
+        text1: localStrings.SignUp.SignUpFailed,
       });
     } finally {
       setLoading(false);
@@ -61,19 +63,19 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       if (!response?.error) {
         Toast.show({
           type: "success",
-          text1: "OTP đã được gửi thành công!",
+          text1: localStrings.SignUp.OTPSuccess,
         });
       } else {
         if (response?.error?.code === 60009) {
           Toast.show({
             type: "error",
-            text1: "Mã OTP đã được gửi và tồn tại trong 10 phút!",
+            text1: localStrings.SignUp.OTPAlreadySent,
             text2: response?.error?.message,
           });
         } else {
           Toast.show({
             type: "error",
-            text1: "Gửi OTP thất bại!",
+            text1: localStrings.SignUp.OTPFailed,
             text2: response?.error?.message,
           });
         }
@@ -82,7 +84,7 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       console.error(error);
       Toast.show({
         type: "error",
-        text1: "Gửi OTP thất bại!",
+        text1: localStrings.SignUp.OTPFailed,
       });
     } finally {
       setOtpLoading(false);

@@ -5,12 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "yourvibes",
     "userInterfaceStyle": "automatic",
     "entryPoint": "./node_modules/expo-router/entry.js",
-    "extra": {
-      "SERVER_ENDPOINT": "http://192.168.1.117:8080"
-    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -37,6 +34,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bfa9ab76-c551-4f68-b26f-f1c888ef9f2c"
+      }
     }
   }
 }

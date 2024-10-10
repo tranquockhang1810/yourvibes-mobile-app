@@ -1,7 +1,4 @@
-import Constants from 'expo-constants';
-
-const { expoConfig } = Constants;
-const { SERVER_ENDPOINT } = expoConfig?.extra || {};
+import ENV from "@/env-config"
 
 export const ApiPath = {
   // Auth
@@ -11,5 +8,5 @@ export const ApiPath = {
 }
 
 function getApiPath(path: string) {
-  return `${SERVER_ENDPOINT!}/v1/2024/${path}`
+  return `${ENV.SERVER_ENDPOINT!}/v1/2024/${path}`
 }

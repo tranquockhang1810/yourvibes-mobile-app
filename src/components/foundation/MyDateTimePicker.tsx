@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button, Modal } from '@ant-design/react-native';
+import { useAuth } from '@/src/context/useAuth';
 
 const MyDateTimePicker = ({
   value,
@@ -15,7 +16,7 @@ const MyDateTimePicker = ({
   show: boolean;
 }) => {
   const [date, setDate] = useState(value);
-
+  const { localStrings } = useAuth();
   const handleChange = (event: any, selectedDate?: Date) => {
     if (event.type === 'set') {
       const chosenDate = selectedDate || date;
@@ -61,7 +62,7 @@ const MyDateTimePicker = ({
                 onPress={onCancel}
                 style={{ marginTop: 10 }}
               >
-                <Text style={{ color: 'white' }}>Đóng</Text>
+                <Text style={{ color: 'white' }}>{localStrings.Public.Close}</Text>
               </Button>
             </View>
           </View>

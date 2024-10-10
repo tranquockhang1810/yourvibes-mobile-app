@@ -11,7 +11,7 @@ import {
   ScrollView
 } from 'react-native';
 import React, { useState } from 'react';
-import { Button, WingBlank, WhiteSpace, Form } from '@ant-design/react-native';
+import { Button, WingBlank, WhiteSpace, Form, ActivityIndicator } from '@ant-design/react-native';
 import MyInput from '@/src/components/foundation/MyInput';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -31,8 +31,14 @@ const LoginFeature = () => {
   const { backgroundColor } = useColor();
   const [signInForm] = Form.useForm();
   const { brandPrimary } = useColor();
-  const {onLogin, localStrings, changeLanguage, language } = useAuth();
-  const { loading, login, promtAsync} = LoginViewModel(defaultAuthenRepo, onLogin);
+  const { onLogin, localStrings, changeLanguage, language } = useAuth();
+  const {
+    loading,
+    login,
+    promtAsync,
+    googleLoading,
+    setGoogleLoading
+  } = LoginViewModel(defaultAuthenRepo, onLogin);
 
   return (
     <KeyboardAvoidingView
@@ -75,22 +81,22 @@ const LoginFeature = () => {
               <Form.Item
                 name="email"
                 rules={[
-                  { required: true, message: 'Vui lòng nhập email!' },
-                  { type: 'email', message: 'Email không hợp lệ!' }
+                  { required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage },
+                  { type: 'email', message: localStrings.Form.TypeMessage.EmailTypeMessage },
                 ]}
               >
                 <MyInput
-                  placeholder="Email"
+                  placeholder={localStrings.Form.Label.Email}
                   variant="outlined"
                   type='email-address'
                 />
               </Form.Item>
               <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
               >
                 <MyInput
-                  placeholder="Mật khẩu"
+                  placeholder={localStrings.Form.Label.Password}
                   type={seePassword ? "text" : "password"}
                   variant="outlined"
                   suffix={
@@ -108,7 +114,7 @@ const LoginFeature = () => {
                       color: 'gray',
                     }}
                   >
-                    Tôi không còn nhớ mật khẩu
+                    {localStrings.Login.ForgotPasswordText}
                   </Text>
                 </TouchableOpacity>
               </WingBlank>
@@ -129,7 +135,7 @@ const LoginFeature = () => {
                       console.log('error');
                     });
                 }}>
-                  {localStrings.Login}
+                  {localStrings.Login.LoginButton}
                 </Button>
               </Form.Item>
               <WhiteSpace size="xl" />
@@ -142,18 +148,27 @@ const LoginFeature = () => {
               }}
             >
               <Text>
-                Bạn chưa có tài khoản?
-                <Text style={{ fontWeight: 'bold' }}> Đăng ký ngay!</Text>
+                {localStrings.Login.DontHaveAccout}
+                <Text style={{ fontWeight: 'bold' }}>{" " + localStrings.Login.SignUpNow}</Text>
               </Text>
             </TouchableOpacity>
             <WhiteSpace size="xl" />
             <Text style={{
               textAlign: 'center',
             }}>
-              Hoặc
+              {localStrings.Login.Or}
             </Text>
             <WhiteSpace size="lg" />
-            <TouchableOpacity style={{ width: '100%' }} onPress={() => promtAsync()}>
+            <TouchableOpacity style={{ width: '100%' }} onPress={async () => {
+              try {
+                setGoogleLoading(true);
+                await promtAsync();
+              } catch (error) {
+                console.error(error);
+              } finally {
+                setGoogleLoading(false);
+              }
+            }}>
               <Image
                 source={{ uri: "https://img.icons8.com/?size=100&id=17949&format=png" }}
                 style={{
@@ -163,6 +178,12 @@ const LoginFeature = () => {
                 }}
               />
             </TouchableOpacity>
+            <ActivityIndicator
+              animating={googleLoading}
+              toast
+              size="large"
+              text='Loading...'
+            />
           </ScrollView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
