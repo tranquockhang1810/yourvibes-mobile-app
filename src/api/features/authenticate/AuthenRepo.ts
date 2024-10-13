@@ -2,6 +2,7 @@ import { ApiPath } from "../../ApiPath";
 import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponseModel";
 import client from "../../client";
 import { LoginRequestModel, LoginResponseModel } from "./model/LoginModel";
+import { ProfileRequestModel } from "./model/ProfileModel";
 import { RegisterRequestModel, RegisterResponseModel } from "./model/RegisterModel";
 import { VerifyOTPRequestModel, VerifyOTPResponseModel } from "./model/VerifyOTPModel";
 
@@ -9,6 +10,7 @@ interface IAuthenRepo {
   login(data: LoginRequestModel): Promise<BaseApiResponseModel<LoginResponseModel>>;
   register(data: RegisterRequestModel): Promise<BaseApiResponseModel<RegisterResponseModel>>;
   verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>>;
+  profile(data: ProfileRequestModel): Promise<BaseApiResponseModel<any>>;
 }
 
 export class AuthenRepo implements IAuthenRepo {
@@ -22,6 +24,10 @@ export class AuthenRepo implements IAuthenRepo {
 
   async verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>> {
     return client.post(ApiPath.VERIFIED_EMAIL, data);
+  }
+
+  async profile(data: ProfileRequestModel): Promise<BaseApiResponseModel<any>> {
+    return client.post(ApiPath.PROFILE, data);
   }
 }
 
