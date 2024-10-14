@@ -3,16 +3,15 @@ import {
   ScrollView,
   StatusBar,
   Text,
-  SafeAreaView,
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import MyInput from '@/src/components/foundation/MyInput';
-import { ActivityIndicator, Button, Input } from '@ant-design/react-native';
+import { ActivityIndicator, Button } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -20,12 +19,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { Video } from 'expo-av';
 
+import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
+import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
+import AddPostViewModel from '../viewModel/AddpostViewModel';
+import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
+
 const AddPostScreen = () => {
   const { brandPrimary, backgroundColor, brandPrimaryTap } = useColor();
   const [loading, setLoading] = useState(false);
   const [postContent, setPostContent] = useState('');
-  // State to handle selected images
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const { createPost } = AddPostViewModel(defaultPostRepo);
+  const [userInfo, setUserInfo] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfoString = await AsyncStorage.getItem('user');
+      const user = userInfoString ? JSON.parse(userInfoString) : null;
+      console.log('User:', user);
+      
+      setUserInfo(user);
+    };
+    fetchUserInfo();
+  }, []);
 
   // Function to pick images
   const pickImage = async () => {
@@ -45,7 +61,6 @@ const AddPostScreen = () => {
       setLoading(false); // End loading after images are selected
     }
   };
-
   // Function to remove selected image
   const removeImage = (index: number) => {
     const updatedImages = [...selectedImages];
@@ -59,35 +74,33 @@ const AddPostScreen = () => {
       return;
     }
 
-    const newPost = {
+    const newPost: PostResponseModel = {
       id: new Date().getTime().toString(),
       user: {
-        id: '1',
-        name: 'Trần Quốc Khang',
-        avatar: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
+        id: userInfo?.id || '1',
+        name: userInfo?.name || 'Unknown User',
+        avatar: userInfo?.avatar || 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
       },
       content: postContent,
       mediaUrl: selectedImages.map(uri => ({ mediaUrl: uri, status: true })),
       likeCount: 0,
       commentCount: 0,
       createdAt: 'Vừa xong',
-      privacy: 'Public',
+      privacy: Privacy.Public,
       status: true,
     };
-
     try {
       setLoading(true);
-      const storedPosts = await AsyncStorage.getItem('posts');
-      const posts = storedPosts ? JSON.parse(storedPosts) : [];
-      await AsyncStorage.setItem('posts', JSON.stringify([newPost, ...posts]));
+      await createPost(newPost);
       Toast.show({ text1: 'Post saved successfully', type: 'success' });
       router.replace('/(tabs)');
       setPostContent('');
       setSelectedImages([]);
     } catch (error) {
       console.error("Error saving post:", error);
+      Toast.show({ text1: 'Error saving post', type: 'error' });
     } finally {
-      setLoading(false); // End loading after posting
+      setLoading(false);
     }
   };
 
@@ -131,7 +144,7 @@ const AddPostScreen = () => {
           }}>
           <View>
             <Image
-              source={{ uri: "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
+              source={{ uri: userInfo?.avatar || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
               style={{
                 width: 40,
                 height: 40,
@@ -141,7 +154,7 @@ const AddPostScreen = () => {
           </View>
           <View style={{ marginLeft: 10, flex: 1 }}>
             <View style={{ flexDirection: 'column' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{"Trần Quốc Khang"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{userInfo?.name || "Unknown User"}</Text>
               <MyInput
                 placeholder='Bạn đang nghĩ gì?'
                 variant='outlined'
@@ -225,7 +238,7 @@ const AddPostScreen = () => {
         </View>
       </View>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
-export default AddPostScreen
+export default AddPostScreen;

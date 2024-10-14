@@ -14,6 +14,12 @@ export interface Paging {
   total: number;
 }
 
+export enum Privacy {
+  Public = 'public',
+  Private = 'private',
+  FriendOnly = 'friend_only',
+}
+
 export class Error {
   code?: number;
   message?: string;
