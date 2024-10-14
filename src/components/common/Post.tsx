@@ -55,8 +55,10 @@ const Post = ({
         if (userInfo?.id === post?.user?.id) {
           if (buttonIndex === 0) {
             console.log('Chỉnh sửa bài viết action selected');
+            router.push('/updatePost');
           } else if (buttonIndex === 1) {
             console.log('Chỉnh sửa quyền riêng tư action selected');
+            router.push('/object')
           } else if (buttonIndex === 2) {
             console.log('Chuyển vào thùng rác action selected');
           } else if (buttonIndex === 3) {
@@ -65,7 +67,7 @@ const Post = ({
         } else {
           if (buttonIndex === 0) {
             console.log('báo cáo action selected');
-            router.push('/object');
+            router.push('/updatePost');
           }
         }
       }

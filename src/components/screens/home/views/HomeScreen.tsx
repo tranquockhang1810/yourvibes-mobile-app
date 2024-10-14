@@ -12,6 +12,7 @@ import Post from '@/src/components/common/Post'
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from 'expo-router'
+import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel'
 
 const HomeScreen = () => {
   const { brandPrimary, brandPrimaryTap, backgroundColor, lightGray } = useColor();
@@ -37,7 +38,7 @@ const HomeScreen = () => {
         likeCount: 100,
         commentCount: 12,
         createdAt: '10 phút trước',
-        privacy: 'Public',
+        privacy: Privacy.Public,
         status: true,
         mediaUrl: [
           { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
@@ -49,7 +50,7 @@ const HomeScreen = () => {
       likeCount: 50,
       commentCount: 1,
       createdAt: '10 phút trước',
-      privacy: 'Public',
+      privacy: Privacy.Private,
       status: true,
       mediaUrl: [
         { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
@@ -75,7 +76,7 @@ const HomeScreen = () => {
         likeCount: 110,
         commentCount: 15,
         createdAt: '20 phút trước',
-        privacy: 'Public',
+        privacy: Privacy.Public,
         status: true,
         mediaUrl: [
           {
@@ -99,7 +100,7 @@ const HomeScreen = () => {
       likeCount: 55,
       commentCount: 3,
       createdAt: '15 phút trước',
-      privacy: 'Friends',
+      privacy: Privacy.FriendOnly,
       status: true,
       mediaUrl: [
         {

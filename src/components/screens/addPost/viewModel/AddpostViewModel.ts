@@ -1,22 +1,29 @@
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
+import { CreatePostRequestModel } from "@/src/api/features/post/models/CreatePostRequestModel";
 import { PostRepo } from "@/src/api/features/post/PostRepo";
 import { useState } from "react";
 
 const AddPostViewModel = (repo: PostRepo) => {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [post, setPost] = useState<PostResponseModel | null>(null);
-    const createPost = async (data: PostResponseModel) => {
+    const [error, setError] = useState<string | null>(null); // For better error handling
+
+    const createPost = async (data: CreatePostRequestModel) => {
         try {
             setLoading(true);
-            console.log("data:", data);
-            
+            console.log("Creating post with data:", data);
+
             const response = await repo.createPost(data);
-            console.log(response);
+            console.log("Post created:", response);
+
             if (response?.data) {
                 setPost(response.data);
+            } else {
+                throw new Error("Post creation failed. No response data.");
             }
-        } catch (error) {
-            console.error("Error:", error);
+        } catch (err: any) {
+            console.error("Error creating post:", err);
+            setError(err.message || "An unknown error occurred.");
         } finally {
             setLoading(false);
         }
@@ -25,7 +32,9 @@ const AddPostViewModel = (repo: PostRepo) => {
     return {
         loading,
         post,
+        error,
         createPost,
     };
 };
+
 export default AddPostViewModel;

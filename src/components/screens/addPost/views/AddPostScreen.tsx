@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
@@ -35,9 +36,7 @@ const AddPostScreen = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       const userInfoString = await AsyncStorage.getItem('user');
-      const user = userInfoString ? JSON.parse(userInfoString) : null;
-      console.log('User:', user);
-      
+      const user = userInfoString ? JSON.parse(userInfoString) : null;      
       setUserInfo(user);
     };
     fetchUserInfo();
@@ -57,7 +56,9 @@ const AddPostScreen = () => {
         const newImages = result.assets.map((asset) => asset.uri); // Map the selected image URIs
         setSelectedImages([...selectedImages, ...newImages]);
       }
-    } finally {
+    }catch (error) {
+      Alert.alert('Error', 'Failed to pick images.');
+    }  finally {
       setLoading(false); // End loading after images are selected
     }
   };
@@ -223,18 +224,39 @@ const AddPostScreen = () => {
           </View>
         </View>
         {/* Post Button */}
-        <View style={{ paddingHorizontal: 10 }}>
-          <Button
+        <View style={{ 
+        flexDirection: 'row', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginHorizontal: 10, 
+        marginTop: 20 
+        }}>
+        <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
+        Bài đăng sẽ được chia sẻ với 
+        </Text>
+        <TouchableOpacity onPress={() => router.push('/object')}>
+            <Text style={{ color: 'gray', fontSize: 14, fontWeight: 'bold' }}>
+                mọi người
+            </Text>
+        </TouchableOpacity> 
+        <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
+            !
+        </Text>
+
+        <TouchableOpacity 
             style={{
-              backgroundColor: brandPrimary,
-              borderColor: brandPrimary,
-              height: 45,
-              borderRadius: 30,
+            borderWidth: 1,
+            borderColor: 'black',
+            borderRadius: 20,
+            paddingVertical: 8,
+            paddingHorizontal: 15,
+            alignItems: 'center',
+            justifyContent: 'center',
             }}
             onPress={handleSubmitPost}
-          >
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Đăng Ngay</Text>
-          </Button>
+        >
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Đăng ngay</Text>
+        </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>
