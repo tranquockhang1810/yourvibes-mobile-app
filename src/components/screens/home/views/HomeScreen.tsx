@@ -37,7 +37,7 @@ const HomeScreen = () => {
         likeCount: 100,
         commentCount: 12,
         createdAt: '10 phút trước',
-        privacy: 'Public',
+        privacy: "public",
         status: true,
         mediaUrl: [
           { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
@@ -49,7 +49,7 @@ const HomeScreen = () => {
       likeCount: 50,
       commentCount: 1,
       createdAt: '10 phút trước',
-      privacy: 'Public',
+      privacy: "public",
       status: true,
       mediaUrl: [
         { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
@@ -75,7 +75,7 @@ const HomeScreen = () => {
         likeCount: 110,
         commentCount: 15,
         createdAt: '20 phút trước',
-        privacy: 'Public',
+        privacy: "public",
         status: true,
         mediaUrl: [
           {
@@ -99,7 +99,7 @@ const HomeScreen = () => {
       likeCount: 55,
       commentCount: 3,
       createdAt: '15 phút trước',
-      privacy: 'Friends',
+      privacy: "public",
       status: true,
       mediaUrl: [
         {

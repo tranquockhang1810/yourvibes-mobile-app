@@ -7,6 +7,7 @@ import { PostResponseModel } from '@/src/api/features/post/models/PostResponseMo
 import MediaView from '../foundation/MediaView';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useAuth } from '@/src/context/useAuth';
+import { router } from 'expo-router';
 
 const Post = ({
   post,
@@ -45,9 +46,11 @@ const Post = ({
           switch (buttonIndex) {
             case 0:
               console.log('Chỉnh sửa bài viết action selected');
+              router.push('/updatePost');
               break;
             case 1:
               console.log('Chỉnh sửa quyên riêng tư action selected');
+              router.push('/object')
               break;
             case 2:
               console.log('Chuyển vào thể rác action selected');
@@ -59,12 +62,9 @@ const Post = ({
               break;
           }
         } else {
-          switch (buttonIndex) {
-            case 0:
-              console.log('báo cáo action selected');
-              break;
-            default:
-              break;
+          if (buttonIndex === 0) {
+            console.log('báo cáo action selected');
+            router.push('/updatePost');
           }
         }
       }
