@@ -1,5 +1,3 @@
-import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"
-
 export interface PostResponseModel {
   id?: string
   user?: {
@@ -14,7 +12,7 @@ export interface PostResponseModel {
   createdAt?: string,
   likeCount?: number,
   commentCount?: number,
-  privacy?: Privacy,
+  privacy?: "public" | "private" | "friend_only",
   status?: boolean
 }
 

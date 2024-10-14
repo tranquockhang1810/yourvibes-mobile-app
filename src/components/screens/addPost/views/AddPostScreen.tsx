@@ -15,14 +15,13 @@ import { ActivityIndicator, Button } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { Video } from 'expo-av';
 
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import AddPostViewModel from '../viewModel/AddpostViewModel';
-import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
+import { useAuth } from '@/src/context/useAuth';
 
 const AddPostScreen = () => {
   const { brandPrimary, backgroundColor, brandPrimaryTap } = useColor();
@@ -30,18 +29,7 @@ const AddPostScreen = () => {
   const [postContent, setPostContent] = useState('');
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const { createPost } = AddPostViewModel(defaultPostRepo);
-  const [userInfo, setUserInfo] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const userInfoString = await AsyncStorage.getItem('user');
-      const user = userInfoString ? JSON.parse(userInfoString) : null;
-      console.log('User:', user);
-      
-      setUserInfo(user);
-    };
-    fetchUserInfo();
-  }, []);
+  const { user } = useAuth()
 
   // Function to pick images
   const pickImage = async () => {
@@ -77,16 +65,16 @@ const AddPostScreen = () => {
     const newPost: PostResponseModel = {
       id: new Date().getTime().toString(),
       user: {
-        id: userInfo?.id || '1',
-        name: userInfo?.name || 'Unknown User',
-        avatar: userInfo?.avatar || 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
+        id: user?.id || '1',
+        name: user?.name || 'Unknown User',
+        avatar: user?.avatar || 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
       },
       content: postContent,
       mediaUrl: selectedImages.map(uri => ({ mediaUrl: uri, status: true })),
       likeCount: 0,
       commentCount: 0,
       createdAt: 'Vừa xong',
-      privacy: Privacy.Public,
+      privacy: 'public',
       status: true,
     };
     try {
@@ -144,7 +132,7 @@ const AddPostScreen = () => {
           }}>
           <View>
             <Image
-              source={{ uri: userInfo?.avatar || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
+              source={{ uri: user?.avatar || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
               style={{
                 width: 40,
                 height: 40,
@@ -154,7 +142,7 @@ const AddPostScreen = () => {
           </View>
           <View style={{ marginLeft: 10, flex: 1 }}>
             <View style={{ flexDirection: 'column' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{userInfo?.name || "Unknown User"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.name || "Unknown User"}</Text>
               <MyInput
                 placeholder='Bạn đang nghĩ gì?'
                 variant='outlined'

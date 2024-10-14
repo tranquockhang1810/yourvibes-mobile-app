@@ -2,12 +2,12 @@ import { ApiPath } from "../../ApiPath";
 import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponseModel";
 import client from "../../client";
 import { LoginRequestModel, LoginResponseModel } from "./model/LoginModel";
-import { RegisterRequestModel, RegisterResponseModel } from "./model/RegisterModel";
-import { VerifyOTPRequestModel, VerifyOTPResponseModel } from "./model/VerifyOTPModel";
+import { RegisterRequestModel } from "./model/RegisterModel";
+import { VerifyOTPRequestModel } from "./model/VerifyOTPModel";
 
 interface IAuthenRepo {
   login(data: LoginRequestModel): Promise<BaseApiResponseModel<LoginResponseModel>>;
-  register(data: RegisterRequestModel): Promise<BaseApiResponseModel<RegisterResponseModel>>;
+  register(data: RegisterRequestModel): Promise<BaseApiResponseModel<any>>;
   verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>>;
 }
 
@@ -16,7 +16,7 @@ export class AuthenRepo implements IAuthenRepo {
     return client.post(ApiPath.LOGIN, data);
   }
 
-  async register(data: RegisterRequestModel): Promise<BaseApiResponseModel<RegisterResponseModel>> {
+  async register(data: RegisterRequestModel): Promise<BaseApiResponseModel<any>> {
     return client.post(ApiPath.REGISTER, data);
   }
 

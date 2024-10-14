@@ -5,9 +5,8 @@ import { Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import MediaView from '../foundation/MediaView';
-import { t } from 'i18next';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useActionSheet } from '@expo/react-native-action-sheet';
+import { useAuth } from '@/src/context/useAuth';
 
 const Post = ({
   post,
@@ -19,53 +18,53 @@ const Post = ({
   children?: React.ReactNode
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
-  const [visible, setVisible] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const userInfoString = await AsyncStorage.getItem('user');
-      const user = userInfoString ? JSON.parse(userInfoString) : null;
-      
-      setUserInfo(user);
-    }
-    fetchUserInfo();
-  }, []);
+  const { user } = useAuth();
+  const { showActionSheetWithOptions } = useActionSheet();
 
   const showAction = () => {
-    const BUTTONS = userInfo?.id === post?.user?.id ? [
-      { text: 'Chỉnh sửa bài viết'},
-      { text: 'Chỉnh sửa quyền riêng tư'},
-      { text: 'Chuyển vào thùng rác'},
-      { text: 'Quảng cáo bài viết'},
+    const options = user?.id === post?.user?.id ? [
+      'Chỉnh sửa bài viết',
+      'Chỉnh sửa quyền riêng tư',
+      'Chuyển vào thùng rác',
+      'Quảng cáo bài viết',
+      'Hủy'
     ] : [
-      { text: 'Report'},
+      'Báo cáo bài viết',
+      'Hủy'
     ];
-
-    const options = BUTTONS.map((button, index) => `${button.text}`);
 
     ActionSheet.showActionSheetWithOptions(
       {
-        title: 'Actions',
-        message: 'Available actions',
+        //title: 'Hành động',
         options: options,
-        cancelButtonIndex: BUTTONS.length - 1,
+        cancelButtonIndex: options.length - 1,
+        cancelButtonTintColor: "#F95454"
       },
       (buttonIndex) => {
-        if (userInfo?.id === post?.user?.id) {
-          if (buttonIndex === 0) {
-            console.log('Chỉnh sửa bài viết action selected');
-          } else if (buttonIndex === 1) {
-            console.log('Chỉnh sửa quyền riêng tư action selected');
-          } else if (buttonIndex === 2) {
-            console.log('Chuyển vào thùng rác action selected');
-          } else if (buttonIndex === 3) {
-            console.log('Quảng cáo bài viết action selected');
+        if (user?.id === post?.user?.id) {
+          switch (buttonIndex) {
+            case 0:
+              console.log('Chỉnh sửa bài viết action selected');
+              break;
+            case 1:
+              console.log('Chỉnh sửa quyên riêng tư action selected');
+              break;
+            case 2:
+              console.log('Chuyển vào thể rác action selected');
+              break;
+            case 3:
+              console.log('Quảng cách bài viết action selected');
+              break;
+            default:
+              break;
           }
         } else {
-          if (buttonIndex === 0) {
-            console.log('báo cáo action selected');
-            router.push('/object');
+          switch (buttonIndex) {
+            case 0:
+              console.log('báo cáo action selected');
+              break;
+            default:
+              break;
           }
         }
       }
@@ -110,7 +109,7 @@ const Post = ({
           />
         }
       />
-      
+
       {/* Content */}
       {!isParentPost && children ? (
         <View>
@@ -127,7 +126,7 @@ const Post = ({
           {post?.mediaUrl && <MediaView mediaItems={post?.mediaUrl} />}
         </View>
       )}
-     
+
       {/* Footer */}
       {!isParentPost ? (
         <Card.Footer
