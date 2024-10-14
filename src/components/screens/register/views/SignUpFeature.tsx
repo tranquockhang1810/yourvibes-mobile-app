@@ -42,20 +42,6 @@ const SignUpFeature = () => {
   const [isOtpClicked, setIsOtpClicked] = useState(false);
   const { localStrings } = useAuth();
 
-  // useEffect(() => {
-  //   signUpForm.setFieldsValue({
-  //     family_name: "Trần",
-  //     name: "Quốc Khang",
-  //     phone_number: "0829137177",
-  //     email: "fantacymaster1@gmail.com",
-  //     otp: "911916",
-  //     password: "tranquockhang1",
-  //     confirmPassword: "tranquockhang1",
-  //     agree: true,
-  //     birthday: "18/10/2004"
-  //   })
-  // }, []);
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: backgroundColor, width: "100%" }}

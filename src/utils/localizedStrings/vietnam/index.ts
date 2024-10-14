@@ -1,3 +1,5 @@
+import Post from "@/src/components/common/Post";
+
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -7,6 +9,32 @@ export const VnLocalizedStrings = {
     Save: "Lưu",
     Close: "Đóng",
     Language: "Ngôn ngữ: Tiếng Việt",
+    Post:"Bài Viết",
+    Friend: "Bạn Bè",
+    Username: "Tên người dùng",
+    About: "Giới Thiệu",
+    Today: "Hôm nay bạn thế nào?",
+    Detail: "Chi tiết",
+    EditProfile: "Chỉnh sửa trang cá nhân",
+    ChangePassword: "Thay đổi mật khẩu",
+    LogOut: "Đăng xuất",
+    SetingProfile: "Cài đặt trang cá nhân",
+    Mail: "Email",
+    Phone: "Số điện thoại",
+    Birthday: "Ngày sinh",
+    Active: "Ngày tham gia",
+    FriendFind: "Tìm bạn bè",
+    FriendView: "Xem tất cả bạn bè",
+    Conform: "Xác nhận",
+    LogoutConfirm: "Bạn có chắc chắn muốn đăng xuất",
+    More: "Xem thêm",
+    AddFriend: "Kết Bạn",
+    ReportFriend: "Báo Cáo",
+    Block: "Chặn",
+    Vietnamese: "Tiếng Việt",
+    English: "Tiếng Anh",
+    ErrorFetchingProfile: "Lỗi hiển thị thông tin",
+    
   },
   Form: {
     Label: {

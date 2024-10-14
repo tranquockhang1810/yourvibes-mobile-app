@@ -1,3 +1,5 @@
+import Post from "@/src/components/common/Post";
+
 export const ENGLocalizedStrings = {
   Public: {
     All: "All",
@@ -7,6 +9,31 @@ export const ENGLocalizedStrings = {
     Save: "Save",
     Close: "Close",
     Language: "Language: English",
+    Post: "Post",
+    Friend: "Friend",
+    Username: "Username",
+    About: "About",
+    Today: "Today, what do you want to do?",
+    Detail: "Detail",
+    EditProfile: "Edit Profile",
+    ChangePassword: "Change Password",
+    LogOut: "Log Out",
+    SetingProfile: "Setting Profile",
+    Mail: "Email",
+    Phone: "Phone Number",
+    Birthday: "Birth Date", 
+    Active: "Created Date", 
+    FriendFind: "Friend Find",
+    FriendView: "View All Friend",
+    Conform: "Confirm", 
+    LogoutConfirm: "Are you sure you want to log out?",
+    More: "More",
+    AddFriend: "Add Friend",
+    ReportFriend: "Report",
+    Block: "Block",
+    Vietnamese: "Vietnamese",
+    English: "English",
+    ErrorFetchingProfile: "Error fetching profile!",
   },
   Form: {
     Label: {
