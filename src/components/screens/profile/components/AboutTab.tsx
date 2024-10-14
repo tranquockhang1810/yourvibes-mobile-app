@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView ,TouchableOpacity} from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons'; 
-import { useAuth } from '@/src/context/useAuth';
 import useColor from '@/src/hooks/useColor'; 
 
 interface AboutTabProps {
@@ -10,45 +9,44 @@ interface AboutTabProps {
 }
 
 const { brandPrimary, backgroundColor, lightGray } = useColor();
-const { user, onLogout, changeLanguage, localStrings } = useAuth(); 
-const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
 const AboutTab: React.FC<AboutTabProps> = ({ user, localStrings }) => {
+  const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
   return (
     <View style={{ padding: 20, flex: 1 }}>
-    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{localStrings.Public.Detail}</Text>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{localStrings.Public.Detail}</Text>
 
-      {/* Email */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-        <MaterialIcons name="email" size={24} color="black" />
-        <Text style={{ marginLeft: 10 }}>
-          {localStrings.Public.Mail}: <Text style={{ fontWeight: 'bold' }}>{  user?.email ||  'N/A'} </Text>
-        </Text>
-      </View>
+        {/* Email */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+          <MaterialIcons name="email" size={24} color="black" />
+          <Text style={{ marginLeft: 10 }}>
+            {localStrings.Public.Mail}: <Text style={{ fontWeight: 'bold' }}>{user?.email || 'N/A'}</Text>
+          </Text>
+        </View>
 
-      {/* Số điện thoại */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-        <Feather name="phone" size={24} color="black" />
-        <Text style={{ marginLeft: 10 }}>
-          {localStrings.Public.Phone}: <Text style={{ fontWeight: 'bold' }}>{ user?.phone_number || 'N/A'} </Text>
-        </Text>
-      </View>
+        {/* Số điện thoại */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+          <Feather name="phone" size={24} color="black" />
+          <Text style={{ marginLeft: 10 }}>
+            {localStrings.Public.Phone}: <Text style={{ fontWeight: 'bold' }}>{user?.phone_number || 'N/A'}</Text>
+          </Text>
+        </View>
 
-      {/* Ngày sinh */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-        <Feather name="calendar" size={24} color="black" />
-        <Text style={{ marginLeft: 10 }}>
-          {localStrings.Public.Birthday}: <Text style={{ fontWeight: 'bold' }}>{user?.birthday || 'N/A'} </Text>
-        </Text>
-      </View>
+        {/* Ngày sinh */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+          <Feather name="calendar" size={24} color="black" />
+          <Text style={{ marginLeft: 10 }}>
+            {localStrings.Public.Birthday}: <Text style={{ fontWeight: 'bold' }}>{user?.birthday || 'N/A'}</Text>
+          </Text>
+        </View>
 
-      {/* Ngày tham gia */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-        <MaterialIcons name="date-range" size={24} color="black" />
-        <Text style={{ marginLeft: 10 }}>
-          {localStrings.Public.Active}: <Text style={{ fontWeight: 'bold' }}>{ user?.created_at || 'N/A'}</Text>
-        </Text>
-      </View>
+        {/* Ngày tham gia */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+          <MaterialIcons name="date-range" size={24} color="black" />
+          <Text style={{ marginLeft: 10 }}>
+            {localStrings.Public.Active}: <Text style={{ fontWeight: 'bold' }}>{user?.created_at || 'N/A'}</Text>
+          </Text>
+        </View>
 
         {/* Danh sách bạn bè */}
         <View style={{ padding: 20 }}>
@@ -79,9 +77,8 @@ const AboutTab: React.FC<AboutTabProps> = ({ user, localStrings }) => {
             <Text style={{ textAlign: 'center', marginTop: 20, color: 'blue' }}>{localStrings.Public.FriendView}</Text>
           </TouchableOpacity>
         </View>
-
-        </ScrollView>
-      </View>
+      </ScrollView>
+    </View>
   );
 };
 
