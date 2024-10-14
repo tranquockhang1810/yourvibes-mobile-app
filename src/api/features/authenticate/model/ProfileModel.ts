@@ -1,18 +1,29 @@
 export interface ProfileRequestModel {
-    id: string; 
+    id: string;  
 }
 export interface ProfileResponseModel {
-    familyName: string;       // Họ
-    name: string;             // Tên
-    email: string;            // Địa chỉ email
-    phoneNumber: string;      // Số điện thoại
-    birthday: string;         // Ngày sinh (dạng chuỗi, có thể là ISO 8601)
-    avatarUrl?: string;       // URL ảnh đại diện (có thể không có)
-    capwallUrl?: string;      // URL ảnh bìa (có thể không có)
-    privacy: string;          // Mức độ riêng tư
-    createdAt: string;        // Thời gian tạo (dạng chuỗi, có thể là ISO 8601)
-    posts?: Post[];           // Danh sách bài viết (có thể không có)
+    family_name: string;       
+    name: string;             
+    email: string;            
+    phone_number: string;      
+    birthday: string;         
+    avatar_url?: string;       
+    capwall_url?: string;     
+    privacy: string;          
+    created_at: string;   
+    validator: "";
+    auth_type: "";
+    post_count: 0,
+    status: false,     
+    posts?: Post[];          
+}
+export interface Post {
+    id: string;                
+    created_at: string;        
+    updated_at?: string;       
+    likes: number;            
+    comments?: Comment[];     
 }
 
-export interface Post {
+export interface Comment {         
 }

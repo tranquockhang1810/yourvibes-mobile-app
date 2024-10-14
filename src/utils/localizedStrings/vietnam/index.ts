@@ -22,7 +22,7 @@ export const VnLocalizedStrings = {
     Mail: "Email",
     Phone: "Số điện thoại",
     Birthday: "Ngày sinh",
-    Active: "Ngày hoạt động",
+    Active: "Ngày tham gia",
     FriendFind: "Tìm bạn bè",
     FriendView: "Xem tất cả bạn bè",
     Conform: "Xác nhận",
@@ -33,6 +33,7 @@ export const VnLocalizedStrings = {
     Block: "Chặn",
     Vietnamese: "Tiếng Việt",
     English: "Tiếng Anh",
+    ErrorFetchingProfile: "Lỗi hiển thị thông tin",
     
   },
   Form: {

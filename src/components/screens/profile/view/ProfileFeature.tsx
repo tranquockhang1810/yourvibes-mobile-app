@@ -8,8 +8,9 @@ import { useAuth } from '@/src/context/useAuth';
 import { useRouter } from 'expo-router';
 const ProfileViewModel = () => {
   const { backgroundColor } = useColor();
-  const { localStrings } = useAuth();
-  const router = useRouter(); 
+  const { user,onLogout,localStrings } = useAuth();
+  const router = useRouter();  
+
   const HomeScreen: () => React.JSX.Element = () => <HomeScreen />;
   return (
     <KeyboardAvoidingView
@@ -42,7 +43,7 @@ const ProfileViewModel = () => {
             <Feather name="arrow-left" size={24} color="black" />
           </TouchableOpacity>
           <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', flex: 1 }}>
-            {localStrings.Public.Username}
+            {user.family_name} {user?.name || localStrings.Public.Username}
           </Text>
 
           

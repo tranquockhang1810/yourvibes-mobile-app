@@ -5,7 +5,7 @@ export const ApiPath = {
   LOGIN: getApiPath('users/login'),
   REGISTER: getApiPath('users/register'),
   VERIFIED_EMAIL: getApiPath('users/verifyemail'),
-  PROFILE: getApiPath('users/profile'),
+  // PROFILE: getApiPath('users/info?id= '),
 }
 
 function getApiPath(path: string) {

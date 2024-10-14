@@ -22,7 +22,7 @@ export const ENGLocalizedStrings = {
     Mail: "Email",
     Phone: "Phone Number",
     Birthday: "Birth Date", 
-    Active: "Active", 
+    Active: "Created Date", 
     FriendFind: "Friend Find",
     FriendView: "View All Friend",
     Conform: "Confirm", 
@@ -33,6 +33,7 @@ export const ENGLocalizedStrings = {
     Block: "Block",
     Vietnamese: "Vietnamese",
     English: "English",
+    ErrorFetchingProfile: "Error fetching profile!",
   },
   Form: {
     Label: {

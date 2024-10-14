@@ -181,16 +181,16 @@ const HomeScreen = () => {
             refreshing={refreshing}
             onRefresh={onRefresh} // Trigger pull-to-refresh
           />
-        }
-      >
-        {postsList?.map((post) => (
-          <Post
-            key={post?.id}
-            post={post}
-          >
-            {post?.parentPost && <Post post={post?.parentPost} isParentPost />}
-          </Post>
-        ))}
+          }
+        >
+          {postsList?.map((post) => (
+            <Post
+              key={post?.id}
+              post={post}
+            >
+              {post?.parentPost && <Post post={post?.parentPost} isParentPost />}
+            </Post>
+          ))}
       </ScrollView>
     </View>
   )
