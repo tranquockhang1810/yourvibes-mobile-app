@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, TouchableOpacity, Image } from 'react-native';
 import { Tabs, Modal, ActionSheet } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/useAuth';
 import useColor from '@/src/hooks/useColor';
@@ -11,7 +11,7 @@ import { loadPostsFromStorage, defaultPosts } from './ProfileTabsHelper';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 
 const ProfileTabs: React.FC = () => {
-  const { brandPrimary } = useColor();
+  const { brandPrimary, backgroundColor, lightGray, brandPrimaryTap } = useColor();
   const { user, onLogout, changeLanguage, localStrings } = useAuth();
   const router = useRouter();
 
@@ -27,7 +27,7 @@ const ProfileTabs: React.FC = () => {
       const storedPosts = await loadPostsFromStorage();
       setPosts(storedPosts || defaultPosts);
     } catch (error) {
-      console.error("Error loading posts:", error);
+      console.error('Error loading posts:', error);
       setPosts(defaultPosts);
     }
   }, []);
@@ -38,19 +38,7 @@ const ProfileTabs: React.FC = () => {
     setRefreshing(false);
   };
 
-  //LOGOUT CHÍNH ĐỂ XÓA ID NGƯỜI ĐĂNG NHẬP
-  // const handleLogout = () => {
-  //   Modal.alert(
-  //     localStrings.Public.Confirm,
-  //     localStrings.Public.LogoutConfirm,
-  //     [
-  //       { text: localStrings.Public.Cancel, style: 'cancel' },
-  //       { text: localStrings.Public.Confirm, onPress: onLogout },
-  //     ]
-  //   );
-  // };
-
-  //LOGOUT TEST ĐỂ BACK RA LOGIN
+  // Đăng xuất, điều hướng đến trang đăng nhập
   const handleLogout = () => {
     Modal.alert(
       localStrings.Public.Confirm,
@@ -68,6 +56,7 @@ const ProfileTabs: React.FC = () => {
     );
   };
 
+  // Hiển thị tuỳ chọn ngôn ngữ
   const showLanguageOptions = () => {
     const options = [
       localStrings.Public.English,
@@ -104,14 +93,52 @@ const ProfileTabs: React.FC = () => {
         <AboutTab user={user} localStrings={localStrings} />
 
         {/* Tab Bài Viết */}
-        <ScrollView
-          style={{ padding: 16 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        >
-          {posts.map((post) => (
-            <Post key={post.id} post={post} />
-          ))}
-        </ScrollView>
+        <View style={{ flex: 1 , padding: 8}}>
+          {/* Post Input Section */}
+          <TouchableOpacity
+            onPress={() => router.push({ pathname: '/add' })}  // Điều hướng đến trang thêm bài viết
+          >
+            <View
+              style={{
+                width: '100%',
+                padding: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 10,
+                backgroundColor: backgroundColor,
+                borderWidth: 1,
+                borderColor: lightGray,
+                borderRadius: 10,
+              }}
+            >
+              <Image
+                source={{
+                  uri: 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
+                }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                  backgroundColor: lightGray,
+                }}
+              />
+              <View style={{ marginLeft: 10, flex: 1 }}>
+                <Text>{localStrings.Public.Username}</Text>
+                <Text style={{ color: 'gray' }}>{localStrings.Public.Today}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* Danh sách bài viết */}
+          <ScrollView
+            style={{ }}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  // Tích hợp chức năng refresh
+          >
+            {posts.map((post) => (
+              <Post key={post.id} post={post} />  // Hiển thị từng bài viết bằng component Post
+            ))}
+          </ScrollView>
+        </View>
 
         {/* Tab Cài Đặt */}
         <SettingsTab
