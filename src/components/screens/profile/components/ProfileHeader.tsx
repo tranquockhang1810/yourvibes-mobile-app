@@ -1,12 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native'; 
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '@/src/context/useAuth';
-import useColor from '@/src/hooks/useColor'; 
-import { defaultAuthenRepo } from "@/src/api/features/authenticate/AuthenRepo";
-import { ProfileResponseModel } from "@/src/api/features/authenticate/model/ProfileModel";
-import { useState, useEffect } from 'react'; 
-
+import useColor from '@/src/hooks/useColor';
 
 const ProfileHeader = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
@@ -57,15 +53,15 @@ const ProfileHeader = () => {
           </TouchableOpacity>
         </View>
       </View>
-                {/* User Information */}
-                <View style={{ alignItems: 'center', marginTop: 10 }}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {user?.family_name} {user?.name || localStrings.Public.Username}</Text>
-            {/* <Text style={{ color: 'gray', marginTop: 4 }}>{ profile?.About||localStrings.Public.About}</Text> */}
-            <View style={{ flexDirection: 'row', marginTop: 10 }}>
-              <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>{user?.post_count} {localStrings.Public.Post}</Text>
-              <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {localStrings.Public.Friend}</Text>
-            </View>
-          </View>
+      {/* User Information */}
+      <View style={{ alignItems: 'center', marginTop: 10 }}>
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {user?.family_name} {user?.name || localStrings.Public.Username}</Text>
+        {/* <Text style={{ color: 'gray', marginTop: 4 }}>{ profile?.About||localStrings.Public.About}</Text> */}
+        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>{user?.post_count} {localStrings.Public.Post}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>0 {localStrings.Public.Friend}</Text>
+        </View>
+      </View>
     </>
   );
 };

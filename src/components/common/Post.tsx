@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { ActionSheet, Button, Card } from '@ant-design/react-native';
+import { Button, Card } from '@ant-design/react-native';
 import { Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
@@ -33,7 +33,7 @@ const Post = ({
       'Hủy'
     ];
 
-    ActionSheet.showActionSheetWithOptions(
+    showActionSheetWithOptions(
       {
         //title: 'Hành động',
         options: options,

@@ -1,22 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, RefreshControl, TouchableOpacity, Image } from 'react-native';
-import { Tabs, Modal, ActionSheet } from '@ant-design/react-native';
+import { View } from 'react-native';
+import { Tabs } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/useAuth';
 import useColor from '@/src/hooks/useColor';
-import { useRouter } from 'expo-router';
-import Post from '@/src/components/common/Post';
 import AboutTab from './AboutTab';
 import SettingsTab from './SettingsTab';
 import { loadPostsFromStorage, defaultPosts } from './ProfileTabsHelper';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
+import PostList from './PostList';
 
 const ProfileTabs: React.FC = () => {
-  const { brandPrimary, backgroundColor, lightGray, brandPrimaryTap } = useColor();
-  const { user, onLogout, changeLanguage, localStrings } = useAuth();
-  const router = useRouter();
-
+  const { brandPrimary } = useColor();
+  const { localStrings } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     loadPosts();
@@ -38,44 +36,18 @@ const ProfileTabs: React.FC = () => {
     setRefreshing(false);
   };
 
-  // Đăng xuất, điều hướng đến trang đăng nhập
-  const handleLogout = () => {
-    Modal.alert(
-      localStrings.Public.Confirm,
-      localStrings.Public.LogoutConfirm,
-      [
-        { text: localStrings.Public.Cancel, style: 'cancel' },
-        {
-          text: localStrings.Public.Confirm,
-          onPress: () => {
-            onLogout();
-            router.replace('/login');
-          },
-        },
-      ]
-    );
-  };
-
-  // Hiển thị tuỳ chọn ngôn ngữ
-  const showLanguageOptions = () => {
-    const options = [
-      localStrings.Public.English,
-      localStrings.Public.Vietnamese,
-      localStrings.Public.Cancel,
-    ];
-
-    ActionSheet.showActionSheetWithOptions(
-      {
-        options,
-        cancelButtonIndex: options.length - 1,
-      },
-      (buttonIndex) => {
-        if (buttonIndex === 0 || buttonIndex === 1) {
-          changeLanguage();
-        }
-      }
-    );
-  };
+  const renderBody = useCallback(() => {
+    switch (tab) {
+      case 0:
+        return <AboutTab />;
+      case 1:
+        return <PostList posts={posts} refreshing={refreshing} onRefresh={onRefresh} />;
+      case 2:
+        return <SettingsTab />;
+      default:
+        return <AboutTab />;
+    }
+  }, [tab, posts]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>
@@ -85,69 +57,13 @@ const ProfileTabs: React.FC = () => {
           { title: localStrings.Public.Post },
           { title: localStrings.Public.SetingProfile },
         ]}
-        initialPage={0}
+        initialPage={tab}
         tabBarPosition="top"
         tabBarActiveTextColor={brandPrimary}
-      >
-        {/* Tab Giới Thiệu */}
-        <AboutTab user={user} localStrings={localStrings} />
-
-        {/* Tab Bài Viết */}
-        <View style={{ flex: 1 , padding: 8}}>
-          {/* Post Input Section */}
-          <TouchableOpacity
-            onPress={() => router.push({ pathname: '/add' })}  // Điều hướng đến trang thêm bài viết
-          >
-            <View
-              style={{
-                width: '100%',
-                padding: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginVertical: 10,
-                backgroundColor: backgroundColor,
-                borderWidth: 1,
-                borderColor: lightGray,
-                borderRadius: 10,
-              }}
-            >
-              <Image
-                source={{
-                  uri: 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
-                }}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  backgroundColor: lightGray,
-                }}
-              />
-              <View style={{ marginLeft: 10, flex: 1 }}>
-                <Text>{localStrings.Public.Username}</Text>
-                <Text style={{ color: 'gray' }}>{localStrings.Public.Today}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          {/* Danh sách bài viết */}
-          <ScrollView
-            style={{ }}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  // Tích hợp chức năng refresh
-          >
-            {posts.map((post) => (
-              <Post key={post.id} post={post} />  // Hiển thị từng bài viết bằng component Post
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Tab Cài Đặt */}
-        <SettingsTab
-          user={user}
-          onLogout={handleLogout}
-          showLanguageOptions={showLanguageOptions}
-          localStrings={localStrings}
-        />
-      </Tabs>
+        onChange={(_, index) => setTab(index)}
+        animated={false}
+      />
+      {renderBody()}
     </View>
   );
 };

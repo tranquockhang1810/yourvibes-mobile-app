@@ -5,13 +5,14 @@ import { ENGLocalizedStrings } from "@/src/utils/localizedStrings/english";
 import translateLanguage from '../utils/i18n/translateLanguage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import { UserModel } from '../api/features/authenticate/model/LoginModel';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [localStrings, setLocalStrings] = useState(VnLocalizedStrings);
   const [language, setLanguage] = useState<"vi" | "en">("vi");
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<UserModel | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const checkLanguage = async () => {

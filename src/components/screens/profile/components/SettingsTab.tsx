@@ -4,20 +4,15 @@ import { Feather, MaterialIcons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { Tabs, Button, Modal, ActionSheet } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/useAuth';
-import { useRouter } from 'expo-router'; 
+import { useRouter } from 'expo-router';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
-interface SettingsTabProps {
-  user: any;
-  onLogout: () => void;
-  showLanguageOptions: () => void;
-  localStrings: any;
-}
+const SettingsTab = () => {
+  const { brandPrimary } = useColor();
+  const { onLogout, changeLanguage, localStrings } = useAuth();
+  const { showActionSheetWithOptions } = useActionSheet();
 
-const SettingsTab: React.FC<SettingsTabProps> = ({ user, onLogout, showLanguageOptions, localStrings }) => {
-  const { brandPrimary, backgroundColor } = useColor();
-  const router = useRouter();
-
-    const handleLogout = () => {
+  const handleLogout = () => {
     Modal.alert(
       localStrings.Public.Confirm,
       localStrings.Public.LogoutConfirm,
@@ -28,68 +23,64 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ user, onLogout, showLanguageO
     );
   };
 
-  // const handleLogout = () => { 
-  //   Modal.alert(
-  //     localStrings.Public.Confirm,   
-  //     localStrings.Public.LogoutConfirm,  
-  //     [
-  //       { 
-  //         text: localStrings.Public.Cancel, 
-  //         style: 'cancel',
-  //         onPress: () => {
-  //           console.log("User canceled logout"); 
-  //         }
-  //       },
-  //       { 
-  //         text: localStrings.Public.Confirm,   
-  //         onPress: () => {
-  //           onLogout();  
-  //           router.replace('/login');  
-  //         }  
-  //       },
-  //     ]
-  //   );
-  // };
-  
+  // Hiển thị tuỳ chọn ngôn ngữ
+  const showLanguageOptions = () => {
+    const options = [
+      localStrings.Public.English,
+      localStrings.Public.Vietnamese,
+      localStrings.Public.Cancel,
+    ];
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex: options.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0 || buttonIndex === 1) {
+          changeLanguage();
+        }
+      }
+    );
+  };
 
   return (
     <View style={{ padding: 20, flex: 1 }}>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <Button
-          type="primary"
+          type="ghost"
           onPress={() => {
             // Handle Edit Profile action here
           }}
-          style={{ backgroundColor: backgroundColor }}
         >
           <Text style={{ color: brandPrimary, fontSize: 16 }}>
             {localStrings.Public.EditProfile}
           </Text>
         </Button>
         <Button
-          type="primary"
+          type="ghost"
           onPress={() => {
             // Handle Change Password action here
           }}
-          style={{ marginVertical: 10, backgroundColor: backgroundColor }}
+          style={{ marginTop: 10 }}
         >
           <Text style={{ color: brandPrimary, fontSize: 16 }}>
             {localStrings.Public.ChangePassword}
           </Text>
         </Button>
         <Button
-          type="primary"
+          type="ghost"
           onPress={showLanguageOptions}
-          style={{ backgroundColor: backgroundColor }}
+          style={{ marginTop: 10 }}
         >
           <Text style={{ color: brandPrimary, fontSize: 16 }}>
             {localStrings.Public.Language}
           </Text>
         </Button>
         <Button
-          type="primary"
+          type="ghost"
           onPress={handleLogout}
-          style={{ marginTop: 10, backgroundColor: backgroundColor }}
+          style={{ marginTop: 10 }}
         >
           <Text style={{ color: brandPrimary, fontSize: 16 }}>
             {localStrings.Public.LogOut}
