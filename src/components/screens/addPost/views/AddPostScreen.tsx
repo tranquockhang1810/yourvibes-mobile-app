@@ -69,8 +69,9 @@ const AddPostScreen = () => {
       id: new Date().getTime().toString(),
       user: {
         id: user?.id || '1',
-        name: user?.name || 'Unknown User',
-        avatar: user?.avatar || 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
+        
+        name: (user?.family_name ?? '') + user?.name || 'Unknown User',
+        avatar: user?.avatar_url || 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
       },
       content: postContent,
       mediaUrl: selectedImages.map(uri => ({ mediaUrl: uri, status: true })),
@@ -135,7 +136,7 @@ const AddPostScreen = () => {
           }}>
           <View>
             <Image
-              source={{ uri: user?.avatar || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
+              source={{ uri: user?.avatar_url || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
               style={{
                 width: 40,
                 height: 40,

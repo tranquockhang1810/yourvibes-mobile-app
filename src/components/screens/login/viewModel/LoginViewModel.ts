@@ -17,42 +17,18 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
     iosClientId: ENV.IOS_CLIENT_ID!,
   })
 
-  // const login = async (data: LoginRequestModel) => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await repo.login(data);
-  //     if (res?.data) {
-  //       onLogin(res.data);
-  //     } else {
-  //       Toast.show({
-  //         type: 'error',
-  //         text1: localStrings.Login.LoginFailed,
-  //         text2: res?.error?.message
-  //       })
-  //     }
-  //   } catch (error: any) {
-  //     console.error(error);
-  //     Toast.show({
-  //       type: 'error',
-  //       text1: localStrings.Login.LoginFailed,
-  //       text2: error?.message
-  //     })
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
   const login = async (data: LoginRequestModel) => {
     try {
       setLoading(true);
       const res = await repo.login(data);
       if (res?.data) {
-        onLogin(res.data);  // Gọi onLogin và truyền dữ liệu người dùng vào
+        onLogin(res.data);
       } else {
         Toast.show({
           type: 'error',
           text1: localStrings.Login.LoginFailed,
           text2: res?.error?.message
-        });
+        })
       }
     } catch (error: any) {
       console.error(error);
@@ -60,11 +36,11 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
         type: 'error',
         text1: localStrings.Login.LoginFailed,
         text2: error?.message
-      });
+      })
     } finally {
       setLoading(false);
     }
-  };
+  }
   
 
   const handleGoogleLogin = async () => {

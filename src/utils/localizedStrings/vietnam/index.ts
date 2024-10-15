@@ -34,6 +34,7 @@ export const VnLocalizedStrings = {
     Vietnamese: "Tiếng Việt",
     English: "Tiếng Anh",
     ErrorFetchingProfile: "Lỗi hiển thị thông tin",
+    Biography: "Giới thiệu",
     
   },
   Form: {

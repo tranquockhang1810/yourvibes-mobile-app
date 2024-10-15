@@ -34,6 +34,7 @@ export const ENGLocalizedStrings = {
     Vietnamese: "Vietnamese",
     English: "English",
     ErrorFetchingProfile: "Error fetching profile!",
+    Biography: "Biography",
   },
   Form: {
     Label: {

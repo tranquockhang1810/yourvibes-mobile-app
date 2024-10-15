@@ -14,6 +14,7 @@ export interface UserModel {
   id?: string,
   family_name?: string,
   name?: string,
+  biography?: string,
   email?: string,
   phone_number?: string,
   birthday?: string,
@@ -23,6 +24,7 @@ export interface UserModel {
   auth_type?: string,
   auth_google_id?: string,
   post_count?: number,
+  friend_count?: number,
   status?: boolean,
   created_at?: string,
   updated_at?: string

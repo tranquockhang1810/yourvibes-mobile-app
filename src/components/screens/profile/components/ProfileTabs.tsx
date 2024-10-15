@@ -9,6 +9,12 @@ import { loadPostsFromStorage, defaultPosts } from './ProfileTabsHelper';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import PostList from './PostList';
 
+interface AboutTabProps {
+  profile: any;  
+  localStrings: any;
+}
+
+
 const ProfileTabs: React.FC = () => {
   const { brandPrimary } = useColor();
   const { localStrings } = useAuth();

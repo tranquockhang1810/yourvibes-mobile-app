@@ -5,8 +5,10 @@ export const ApiPath = {
   LOGIN: getApiPath('users/login'),
   REGISTER: getApiPath('users/register'),
   VERIFIED_EMAIL: getApiPath('users/verifyemail'),
+  PROFILE: getApiPath('users/'),
   // Post
-  CREATE_POST: getApiPath('posts'),
+  CREATE_POST: getApiPath('posts'), 
+  GET_POSTS: (userId: string) => getApiPath(`posts/getMany/${userId}`)
 }
 
 function getApiPath(path: string) {

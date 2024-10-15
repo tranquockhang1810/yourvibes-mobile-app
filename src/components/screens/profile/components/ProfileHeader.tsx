@@ -3,8 +3,13 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '@/src/context/useAuth';
 import useColor from '@/src/hooks/useColor';
+import { ProfileResponseModel } from "@/src/api/features/authenticate/model/ProfileModel"; // Giả sử ProfileModel chứa thông tin hồ sơ người dùng
 
-const ProfileHeader = () => {
+interface ProfileHeaderProps {
+  profile: ProfileResponseModel; // Định nghĩa kiểu dữ liệu profile nhận từ API
+}
+
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
   const { localStrings } = useAuth();
   const { user } = useAuth(); // Lấy thông tin người dùng
@@ -56,10 +61,10 @@ const ProfileHeader = () => {
       {/* User Information */}
       <View style={{ alignItems: 'center', marginTop: 10 }}>
         <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {user?.family_name} {user?.name || localStrings.Public.Username}</Text>
-        {/* <Text style={{ color: 'gray', marginTop: 4 }}>{ profile?.About||localStrings.Public.About}</Text> */}
+        <Text style={{ color: 'gray', marginTop: 4 }}>{ user?.biography||localStrings.Public.Biography}</Text>
         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>{user?.post_count} {localStrings.Public.Post}</Text>
-          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>0 {localStrings.Public.Friend}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.post_count} {localStrings.Public.Post}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}</Text>
         </View>
       </View>
     </>

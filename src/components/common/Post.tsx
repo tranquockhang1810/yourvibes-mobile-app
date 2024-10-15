@@ -36,7 +36,7 @@ const Post = ({
 
     showActionSheetWithOptions(
       {
-        //title: 'Hành động',
+        title: 'Hành động',
         options: options,
         cancelButtonIndex: options.length - 1,
         cancelButtonTintColor: "#F95454"
