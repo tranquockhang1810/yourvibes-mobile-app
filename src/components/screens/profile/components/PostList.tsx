@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'; // Thêm ActivityIndicator
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import useColor from '@/src/hooks/useColor';
 import { useRouter } from 'expo-router';
@@ -8,38 +8,40 @@ import { useAuth } from '@/src/context/auth/useAuth';
 import { defaultAuthenRepo } from '@/src/api/features/authenticate/AuthenRepo';
 import Toast from 'react-native-toast-message';
 
-const PostList: React.FC = () => {
-  const { backgroundColor, lightGray, grayBackground } = useColor();
+const PostList = () => {
+  const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const router = useRouter();
   const { user, localStrings } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Hàm lấy bài viết của người dùng
   const fetchUserPosts = async () => {
     try {
-      console.log("Fetching user posts...");
+      console.log('Fetching user posts...');
       if (!user?.id) {
-        console.error("User is not logged in or has no ID");
+        console.error('User is not logged in or has no ID');
         return;
       }
+      setLoading(true);
       const response = await defaultAuthenRepo.getUserPost({ userId: user.id });
       if (!response?.error) {
-        console.log("User posts fetched successfully:", response?.code);
-        
+        console.log('User posts fetched successfully:', response?.code);
         setPosts(response?.data);
       } else {
         Toast.show({
           type: 'error',
           text1: 'Lỗi khi gọi API',
           text2: response?.error?.message,
-        })
+        });
       }
     } catch (error) {
-      console.error( error);
+      console.error(error);
       Toast.show({
         type: 'error',
         text1: 'Lỗi khi gọi API',
-      })
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,9 +52,8 @@ const PostList: React.FC = () => {
   return (
     <View style={{ flex: 1, backgroundColor: grayBackground }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Post Input Section */}
         <TouchableOpacity
-          onPress={() => router.push({ pathname: '/add' })}  // Điều hướng đến trang thêm bài viết
+          onPress={() => router.push({ pathname: '/add' })}
         >
           <View
             style={{
@@ -69,7 +70,7 @@ const PostList: React.FC = () => {
           >
             <Image
               source={{
-                uri: 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
+                uri: user?.avatar_url || 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
               }}
               style={{
                 width: 50,
@@ -85,15 +86,17 @@ const PostList: React.FC = () => {
           </View>
         </TouchableOpacity>
 
-        {/* Post list */}
-        {posts?.map((post) => (
-          <Post
-            key={post?.id}
-            post={post}
-          >
-            {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
-          </Post>
-        ))}
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+            <ActivityIndicator size="large" color={brandPrimary} />
+          </View>
+        ) : (
+          posts?.map((post) => (
+            <Post key={post?.id} post={post}>
+              {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
+            </Post>
+          ))
+        )}
       </ScrollView>
     </View>
   );

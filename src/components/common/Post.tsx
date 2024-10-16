@@ -8,6 +8,7 @@ import MediaView from '../foundation/MediaView';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { router } from 'expo-router';
+import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer';
 
 const Post = ({
   post,
@@ -86,7 +87,7 @@ const Post = ({
           <View style={{ flexDirection: 'row', marginRight: 8 }}>
             <View style={{ flexDirection: 'column', marginLeft: 8, width: '92%' }}>
               <Text style={{ fontWeight: 'bold', fontSize: 14, width: '100%' }}>{post?.user?.name}</Text>
-              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{post?.created_at}</Text>
+              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{getTimeDiff(post?.created_at)}</Text>
             </View>
             {!isParentPost && (
               <TouchableOpacity
@@ -123,7 +124,7 @@ const Post = ({
           <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
             <Text>{post?.content}</Text>
           </View>
-          {post?.media && <MediaView mediaItems={post?.media} />}
+          {post?.media && post?.media?.length > 0 && <MediaView mediaItems={post?.media} />}
         </View>
       )}
 

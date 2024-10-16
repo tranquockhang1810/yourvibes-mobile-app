@@ -9,16 +9,9 @@ import { loadPostsFromStorage, defaultPosts } from './ProfileTabsHelper';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import PostList from './PostList';
 
-interface AboutTabProps {
-  profile: any;  
-  localStrings: any;
-}
-
-
 const ProfileTabs: React.FC = () => {
   const { brandPrimary } = useColor();
   const { localStrings } = useAuth();
-  const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
   const [tab, setTab] = useState(0);
 
@@ -36,18 +29,12 @@ const ProfileTabs: React.FC = () => {
     }
   }, []);
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadPosts();
-    setRefreshing(false);
-  };
-
   const renderBody = useCallback(() => {
     switch (tab) {
       case 0:
         return <AboutTab />;
       case 1:
-        return <PostList posts={posts} refreshing={refreshing} onRefresh={onRefresh} />;
+        return <PostList />;
       case 2:
         return <SettingsTab />;
       default:
@@ -68,6 +55,7 @@ const ProfileTabs: React.FC = () => {
         tabBarActiveTextColor={brandPrimary}
         onChange={(_, index) => setTab(index)}
         animated={false}
+        style={{ height: '100%' }}
       />
       {renderBody()}
     </View>

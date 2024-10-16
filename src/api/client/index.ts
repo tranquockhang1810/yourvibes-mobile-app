@@ -1,8 +1,9 @@
 import axios from "axios";
-import { BaseApiResponseModel, createBaseApiResponseModel } from "../baseApiResponseModel/baseApiResponseModel";
+import { BaseApiResponseModel } from "../baseApiResponseModel/baseApiResponseModel";
 import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ENV from "@/env-config"
+import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 
 
 const api = axios.create({
@@ -49,7 +50,7 @@ class AxiosClient implements IApiClient {
     config?: Map<string, any> | any
   ): Promise<BaseApiResponseModel<T>> {
     let response = await api.post(path, data, config);
-    return createBaseApiResponseModel<T>(response);
+    return ModelConverter.decode(response, BaseApiResponseModel<T>);
   }
 
   async get<T extends Object>(
@@ -59,7 +60,7 @@ class AxiosClient implements IApiClient {
     let response = await api.get(path, {
       params: data,
     });
-    return createBaseApiResponseModel<T>(response);
+    return ModelConverter.decode(response, BaseApiResponseModel<T>);
   }
 
   async delete<T extends Object>(
@@ -69,7 +70,7 @@ class AxiosClient implements IApiClient {
     let response = await api.delete(path, {
       params: data,
     });
-    return createBaseApiResponseModel<T>(response);
+    return ModelConverter.decode(response, BaseApiResponseModel<T>);
   }
 
   async patch<T extends Object>(
@@ -78,7 +79,7 @@ class AxiosClient implements IApiClient {
     config?: Map<string, any> | any
   ): Promise<BaseApiResponseModel<T>> {
     let response = await api.patch(path, data, config);
-    return createBaseApiResponseModel<T>(response);
+    return ModelConverter.decode(response, BaseApiResponseModel<T>);
   }
 }
 
