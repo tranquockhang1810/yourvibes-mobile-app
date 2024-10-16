@@ -122,5 +122,10 @@ export const VnLocalizedStrings = {
     DeletePost: "Xóa bài đăng",
     Advertisement: "Quảng cáo bài đăng",
     ReportPost: "Báo cáo bài đăng",
+  },
+  Profile: {
+    Posts: {
+      GetPostsFailed: "Lấy danh sách bài viết thất bại!"
+    }
   }
 }

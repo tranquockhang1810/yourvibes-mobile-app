@@ -122,5 +122,10 @@ export const ENGLocalizedStrings = {
     DeletePost: "Delete post",
     Advertisement: "Advertisement",
     ReportPost: "Report post",
+  },
+  Profile: {
+    Posts: {
+      GetPostsFailed: "Failed to get posts!"
+    }
   }
 }
