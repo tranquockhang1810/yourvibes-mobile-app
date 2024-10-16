@@ -6,7 +6,11 @@ export const TransferToFormData = (data: any) => {
   for (const key in data) {
     if (key === 'media' && Array.isArray(data[key])) {
       data[key].forEach((file: any) => {
-        formData.append(key, file); // File đã được chuẩn bị trước đó
+        formData.append(key, {
+          uri: file.uri,
+          name: file.name,
+          type: file.type
+        } as any); // File đã được chuẩn bị trước đó
       });
     } else {
       formData.append(key, data[key]);
@@ -19,19 +23,27 @@ export const TransferToFormData = (data: any) => {
 export const convertMediaToFiles = async (media: ImagePickerAsset[]) => {
   const mediaFiles = await Promise.all(
     media.map(async (mediaItem: ImagePickerAsset, index: number) => {
-      const { uri, fileName, type } = mediaItem;
-      const fileType = type || (uri.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg');
+      const { uri, fileName, mimeType } = mediaItem;
+      console.log("mediaItem: ", mediaItem);
+      
+      const fileType = mimeType || (uri.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg');
 
-      const response = await fetch(uri);
-      const blob = await response.blob();
+      const file = {
+        uri: uri, // uri của file
+        name: fileName || `media_${index}.${fileType.split('/')[1]}`, // Tên file
+        type: fileType // Loại file
+      };
 
-      // Chuyển Blob thành File
-      const file = new File([blob], fileName || `media_${index}.${fileType.split('/')[1]}`, {
-        type: fileType,
-      });
+      // const response = await fetch(uri);
+      // const blob = await response.blob();
+
+      // // Chuyển Blob thành File
+      // const file = new File([blob], fileName || `media_${index}.${fileType.split('/')[1]}`, {
+      //   type: fileType,
+      // });
+
       console.log("file: ", file);
-
-      return file; // Trả về đối tượng File
+      return file;
     })
   );
   

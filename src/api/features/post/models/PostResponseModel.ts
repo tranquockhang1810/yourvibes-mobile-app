@@ -25,9 +25,8 @@ export interface PostResponseModel {
 }
 
 export interface PostMediaModel {
-  postID?: string,
-  mediaUrl?: string,
-  description?: string,
-  createdAt?: string
+  post_id?: string,
+  media_url?: string,
+  created_at?: string
   status?: boolean
 }

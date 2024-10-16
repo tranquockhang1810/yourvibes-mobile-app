@@ -21,11 +21,11 @@ const MediaView = ({ mediaItems }: { mediaItems: PostMediaModel[] }) => {
       selectedIndex={0}
     >
       {mediaItems?.map((media, index) => {
-        const isVideo = media?.mediaUrl?.endsWith('.mp4'); // Check if media is a video
+        const isVideo = media?.media_url?.endsWith('.mp4'); // Check if media is a video
         return isVideo ? (
           <Video
             key={index}
-            source={{ uri: media?.mediaUrl || "" }}
+            source={{ uri: media?.media_url || "" }}
             style={{
               height: 250,
               width: '100%',
@@ -36,7 +36,7 @@ const MediaView = ({ mediaItems }: { mediaItems: PostMediaModel[] }) => {
         ) : (
           <Image
             key={index}
-            source={{ uri: media?.mediaUrl }}
+            source={{ uri: media?.media_url }}
             style={{
               height: 250,
               objectFit: 'cover',

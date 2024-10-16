@@ -4,19 +4,20 @@ import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ENV from "@/env-config"
 import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
-
+import curlirize from "axios-curlirize";
 
 const api = axios.create({
   baseURL: ENV.SERVER_ENDPOINT!,
-  timeout: 30000,
+  timeout: 60000,
 });
+
+curlirize(api);
 
 //Request interceptors
 api.interceptors.request.use(
   async (config) => {
     // Get from async storage
     const token = await AsyncStorage.getItem('accesstoken');
-    console.log(`Method: ${config.method}, API URL: ${config.url}`);
     // for ngrok
     if (config?.url?.includes("ngrok-free.app")) {
       config.headers!["ngrok-skip-browser-warning"] = "69420";

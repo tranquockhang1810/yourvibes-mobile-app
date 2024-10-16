@@ -5,8 +5,8 @@ import useColor from '@/src/hooks/useColor';
 import { useRouter } from 'expo-router';
 import Post from '@/src/components/common/Post';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { defaultAuthenRepo } from '@/src/api/features/authenticate/AuthenRepo';
 import Toast from 'react-native-toast-message';
+import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 
 const PostList = () => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
@@ -23,7 +23,7 @@ const PostList = () => {
         return;
       }
       setLoading(true);
-      const response = await defaultAuthenRepo.getUserPost({ userId: user.id });
+      const response = await defaultPostRepo.getPosts({ user_id: user.id, sort_by: 'created_at', isDescending: true });
       if (!response?.error) {
         console.log('User posts fetched successfully:', response?.code);
         setPosts(response?.data);
