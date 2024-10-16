@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 import { DateTransfer } from '../../../../utils/helper/DateTransfer';
 
 const AboutTab = () => {

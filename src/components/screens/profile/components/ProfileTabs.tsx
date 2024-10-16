@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View } from 'react-native';
 import { Tabs } from '@ant-design/react-native';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 import AboutTab from './AboutTab';
 import SettingsTab from './SettingsTab';

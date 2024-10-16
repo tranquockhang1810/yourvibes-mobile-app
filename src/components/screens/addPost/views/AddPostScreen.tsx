@@ -1,6 +1,5 @@
 import {
   View,
-  ScrollView,
   StatusBar,
   Text,
   Image,
@@ -14,23 +13,37 @@ import useColor from '@/src/hooks/useColor';
 import MyInput from '@/src/components/foundation/MyInput';
 import { ActivityIndicator, Button } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { useRouter, useGlobalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import Toast from 'react-native-toast-message';
 import { Video } from 'expo-av';
 
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import AddPostViewModel from '../viewModel/AddpostViewModel';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
+import { CreatePostRequestModel } from '@/src/api/features/post/models/CreatePostRequestModel';
+import { convertMediaToFiles } from '@/src/utils/helper/TransferToFormData';
+import Toast from 'react-native-toast-message';
+import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
+import { usePostContext } from '@/src/context/post/usePostContext';
 
 const AddPostScreen = () => {
+  const { user } = useAuth()
+  const savedPost = usePostContext()
   const { brandPrimary, backgroundColor, brandPrimaryTap } = useColor();
   const [loading, setLoading] = useState(false);
-  const [postContent, setPostContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const { createPost } = AddPostViewModel(defaultPostRepo);
-  const { user } = useAuth()
+  const router = useRouter();
+  const {
+    postContent,
+    setPostContent,
+    selectedImages,
+    setSelectedImages,
+    selectedImageFiles,
+    setSelectedImageFiles,
+    createPost,
+    createLoading,
+    privacy,
+    setPrivacy,
+  } = AddPostViewModel(defaultPostRepo);
 
   // Function to pick images
   const pickImage = async () => {
@@ -42,16 +55,18 @@ const AddPostScreen = () => {
         quality: 1,
       });
 
-      if (!result.canceled && result.assets) {
-        const newImages = result.assets.map((asset) => asset.uri); // Map the selected image URIs
+      if (!result?.canceled && result?.assets) {
+        const newImages = result?.assets?.map((asset) => asset.uri); // Map the selected image URIs
         setSelectedImages([...selectedImages, ...newImages]);
+        setSelectedImageFiles([...selectedImageFiles, ...result.assets]);
       }
-    }catch (error) {
+    } catch (error) {
       Alert.alert('Error', 'Failed to pick images.');
-    }  finally {
+    } finally {
       setLoading(false); // End loading after images are selected
     }
   };
+
   // Function to remove selected image
   const removeImage = (index: number) => {
     const updatedImages = [...selectedImages];
@@ -61,39 +76,48 @@ const AddPostScreen = () => {
 
   const handleSubmitPost = async () => {
     if (postContent.trim() === '' && selectedImages.length === 0) {
-      alert('Please add some content or images.');
+      Toast.show({
+        type: 'error',
+        text1: 'Vui lòng nhập nội dung hoặc đính kèm hình ảnh hoặc video',
+      })
       return;
     }
-
-    const newPost: PostResponseModel = {
-      id: new Date().getTime().toString(),
-      user: {
-        id: user?.id || '1',
-        name: user?.name || 'Unknown User',
-        avatar: user?.avatar || 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
-      },
+    const mediaFiles = await convertMediaToFiles(selectedImageFiles);
+    const newPost: CreatePostRequestModel = {
       content: postContent,
-      mediaUrl: selectedImages.map(uri => ({ mediaUrl: uri, status: true })),
-      likeCount: 0,
-      commentCount: 0,
-      createdAt: 'Vừa xong',
-      privacy: 'public',
-      status: true,
+      privacy: privacy,
+      location: 'HCM',
+      title: 'TEST',
+      media: mediaFiles,
     };
-    try {
-      setLoading(true);
-      await createPost(newPost);
-      Toast.show({ text1: 'Post saved successfully', type: 'success' });
-      router.replace('/(tabs)');
-      setPostContent('');
-      setSelectedImages([]);
-    } catch (error) {
-      console.error("Error saving post:", error);
-      Toast.show({ text1: 'Error saving post', type: 'error' });
-    } finally {
-      setLoading(false);
+    await createPost(newPost);
+  };
+
+  const renderPrivacyText = () => {
+    switch (privacy) {
+      case Privacy.PUBLIC:
+        return 'mọi người';
+      case Privacy.FRIEND_ONLY:
+        return 'bạn bè';
+      case Privacy.PRIVATE:
+        return 'chỉ mình tôi';
+      default:
+        return 'mọi người';
     }
   };
+
+  useEffect(() => {
+    if (savedPost.savedPostContent) {
+      setPostContent(savedPost.savedPostContent)
+    }
+    if (savedPost.savedSelectedImages) {
+      setSelectedImages(savedPost.savedSelectedImages)
+    }
+    if (savedPost.savedPrivacy) {
+      setPrivacy(savedPost.savedPrivacy)
+    }
+  }, [savedPost])
+  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -126,6 +150,7 @@ const AddPostScreen = () => {
             </View>
           </View>
         </View>
+
         {/* Avatar anh Input */}
         <View
           style={{
@@ -135,7 +160,7 @@ const AddPostScreen = () => {
           }}>
           <View>
             <Image
-              source={{ uri: user?.avatar || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
+              source={{ uri: user?.avatar_url || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
               style={{
                 width: 40,
                 height: 40,
@@ -145,7 +170,7 @@ const AddPostScreen = () => {
           </View>
           <View style={{ marginLeft: 10, flex: 1 }}>
             <View style={{ flexDirection: 'column' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.name || "Unknown User"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.family_name + " " + user?.name || "Unknown User"}</Text>
               <MyInput
                 placeholder='Bạn đang nghĩ gì?'
                 variant='outlined'
@@ -160,6 +185,7 @@ const AddPostScreen = () => {
             </View>
           </View>
         </View>
+
         {/* Image Upload Section */}
         <View style={{ paddingHorizontal: 10 }}>
           <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -213,40 +239,50 @@ const AddPostScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* Post Button */}
-        <View style={{ 
-        flexDirection: 'row', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        marginHorizontal: 10, 
-        marginTop: 20 
-        }}>
-        <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
-        Bài đăng sẽ được chia sẻ với 
-        </Text>
-        <TouchableOpacity onPress={() => router.push('/object')}>
-            <Text style={{ color: 'gray', fontSize: 14, fontWeight: 'bold' }}>
-                mọi người
-            </Text>
-        </TouchableOpacity> 
-        <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
-            !
-        </Text>
 
-        <TouchableOpacity 
-            style={{
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 20,
-            paddingVertical: 8,
-            paddingHorizontal: 15,
-            alignItems: 'center',
-            justifyContent: 'center',
+        {/* Buttons */}
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginHorizontal: 10,
+          marginTop: 20
+        }}>
+          {/* Privacy Section */}
+          <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
+            Bài đăng sẽ được chia sẻ với
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              savedPost?.setSavedPostContent!(postContent as string);
+              savedPost?.setSavedPrivacy!(privacy);
+              savedPost?.setSavedSelectedImages!(selectedImages as string[]);
+              savedPost?.setSavedSelectedImageFiles!(selectedImageFiles);
+              router.push('/object');
             }}
+          >
+            <Text style={{ color: 'gray', fontSize: 14, fontWeight: 'bold' }}>
+              {renderPrivacyText()}
+            </Text>
+          </TouchableOpacity>
+          <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
+            !
+          </Text>
+
+          {/* Post Button */}
+          <Button
+            style={{
+              borderWidth: 1,
+              borderColor: 'black',
+              borderRadius: 20,
+              height: 30,
+            }}
+            size='large'
             onPress={handleSubmitPost}
-        >
+            loading={createLoading}
+          >
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Đăng ngay</Text>
-        </TouchableOpacity>
+          </Button>
         </View>
       </View>
     </TouchableWithoutFeedback>

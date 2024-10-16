@@ -12,6 +12,7 @@ import Post from '@/src/components/common/Post'
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from 'expo-router'
+import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel'
 
 const HomeScreen = () => {
   const { brandPrimary, brandPrimaryTap, backgroundColor, lightGray } = useColor();
@@ -24,34 +25,34 @@ const HomeScreen = () => {
       user: {
         id: '1',
         name: 'Trần Quốc Khang',
-        avatar: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
+        avatar_url: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg',
       },
-      parentPost: {
+      parent_post: {
         id: '2',
         user: {
           id: '2',
           name: 'Nguyễn Lê Anh Huy',
-          avatar: 'https://i.pravatar.cc/300',
+          avatar_url: 'https://i.pravatar.cc/300',
         },
         content: "Mới đi ăn về",
-        likeCount: 100,
-        commentCount: 12,
-        createdAt: '10 phút trước',
-        privacy: "public",
+        like_count: 100,
+        comment_count: 12,
+        created_at: '10 phút trước',
+        privacy: Privacy.PUBLIC,
         status: true,
-        mediaUrl: [
+        media: [
           { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
           { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1712331864/samples/sea-turtle.mp4', status: true },
           { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331883/cld-sample-3.jpg', status: true }
         ]
       },
       content: "Post nè hehehehe",
-      likeCount: 50,
-      commentCount: 1,
-      createdAt: '10 phút trước',
-      privacy: "public",
+      like_count: 50,
+      comment_count: 1,
+      created_at: '10 phút trước',
+      privacy: Privacy.PUBLIC,
       status: true,
-      mediaUrl: [
+      media: [
         { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
         { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-5.jpg', status: true },
         { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1727932039/bandicam_2024-05-18_14-56-58-243_tl8tsq.mp4', status: true }
@@ -62,22 +63,22 @@ const HomeScreen = () => {
       user: {
         id: '3',
         name: 'Nguyễn Văn A',
-        avatar: 'https://i.pravatar.cc/301',
+        avatar_url: 'https://i.pravatar.cc/301',
       },
-      parentPost: {
+      parent_post: {
         id: '4',
         user: {
           id: '4',
           name: 'Lê Văn B',
-          avatar: 'https://i.pravatar.cc/301',
+          avatar_url: 'https://i.pravatar.cc/301',
         },
         content: "Vừa chạy bộ về",
-        likeCount: 110,
-        commentCount: 15,
-        createdAt: '20 phút trước',
-        privacy: "public",
+        like_count: 110,
+        comment_count: 15,
+        created_at: '20 phút trước',
+        privacy: Privacy.PUBLIC,
         status: true,
-        mediaUrl: [
+        media: [
           {
             "mediaUrl": "https://loremflickr.com/640/480/city",
             "status": true,
@@ -96,12 +97,12 @@ const HomeScreen = () => {
         ]
       },
       content: "Trời hôm nay đẹp quá",
-      likeCount: 55,
-      commentCount: 3,
-      createdAt: '15 phút trước',
-      privacy: "public",
+      like_count: 55,
+      comment_count: 3,
+      created_at: '15 phút trước',
+      privacy: Privacy.PUBLIC,
       status: true,
-      mediaUrl: [
+      media: [
         {
           "mediaUrl": "https://loremflickr.com/640/480/city",
           "status": true,
@@ -188,7 +189,7 @@ const HomeScreen = () => {
               key={post?.id}
               post={post}
             >
-              {post?.parentPost && <Post post={post?.parentPost} isParentPost />}
+              {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
             </Post>
           ))}
       </ScrollView>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button, Modal } from '@ant-design/react-native';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 
 const MyDateTimePicker = ({
   value,

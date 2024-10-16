@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 import { useRouter } from 'expo-router';
 const ProfileViewModel = () => {
   const { backgroundColor } = useColor();

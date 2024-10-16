@@ -13,15 +13,22 @@ const api = axios.create({
 //Request interceptors
 api.interceptors.request.use(
   async (config) => {
-    console.log("API URL: ", config.url);
     // Get from async storage
     const token = await AsyncStorage.getItem('accesstoken');
+    console.log(`Method: ${config.method}, API URL: ${config.url}`);
+    // for ngrok
+    if (config?.url?.includes("ngrok-free.app")) {
+      config.headers!["ngrok-skip-browser-warning"] = "69420";
+    }
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => {
+    console.error("Request error:", error);
+    Promise.reject(error)
+  }
 );
 
 //Response interceptors
@@ -65,12 +72,12 @@ class AxiosClient implements IApiClient {
     return ModelConverter.decode(response, BaseApiResponseModel<T>);
   }
 
-  async put<T extends Object>(
+  async patch<T extends Object>(
     path: string,
     data: Map<string, any> | any = {},
     config?: Map<string, any> | any
   ): Promise<BaseApiResponseModel<T>> {
-    let response = await api.put(path, data, config);
+    let response = await api.patch(path, data, config);
     return ModelConverter.decode(response, BaseApiResponseModel<T>);
   }
 }

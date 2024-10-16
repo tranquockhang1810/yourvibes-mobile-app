@@ -4,7 +4,7 @@ import { PostResponseModel } from '@/src/api/features/post/models/PostResponseMo
 import useColor from '@/src/hooks/useColor';
 import { useRouter } from 'expo-router';
 import Post from '@/src/components/common/Post';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 
 interface PostListProps {
   posts: PostResponseModel[];

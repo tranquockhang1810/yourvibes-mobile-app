@@ -2,10 +2,10 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { AuthContextType } from './authContextType';
 import { VnLocalizedStrings } from "@/src/utils/localizedStrings/vietnam";
 import { ENGLocalizedStrings } from "@/src/utils/localizedStrings/english";
-import translateLanguage from '../utils/i18n/translateLanguage';
+import translateLanguage from '../../utils/i18n/translateLanguage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { UserModel } from '../api/features/authenticate/model/LoginModel';
+import { UserModel } from '../../api/features/authenticate/model/LoginModel';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

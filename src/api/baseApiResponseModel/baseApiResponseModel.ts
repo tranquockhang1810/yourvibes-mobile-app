@@ -18,3 +18,9 @@ export class Error {
   code?: number;
   message?: string;
 }
+
+export enum Privacy {
+  PUBLIC = "public",
+  PRIVATE = "private",
+  FRIEND_ONLY = "friend_only",
+}

@@ -5,7 +5,7 @@ import { RegisterRequestModel } from "@/src/api/features/authenticate/model/Regi
 import { VerifyOTPRequestModel } from "@/src/api/features/authenticate/model/VerifyOTPModel";
 import dayjs from 'dayjs';
 import { router } from "expo-router";
-import { useAuth } from "@/src/context/useAuth";
+import { useAuth } from "@/src/context/auth/useAuth";
 const customParseFormat = require("dayjs/plugin/customParseFormat");
 dayjs.extend(customParseFormat)
 

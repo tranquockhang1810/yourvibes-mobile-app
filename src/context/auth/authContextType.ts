@@ -1,6 +1,6 @@
 import { VnLocalizedStrings } from "@/src/utils/localizedStrings/vietnam";
 import { ENGLocalizedStrings } from "@/src/utils/localizedStrings/english";
-import { UserModel } from "../api/features/authenticate/model/LoginModel";
+import { UserModel } from "../../api/features/authenticate/model/LoginModel";
 
 export interface AuthContextType {
   onLogin: (user: any) => void;

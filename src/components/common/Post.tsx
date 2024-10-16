@@ -6,7 +6,7 @@ import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import MediaView from '../foundation/MediaView';
 import { useActionSheet } from '@expo/react-native-action-sheet';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 import { router } from 'expo-router';
 
 const Post = ({
@@ -86,7 +86,7 @@ const Post = ({
           <View style={{ flexDirection: 'row', marginRight: 8 }}>
             <View style={{ flexDirection: 'column', marginLeft: 8, width: '92%' }}>
               <Text style={{ fontWeight: 'bold', fontSize: 14, width: '100%' }}>{post?.user?.name}</Text>
-              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{post?.createdAt}</Text>
+              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{post?.created_at}</Text>
             </View>
             {!isParentPost && (
               <TouchableOpacity
@@ -100,7 +100,7 @@ const Post = ({
         }
         thumb={
           <Image
-            source={{ uri: post?.user?.avatar }}
+            source={{ uri: post?.user?.avatar_url }}
             style={{
               width: 40,
               height: 40,
@@ -123,7 +123,7 @@ const Post = ({
           <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
             <Text>{post?.content}</Text>
           </View>
-          {post?.mediaUrl && <MediaView mediaItems={post?.mediaUrl} />}
+          {post?.media && <MediaView mediaItems={post?.media} />}
         </View>
       )}
 
@@ -144,11 +144,11 @@ const Post = ({
             }}>
               <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}>
                 <AntDesign name="hearto" size={20} color={brandPrimary} />
-                <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.likeCount}</Text>
+                <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.like_count}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}>
                 <FontAwesome name="comments-o" size={20} color={brandPrimary} />
-                <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.commentCount}</Text>
+                <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.comment_count}</Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <AntDesign name="sharealt" size={20} color={brandPrimary} />

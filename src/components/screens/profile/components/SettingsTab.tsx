@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { Tabs, Button, Modal, ActionSheet } from '@ant-design/react-native';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 import { useRouter } from 'expo-router';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 

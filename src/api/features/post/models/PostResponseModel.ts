@@ -1,19 +1,27 @@
+import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"
+
 export interface PostResponseModel {
   id?: string
-  user?: {
-    id?: string,
-    name?: string,
-    avatar?: string
-  },
-  parentPost?: PostResponseModel
-  mediaUrl?: PostMediaModel[],
+  parent_id?: string,
+  parent_post?: PostResponseModel,
   title?: string,
   content: string,
-  createdAt?: string,
-  likeCount?: number,
-  commentCount?: number,
-  privacy?: "public" | "private" | "friend_only",
-  status?: boolean
+  created_at?: string,
+  updated_at?: string,
+  user_id?: string,
+  user?: {
+    id?: string,
+    family_name?: string,
+    name?: string,
+    avatar_url?: string
+  },
+  like_count?: number,
+  comment_count?: number,
+  privacy?: Privacy,
+  status?: boolean,
+  location?: string,
+  is_advertisement?: boolean,
+  media?: PostMediaModel[]
 }
 
 export interface PostMediaModel {

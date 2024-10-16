@@ -17,7 +17,7 @@ export default interface IApiClient {
     data: Map<string, any> | any
   ): Promise<BaseApiResponseModel<T>>;
 
-  put<T extends Object>(
+  patch<T extends Object>(
     path: string,
     data: Map<string, any> | any
   ): Promise<BaseApiResponseModel<T>>;

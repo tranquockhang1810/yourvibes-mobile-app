@@ -13,6 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tranquockhang18102004.yourvibes"
@@ -22,6 +23,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "INTERNET"
+      ],
       "package": "com.tranquockhang18102004.yourvibes"
     },
     "web": {
@@ -39,6 +43,12 @@
       "eas": {
         "projectId": "bfa9ab76-c551-4f68-b26f-f1c888ef9f2c"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bfa9ab76-c551-4f68-b26f-f1c888ef9f2c"
     }
   }
 }

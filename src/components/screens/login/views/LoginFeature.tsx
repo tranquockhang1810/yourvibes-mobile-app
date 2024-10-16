@@ -16,7 +16,7 @@ import MyInput from '@/src/components/foundation/MyInput';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import useColor from '@/src/hooks/useColor';
-import { useAuth } from '@/src/context/useAuth';
+import { useAuth } from '@/src/context/auth/useAuth';
 import Toast from 'react-native-toast-message';
 import LoginViewModel from '../viewModel/LoginViewModel';
 import { defaultAuthenRepo } from '@/src/api/features/authenticate/AuthenRepo';

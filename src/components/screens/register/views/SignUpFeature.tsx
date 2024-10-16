@@ -25,7 +25,7 @@ import Toast from "react-native-toast-message";
 import { defaultAuthenRepo } from "@/src/api/features/authenticate/AuthenRepo";
 import SignUpViewModel from "../viewModel/signUpViewModel";
 import MyDateTimePicker from "@/src/components/foundation/MyDateTimePicker";
-import { useAuth } from "@/src/context/useAuth";
+import { useAuth } from "@/src/context/auth/useAuth";
 
 var customParseFormat = require("dayjs/plugin/customParseFormat");
 dayjs.extend(customParseFormat)
