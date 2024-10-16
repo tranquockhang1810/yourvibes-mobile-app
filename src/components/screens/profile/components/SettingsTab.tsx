@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { View, Text, ScrollView } from 'react-native';
 import useColor from '@/src/hooks/useColor';
-import { Tabs, Button, Modal, ActionSheet } from '@ant-design/react-native';
+import { Button, Modal } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { useRouter } from 'expo-router';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 
 const SettingsTab = () => {

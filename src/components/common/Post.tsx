@@ -20,24 +20,24 @@ const Post = ({
   children?: React.ReactNode
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
-  const { user } = useAuth();
+  const { user, localStrings } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
 
   const showAction = () => {
     const options = user?.id === post?.user?.id ? [
-      'Chỉnh sửa bài viết',
-      'Chỉnh sửa quyền riêng tư',
-      'Chuyển vào thùng rác',
-      'Quảng cáo bài viết',
-      'Hủy'
+      localStrings.Post.EditPost,
+      localStrings.Post.EditPrivacy,
+      localStrings.Post.DeletePost,
+      localStrings.Post.Advertisement,
+      localStrings.Public.Cancel
     ] : [
-      'Báo cáo bài viết',
-      'Hủy'
+      localStrings.Post.ReportPost,
+      localStrings.Public.Cancel
     ];
 
     showActionSheetWithOptions(
       {
-        title: 'Hành động',
+        title: localStrings.Public.Action,
         options: options,
         cancelButtonIndex: options.length - 1,
         cancelButtonTintColor: "#F95454"
@@ -86,13 +86,13 @@ const Post = ({
         title={
           <View style={{ flexDirection: 'row', marginRight: 8 }}>
             <View style={{ flexDirection: 'column', marginLeft: 8, width: '92%' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 14, width: '100%' }}>{post?.user?.name}</Text>
-              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{getTimeDiff(post?.created_at)}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 14, width: '100%' }}>{post?.user?.family_name} {post?.user?.name}</Text>
+              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{getTimeDiff(post?.created_at, localStrings)}</Text>
             </View>
             {!isParentPost && (
               <TouchableOpacity
                 style={{ width: '8%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
-                onPress={showAction} // Gọi hàm khi nhấn vào biểu tượng
+                onPress={showAction}
               >
                 <Entypo name="dots-three-vertical" size={16} />
               </TouchableOpacity>

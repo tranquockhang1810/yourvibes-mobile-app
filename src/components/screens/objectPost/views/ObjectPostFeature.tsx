@@ -1,12 +1,14 @@
-import { Alert, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import { Ionicons } from '@expo/vector-icons';
-import { router  } from 'expo-router';
+import { router } from 'expo-router';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { usePostContext } from '@/src/context/post/usePostContext';
+import { useAuth } from '@/src/context/auth/useAuth';
 
 const ObjectPostFeature = () => {
+	const { localStrings } = useAuth();
 	const { brandPrimary, backgroundColor } = useColor();
 	const { savedPrivacy, setSavedPrivacy } = usePostContext();
 	const [selectedOption, setSelectedOption] = useState<Privacy>(savedPrivacy || Privacy.PUBLIC);
@@ -17,8 +19,8 @@ const ObjectPostFeature = () => {
 
 	const handleSavePrivacy = () => {
 		setSavedPrivacy!(selectedOption);
-    router.back();
-  };
+		router.back();
+	};
 
 	const options: {
 		label: string;
@@ -26,10 +28,10 @@ const ObjectPostFeature = () => {
 		description: string;
 		value: Privacy;
 	}[] = [
-		{ label: 'Công khai', icon: 'globe', description: 'Bất kỳ ai ở trên YourVibes', value: Privacy.PUBLIC },
-		{ label: 'Bạn bè', icon: 'people', description: 'Chỉ bạn bè của bạn ở trên YourVibes', value: Privacy.FRIEND_ONLY },
-		{ label: 'Chỉ mình tôi', icon: 'lock-closed', description: 'Chỉ bạn có thể nhìn thấy', value: Privacy.PRIVATE },
-	];
+			{ label: localStrings.Public.Public, icon: 'globe', description: localStrings.ObjectPostPrivacy.PublicDescription, value: Privacy.PUBLIC },
+			{ label: localStrings.Public.Friend, icon: 'people', description: localStrings.ObjectPostPrivacy.FriendDescription, value: Privacy.FRIEND_ONLY },
+			{ label: localStrings.Public.Private, icon: 'lock-closed', description: localStrings.ObjectPostPrivacy.PrivateDescription, value: Privacy.PRIVATE },
+		];
 
 	return (
 		<View style={{ flex: 1, backgroundColor: backgroundColor }}>
@@ -45,7 +47,7 @@ const ObjectPostFeature = () => {
 						justifyContent: 'space-between',
 					}}>
 						<TouchableOpacity onPress={() => { router.back(); }}>
-							<Ionicons name="arrow-back-outline" size={24} color={brandPrimary} />
+							<Ionicons name="close" size={24} color={brandPrimary} />
 						</TouchableOpacity>
 
 						<Text style={{
@@ -53,7 +55,7 @@ const ObjectPostFeature = () => {
 							fontSize: 20,
 							marginLeft: 10,
 						}}>
-							Đối tượng của bài viết
+							{localStrings.ObjectPostPrivacy.PostPrivacy}
 						</Text>
 					</View>
 				</View>
@@ -62,12 +64,12 @@ const ObjectPostFeature = () => {
 
 			{/* Content */}
 			<View style={{ flex: 1, paddingHorizontal: 10 }}>
-				<Text style={{ fontWeight: 'bold', fontSize: 18 }}>Ai có thể nhìn thấy bài viết của bạn?</Text>
-				<Text style={{ paddingTop: 10 }}>Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.</Text>
+				<Text style={{ fontWeight: 'bold', fontSize: 18 }}>{localStrings.ObjectPostPrivacy.Contents.WhoCanSee}</Text>
+				<Text style={{ paddingTop: 10 }}>{localStrings.ObjectPostPrivacy.Contents.CanFind}</Text>
 				<Text style={{ paddingTop: 10 }}>
-					Tuy đối tượng mặc định là <Text style={{ fontWeight: 'bold' }}>Công khai</Text>, nhưng bạn có thể thay đổi đối tượng của riêng bài viết này.
+					{localStrings.ObjectPostPrivacy.Contents.DefaultPrivacy1}<Text style={{ fontWeight: 'bold' }}>{localStrings.Public.Public}</Text>{localStrings.ObjectPostPrivacy.Contents.DefaultPrivacy2}
 				</Text>
-				<Text style={{ fontWeight: 'bold', fontSize: 18, marginTop: 10 }}>Chọn Đối tượng</Text>
+				<Text style={{ fontWeight: 'bold', fontSize: 18, marginTop: 10 }}>{localStrings.ObjectPostPrivacy.ChoosePrivacy}</Text>
 				<View style={styles.container}>
 					{options.map((option) => (
 						<TouchableOpacity
@@ -101,7 +103,7 @@ const ObjectPostFeature = () => {
 					}}
 					onPress={handleSavePrivacy}
 				>
-					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Xong</Text>
+					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Public.Save}</Text>
 				</TouchableOpacity>
 			</View>
 		</View>

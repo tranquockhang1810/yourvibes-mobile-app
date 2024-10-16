@@ -4,7 +4,7 @@ export const DateTransfer = (date?: string) => {
   return dayjs(date).format("DD/MM/YYYY");
 }
 
-export const getTimeDiff = (date?: string) => {
+export const getTimeDiff = (date?: string, localString?: any) => {
   const now = dayjs();
   const postDate = dayjs(date);
 
@@ -13,10 +13,10 @@ export const getTimeDiff = (date?: string) => {
   const daysDiff = now.diff(postDate, 'day');
 
   if (minutesDiff < 60) {
-    return `${minutesDiff} phút trước`;
+    return `${minutesDiff} ${localString?.Public?.MinuteAgo}`;
   } else if (hoursDiff < 24) {
-    return `${hoursDiff} giờ trước`;
+    return `${hoursDiff} ${localString?.Public?.HourAgo}`;
   } else {
-    return `${daysDiff} ngày trước`;
+    return `${daysDiff} ${localString?.Public?.DayAgo}`;
   }
 };

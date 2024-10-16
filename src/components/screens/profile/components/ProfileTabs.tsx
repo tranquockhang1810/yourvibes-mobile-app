@@ -5,29 +5,12 @@ import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 import AboutTab from './AboutTab';
 import SettingsTab from './SettingsTab';
-import { loadPostsFromStorage, defaultPosts } from './ProfileTabsHelper';
-import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import PostList from './PostList';
 
 const ProfileTabs: React.FC = () => {
   const { brandPrimary } = useColor();
   const { localStrings } = useAuth();
-  const [posts, setPosts] = useState<PostResponseModel[]>([]);
   const [tab, setTab] = useState(0);
-
-  useEffect(() => {
-    loadPosts();
-  }, []);
-
-  const loadPosts = useCallback(async () => {
-    try {
-      const storedPosts = await loadPostsFromStorage();
-      setPosts(storedPosts || defaultPosts);
-    } catch (error) {
-      console.error('Error loading posts:', error);
-      setPosts(defaultPosts);
-    }
-  }, []);
 
   const renderBody = useCallback(() => {
     switch (tab) {
@@ -40,7 +23,7 @@ const ProfileTabs: React.FC = () => {
       default:
         return <AboutTab />;
     }
-  }, [tab, posts]);
+  }, [tab]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>

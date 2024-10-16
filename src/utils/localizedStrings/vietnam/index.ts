@@ -1,5 +1,3 @@
-import Post from "@/src/components/common/Post";
-
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -35,7 +33,14 @@ export const VnLocalizedStrings = {
     English: "Tiếng Anh",
     ErrorFetchingProfile: "Lỗi hiển thị thông tin",
     Biography: "Giới thiệu",
-    
+    UnknownUser: "Người dùng YourVibes",
+    Public: "Công khai",
+    Everyone: "Mọi người",
+    Private: "Chỉ mình tôi",
+    MinuteAgo: "phút trước",
+    HourAgo: "giờ trước",
+    DayAgo: "ngày trước",
+    Action: "Hành động",
   },
   Form: {
     Label: {
@@ -87,5 +92,35 @@ export const VnLocalizedStrings = {
     AlreadyHaveAccount: "Bạn đã có tài khoản?",
     LoginNow: "Đăng nhập ngay!",
     AgreePolicies: "Tôi đồng ý các điều khoản của YourVibes",
+  },
+  AddPost: {
+    NewPost: "Bài đăng mới",
+    WhatDoYouThink: "Bạn đang nghĩ gì?",
+    PrivacyText: "Bài đăng sẽ được chia sẻ với",
+    PostNow: "Đăng ngay",
+    CreatePostSuccess: "Đăng bài thành công!",
+    CreatePostFailed: "Đăng bài thất bại!",
+    EmptyContent: "Thiếu nội dung hoặc file media",
+    PickImgFailed: "Tải file thất bại!"
+  },
+  ObjectPostPrivacy: {
+    PublicDescription: 'Bất kỳ ai ở trên YourVibes',
+    FriendDescription: 'Chỉ bạn bè của bạn ở trên YourVibes',
+    PrivateDescription: 'Chỉ bạn có thể nhìn thấy',
+    PostPrivacy: "Đối tượng của bài viết",
+    Contents: {
+      WhoCanSee: "Ai có thể nhìn thấy bài viết của bạn?",
+      CanFind: "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
+      DefaultPrivacy1: "Tuy đối tượng mặc định là ",
+      DefaultPrivacy2: ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này."
+    },
+    ChoosePrivacy: "Chọn Đối tượng"
+  },
+  Post: {
+    EditPost: "Chỉnh sửa bài đăng",
+    EditPrivacy: "Chỉnh sửa quyền riêng tư",
+    DeletePost: "Xóa bài đăng",
+    Advertisement: "Quảng cáo bài đăng",
+    ReportPost: "Báo cáo bài đăng",
   }
 }

@@ -1,6 +1,7 @@
 import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 import { CreatePostRequestModel } from "@/src/api/features/post/models/CreatePostRequestModel";
 import { PostRepo } from "@/src/api/features/post/PostRepo";
+import { useAuth } from "@/src/context/auth/useAuth";
 import { usePostContext } from "@/src/context/post/usePostContext";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
@@ -8,6 +9,7 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 const AddPostViewModel = (repo: PostRepo) => {
+  const { localStrings } = useAuth();
   const { clearSavedPost } = usePostContext();
   const [createLoading, setCreateLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState('');
@@ -26,14 +28,13 @@ const AddPostViewModel = (repo: PostRepo) => {
         clearSavedPost!();
         Toast.show({
           type: "success",
-          text1: "Post created!",
-          text2: "Post created successfully",
+          text1: localStrings.AddPost.CreatePostSuccess,
         })
         router.back();
       } else {
         Toast.show({
           type: "error",
-          text1: "Post creation failed",
+          text1: localStrings.AddPost.CreatePostFailed,
           text2: response?.error?.message
         })
       }
@@ -41,7 +42,7 @@ const AddPostViewModel = (repo: PostRepo) => {
       console.error( err);
       Toast.show({
         type: "error",
-        text1: "Post creation failed",
+        text1: localStrings.AddPost.CreatePostFailed,
         text2: err.message
       })
     } finally {

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
@@ -27,7 +26,7 @@ import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { usePostContext } from '@/src/context/post/usePostContext';
 
 const AddPostScreen = () => {
-  const { user } = useAuth()
+  const { user, localStrings } = useAuth()
   const savedPost = usePostContext()
   const { brandPrimary, backgroundColor, brandPrimaryTap } = useColor();
   const [loading, setLoading] = useState(false);
@@ -45,9 +44,8 @@ const AddPostScreen = () => {
     setPrivacy,
   } = AddPostViewModel(defaultPostRepo);
 
-  // Function to pick images
   const pickImage = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -56,18 +54,20 @@ const AddPostScreen = () => {
       });
 
       if (!result?.canceled && result?.assets) {
-        const newImages = result?.assets?.map((asset) => asset.uri); // Map the selected image URIs
+        const newImages = result?.assets?.map((asset) => asset.uri);
         setSelectedImages([...selectedImages, ...newImages]);
         setSelectedImageFiles([...selectedImageFiles, ...result.assets]);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to pick images.');
+      Toast.show({
+        type: 'error',
+        text1: localStrings.AddPost.PickImgFailed,
+      })
     } finally {
-      setLoading(false); // End loading after images are selected
+      setLoading(false);
     }
   };
 
-  // Function to remove selected image
   const removeImage = (index: number) => {
     const updatedImages = [...selectedImages];
     updatedImages.splice(index, 1);
@@ -78,7 +78,8 @@ const AddPostScreen = () => {
     if (postContent.trim() === '' && selectedImages.length === 0) {
       Toast.show({
         type: 'error',
-        text1: 'Vui lòng nhập nội dung hoặc đính kèm hình ảnh hoặc video',
+        text1: localStrings.AddPost.CreatePostFailed,
+        text2: localStrings.AddPost.EmptyContent,
       })
       return;
     }
@@ -87,7 +88,7 @@ const AddPostScreen = () => {
       content: postContent,
       privacy: privacy,
       location: 'HCM',
-      title: 'TEST',
+      title: user?.family_name + ' ' + user?.name + "'s post",
       media: mediaFiles,
     };
     await createPost(newPost);
@@ -96,13 +97,13 @@ const AddPostScreen = () => {
   const renderPrivacyText = () => {
     switch (privacy) {
       case Privacy.PUBLIC:
-        return 'mọi người';
+        return localStrings.Public.Everyone.toLowerCase();
       case Privacy.FRIEND_ONLY:
-        return 'bạn bè';
+        return localStrings.Public.Friend.toLowerCase();
       case Privacy.PRIVATE:
-        return 'chỉ mình tôi';
+        return localStrings.Public.Private.toLowerCase();
       default:
-        return 'mọi người';
+        return localStrings.Public.Everyone.toLowerCase();
     }
   };
 
@@ -118,7 +119,6 @@ const AddPostScreen = () => {
     }
   }, [savedPost])
   
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1 }}>
@@ -145,7 +145,7 @@ const AddPostScreen = () => {
                 fontSize: 20,
                 marginLeft: 10,
               }}>
-                Bài viết mới
+                {localStrings.AddPost.NewPost}
               </Text>
             </View>
           </View>
@@ -170,9 +170,9 @@ const AddPostScreen = () => {
           </View>
           <View style={{ marginLeft: 10, flex: 1 }}>
             <View style={{ flexDirection: 'column' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.family_name + " " + user?.name || "Unknown User"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.family_name + " " + user?.name || localStrings.Public.UnknownUser}</Text>
               <MyInput
-                placeholder='Bạn đang nghĩ gì?'
+                placeholder={localStrings.AddPost.WhatDoYouThink}
                 variant='outlined'
                 moreStyle={{ paddingLeft: 10, marginTop: 10, borderColor: brandPrimaryTap }}
                 textArea={{
@@ -187,7 +187,7 @@ const AddPostScreen = () => {
         </View>
 
         {/* Image Upload Section */}
-        <View style={{ paddingHorizontal: 10 }}>
+        <View style={{ paddingRight: 10, paddingLeft: 60 }}>
           <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
             {selectedImages.map((imageUri, index) => (
               <View key={index} style={{ position: 'relative', marginRight: 10, marginBottom: 10 }}>
@@ -195,12 +195,12 @@ const AddPostScreen = () => {
                   <Video
                     source={{ uri: imageUri }}
                     useNativeControls
-                    style={{ width: 80, height: 80, borderRadius: 10, backgroundColor: '#f0f0f0' }}
+                    style={{ width: 75, height: 75, borderRadius: 10, backgroundColor: '#f0f0f0' }}
                   />
                 ) : (
                   <Image
                     source={{ uri: imageUri }}
-                    style={{ width: 80, height: 80, borderRadius: 10, backgroundColor: '#f0f0f0' }}
+                    style={{ width: 75, height: 75, borderRadius: 10, backgroundColor: '#f0f0f0' }}
                   />
                 )}
                 <TouchableOpacity
@@ -222,8 +222,8 @@ const AddPostScreen = () => {
             <TouchableOpacity
               onPress={pickImage}
               style={{
-                width: 80,
-                height: 80,
+                width: 75,
+                height: 75,
                 borderRadius: 10,
                 backgroundColor: '#f0f0f0',
                 alignItems: 'center',
@@ -250,7 +250,7 @@ const AddPostScreen = () => {
         }}>
           {/* Privacy Section */}
           <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
-            Bài đăng sẽ được chia sẻ với
+            {localStrings.AddPost.PrivacyText}
           </Text>
           <TouchableOpacity
             onPress={() => {
@@ -281,7 +281,7 @@ const AddPostScreen = () => {
             onPress={handleSubmitPost}
             loading={createLoading}
           >
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Đăng ngay</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.AddPost.PostNow}</Text>
           </Button>
         </View>
       </View>

@@ -11,7 +11,6 @@ const ProfileHeader = () => {
 
   return (
     <>
-
       {/* Cover Image */}
       <View style={{ width: '100%', height: 200, backgroundColor: lightGray }}>
         <Image
@@ -58,8 +57,8 @@ const ProfileHeader = () => {
         <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {user?.family_name} {user?.name || localStrings.Public.Username}</Text>
         <Text style={{ color: 'gray', marginTop: 4 }}>{ user?.biography||localStrings.Public.Biography}</Text>
         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.post_count} {localStrings.Public.Post}</Text>
-          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.post_count} {localStrings.Public.Post}{user?.post_count && user?.post_count > 1 ? 's' : ''}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}{user?.friend_count && user?.friend_count > 1 ? 's' : ''}</Text>
         </View>
       </View>
     </>

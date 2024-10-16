@@ -1,5 +1,3 @@
-import Post from "@/src/components/common/Post";
-
 export const ENGLocalizedStrings = {
   Public: {
     All: "All",
@@ -21,11 +19,11 @@ export const ENGLocalizedStrings = {
     SetingProfile: "Setting Profile",
     Mail: "Email",
     Phone: "Phone Number",
-    Birthday: "Birth Date", 
-    Active: "Created Date", 
+    Birthday: "Birth Date",
+    Active: "Created Date",
     FriendFind: "Friend Find",
     FriendView: "View All Friend",
-    Conform: "Confirm", 
+    Conform: "Confirm",
     LogoutConfirm: "Are you sure you want to log out?",
     More: "More",
     AddFriend: "Add Friend",
@@ -35,6 +33,14 @@ export const ENGLocalizedStrings = {
     English: "English",
     ErrorFetchingProfile: "Error fetching profile!",
     Biography: "Biography",
+    UnknownUser: "YourVibes user",
+    Public: "Public",
+    Everyone: "Everyone",
+    Private: "Only me",
+    MinuteAgo: "minutes ago",
+    HourAgo: "hours ago",
+    DayAgo: "days ago",
+    Action: "Action",
   },
   Form: {
     Label: {
@@ -86,5 +92,35 @@ export const ENGLocalizedStrings = {
     AlreadyHaveAccount: "Already have an account?",
     LoginNow: "Log in now!",
     AgreePolicies: "I agree to the YourVibes terms",
+  },
+  AddPost: {
+    NewPost: "New post",
+    WhatDoYouThink: "What do you think?",
+    PrivacyText: "Share your post with",
+    PostNow: "Post now",
+    CreatePostSuccess: "Create post successful!",
+    CreatePostFailed: "Create post failed!",
+    EmptyContent: "Missing content or media file",
+    PickImgFailed: "Pick images failed!",
+  },
+  ObjectPostPrivacy: {
+    PublicDescription: 'Everyone on YourVibes',
+    FriendDescription: 'Only friends on YourVibes',
+    PrivateDescription: 'Only you can see the post',
+    PostPrivacy: "Post's privacy",
+    Contents: {
+      WhoCanSee: "Who can see your post?",
+      CanFind: "Your post may appear on your profile and in search results.",
+      DefaultPrivacy1: "Although the default audience is ",
+      DefaultPrivacy2: ", you can change the audience for this specific post."
+    },
+    ChoosePrivacy: "Choose Privacy"
+  },
+  Post: {
+    EditPost: "Edit post",
+    EditPrivacy: "Edit post's privacy",
+    DeletePost: "Delete post",
+    Advertisement: "Advertisement",
+    ReportPost: "Report post",
   }
 }
