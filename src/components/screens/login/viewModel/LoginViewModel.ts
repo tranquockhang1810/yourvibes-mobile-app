@@ -28,7 +28,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
           type: 'error',
           text1: localStrings.Login.LoginFailed,
           text2: res?.error?.message
-        });
+        })
       }
     } catch (error: any) {
       console.error(error);
@@ -36,7 +36,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
         type: 'error',
         text1: localStrings.Login.LoginFailed,
         text2: error?.message
-      });
+      })
     } finally {
       setLoading(false);
     }

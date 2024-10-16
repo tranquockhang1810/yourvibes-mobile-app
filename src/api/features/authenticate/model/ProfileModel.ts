@@ -1,6 +1,8 @@
 export interface ProfileRequestModel {
     id: string;  
 }
+
+
 export interface ProfileResponseModel {
     family_name: string;       
     name: string;             
@@ -14,16 +16,5 @@ export interface ProfileResponseModel {
     validator: "";
     auth_type: "";
     post_count: 0,
-    status: false,     
-    posts?: Post[];          
-}
-export interface Post {
-    id: string;                
-    created_at: string;        
-    updated_at?: string;       
-    likes: number;            
-    comments?: Comment[];     
-}
-
-export interface Comment {         
-}
+    status: false,      
+} 

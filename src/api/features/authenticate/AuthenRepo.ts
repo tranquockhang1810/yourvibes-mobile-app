@@ -5,12 +5,14 @@ import { LoginRequestModel, LoginResponseModel } from "./model/LoginModel";
 import { RegisterRequestModel } from "./model/RegisterModel";
 import { VerifyOTPRequestModel } from "./model/VerifyOTPModel";
 import { ProfileRequestModel, ProfileResponseModel } from "./model/ProfileModel";
+import { PostResponseModel } from "../post/models/PostResponseModel";
 
 interface IAuthenRepo {
   login(data: LoginRequestModel): Promise<BaseApiResponseModel<LoginResponseModel>>;
   register(data: RegisterRequestModel): Promise<BaseApiResponseModel<any>>;
   verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>>;
-  // profile(data: ProfileRequestModel): Promise<BaseApiResponseModel<ProfileResponseModel>>;
+  profile(data: ProfileRequestModel): Promise<BaseApiResponseModel<ProfileResponseModel>>; 
+  getUserPost(data: { userId: string }): Promise<BaseApiResponseModel<PostResponseModel[]>>;
 }
 
 export class AuthenRepo implements IAuthenRepo {
@@ -25,10 +27,13 @@ export class AuthenRepo implements IAuthenRepo {
   async verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>> {
     return client.post(ApiPath.VERIFIED_EMAIL, data);
   }
-
-  // async profile(data: ProfileRequestModel): Promise<BaseApiResponseModel<ProfileResponseModel>> {
-  //   return client.post(ApiPath.PROFILE, data);
-  // }
+  async profile(data: ProfileRequestModel): Promise<BaseApiResponseModel<ProfileResponseModel>> {
+    const { id } = data;
+    return client.get(`${ApiPath.PROFILE}${id}`);
+  }
+  async getUserPost(data: { userId: string }): Promise<BaseApiResponseModel<PostResponseModel[]>> {
+    return client.get(ApiPath.GET_POSTS + data.userId, data);
+  }
 }
 
 export const defaultAuthenRepo = new AuthenRepo();

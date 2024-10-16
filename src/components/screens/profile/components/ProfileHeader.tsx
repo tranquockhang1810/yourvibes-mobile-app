@@ -56,10 +56,10 @@ const ProfileHeader = () => {
       {/* User Information */}
       <View style={{ alignItems: 'center', marginTop: 10 }}>
         <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {user?.family_name} {user?.name || localStrings.Public.Username}</Text>
-        {/* <Text style={{ color: 'gray', marginTop: 4 }}>{ profile?.About||localStrings.Public.About}</Text> */}
+        <Text style={{ color: 'gray', marginTop: 4 }}>{ user?.biography||localStrings.Public.Biography}</Text>
         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>{user?.post_count} {localStrings.Public.Post}</Text>
-          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}>0 {localStrings.Public.Friend}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.post_count} {localStrings.Public.Post}</Text>
+          <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}</Text>
         </View>
       </View>
     </>
