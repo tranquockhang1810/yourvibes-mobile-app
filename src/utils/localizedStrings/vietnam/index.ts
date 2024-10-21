@@ -125,7 +125,17 @@ export const VnLocalizedStrings = {
   },
   Profile: {
     Posts: {
-      GetPostsFailed: "Lấy danh sách bài viết thất bại!"
+      GetPostsFailed: "Lấy danh sách bài viết thất bại!",
+      GetOnePostFailed: "Lấy bài viết thất bại!"
     }
+  },
+  UpdatePost: {
+    UpdatePostSuccess: "Cập nhật bài đăng thành công!",
+    UpdatePostFailed: "Cập nhật bài đăng thất bại!",
+  },
+  DeletePost: {
+    DeleteConfirm: "Bạn chắc chắn muốn xóa bài viết này?",
+    DeleteSuccess: "Xóa bài viết thành công!",
+    DeleteFailed: "Xóa bài viết thát bại!"
   }
 }

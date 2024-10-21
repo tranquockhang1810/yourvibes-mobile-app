@@ -8,12 +8,11 @@ export const ApiPath = {
   PROFILE: getApiPath('users/'),
   // Post
   CREATE_POST: getApiPath('posts/'),
-  GET_POSTS: getApiPath('posts/'), 
-
+  UPDATE_POST: getApiPath('posts/'),
+  GET_POSTS: getApiPath('posts/'),
+  DELETE_POST: getApiPath('posts/'),
 }
 
 function getApiPath(path: string) {
-  console.log(ENV.SERVER_ENDPOINT!);
-  
   return `${ENV.SERVER_ENDPOINT!}/v1/2024/${path}`
 }

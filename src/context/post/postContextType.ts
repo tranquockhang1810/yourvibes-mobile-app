@@ -4,8 +4,6 @@ import { ImagePickerAsset } from "expo-image-picker";
 export interface PostContextType {
   savedPostContent?: string;
   setSavedPostContent?: (postContent: string | undefined) => void;
-  savedSelectedImages?: string[];
-  setSavedSelectedImages?: (selectedImages: string[] | undefined) => void;
   savedPrivacy?: Privacy;
   setSavedPrivacy?: (privacy: Privacy | undefined) => void;
   savedSelectedImageFiles?: ImagePickerAsset[];

@@ -5,5 +5,9 @@ export interface CreatePostRequestModel {
     content?: string
     privacy?: Privacy
     location?: string
-    media?: any[]
+    media?: {
+        uri?: string,
+        name?: string,
+        type?: string
+    }[]
 }

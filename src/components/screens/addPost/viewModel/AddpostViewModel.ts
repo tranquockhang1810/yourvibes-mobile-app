@@ -13,7 +13,6 @@ const AddPostViewModel = (repo: PostRepo) => {
   const { clearSavedPost } = usePostContext();
   const [createLoading, setCreateLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedImageFiles, setSelectedImageFiles] = useState<ImagePickerAsset[]>([]);
   const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
 
@@ -23,14 +22,13 @@ const AddPostViewModel = (repo: PostRepo) => {
       const response = await repo.createPost(data);
       if (response?.data) {
         setPostContent('');
-        setSelectedImages([]);
         setSelectedImageFiles([]);
         clearSavedPost!();
         Toast.show({
           type: "success",
           text1: localStrings.AddPost.CreatePostSuccess,
         })
-        router.back();
+        router.push("/(tabs)/home");
       } else {
         Toast.show({
           type: "error",
@@ -55,8 +53,6 @@ const AddPostViewModel = (repo: PostRepo) => {
     createPost,
     postContent,
     setPostContent,
-    selectedImages,
-    setSelectedImages,
     selectedImageFiles,
     setSelectedImageFiles,
     privacy,
