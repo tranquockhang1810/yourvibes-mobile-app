@@ -7,7 +7,7 @@ import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 import curlirize from "axios-curlirize";
 
 const api = axios.create({
-  baseURL: ENV.SERVER_ENDPOINT!,
+  //baseURL: ENV.SERVER_ENDPOINT!,
   timeout: 60000,
 });
 

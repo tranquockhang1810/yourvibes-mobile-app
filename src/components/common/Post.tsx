@@ -8,7 +8,8 @@ import MediaView from '../foundation/MediaView';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { router } from 'expo-router';
-import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer';
+import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer'; 
+import PostDetails from './PostDetails';
 
 const Post = ({
   post,
@@ -21,8 +22,7 @@ const Post = ({
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
   const { user, localStrings } = useAuth();
-  const { showActionSheetWithOptions } = useActionSheet();
-
+  const { showActionSheetWithOptions } = useActionSheet(); 
   const showAction = () => {
     const options = user?.id === post?.user?.id ? [
       localStrings.Post.EditPost,
@@ -147,7 +147,7 @@ const Post = ({
                 <AntDesign name="hearto" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.like_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}  onPress={() => router.push(`/postDetails?postId=${post?.id}`)} >
                 <FontAwesome name="comments-o" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.comment_count}</Text>
               </TouchableOpacity>
