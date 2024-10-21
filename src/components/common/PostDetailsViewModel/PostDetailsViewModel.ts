@@ -82,32 +82,53 @@ const usePostDetailsViewModel = () => {
   const handleAddComment = () => {
     if (newComment.trim()) {
       const newCommentObject = {
-        id: Math.floor(Math.random() * 1000),
-        user: 'Current User',
-        content: newComment,
+        id: Math.floor(Math.random() * 1000),  // Tạo ID ngẫu nhiên cho bình luận
+        user: 'Current User',  // Người dùng hiện tại
+        content: newComment,   // Nội dung bình luận
         likes: 0,
         timestamp: Date.now(),
-        replies: [],
+        replies: [],  // Bình luận mới chưa có trả lời nào
       };
-
-      if (replyToCommentId !== null) {
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id === replyToCommentId
-              ? { ...comment, replies: [...comment.replies, newCommentObject] }
-              : comment
-          )
-        );
+  
+      // Hàm đệ quy để thêm trả lời vào đúng bình luận con
+      const addReplyToComment = (commentsArray: any[], commentId: number): any[] => {
+        return commentsArray.map((comment) => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: [...comment.replies, newCommentObject],  // Thêm trả lời vào bình luận
+            };
+          } else if (comment.replies.length > 0) {
+            // Nếu comment có trả lời, gọi đệ quy để tiếp tục tìm kiếm comment cần thêm trả lời
+            return {
+              ...comment,
+              replies: addReplyToComment(comment.replies, commentId),
+            };
+          }
+          return comment;
+        });
+      };
+  
+      if (replyToReplyId !== null) {
+        // Nếu là trả lời cho một bình luận con (replies của comment cha)
+        setComments((prevComments) => addReplyToComment(prevComments, replyToReplyId));
+      } else if (replyToCommentId !== null) {
+        // Nếu là trả lời cho một bình luận cha
+        setComments((prevComments) => addReplyToComment(prevComments, replyToCommentId));
       } else {
+        // Nếu là bình luận mới
         setComments((prevComments) => [...prevComments, newCommentObject]);
       }
-
+  
+      // Xóa dữ liệu nhập sau khi thêm bình luận
       setNewComment('');
       setReplyToCommentId(null);
       setReplyToReplyId(null);
-      textInputRef.current?.blur();
+      textInputRef.current?.blur();  // Ẩn bàn phím sau khi thêm
     }
   };
+  
+  
 
   return {
     comments,
