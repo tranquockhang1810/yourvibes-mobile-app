@@ -29,4 +29,5 @@ export interface PostMediaModel {
   media_url?: string,
   created_at?: string
   status?: boolean
+  id?: number
 }

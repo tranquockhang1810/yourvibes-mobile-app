@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, View, Text, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import ProfileViewModel from '../viewModel/ProfileViewModel';
 
-const ProfileViewModel = () => {
+const ProfileFeatures = () => {
   const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
-  const router = useRouter();  
+  const [tab, setTab] = useState(0);
+  const router = useRouter();
+  const { loading, posts, fetchUserPosts, loadMorePosts, total } = ProfileViewModel();
+
+  useEffect(() => {
+    fetchUserPosts();
+  }, [])
 
   return (
     <KeyboardAvoidingView
@@ -21,11 +28,7 @@ const ProfileViewModel = () => {
         {/* Header Cố Định */}
         <View
           style={{
-            position: 'absolute',
             marginTop: 30,
-            top: 0,
-            left: 0,
-            right: 0,
             height: 50,
             paddingHorizontal: 16,
             paddingTop: 16,
@@ -46,19 +49,24 @@ const ProfileViewModel = () => {
           </Text>
         </View>
 
-        {/* Nội dung cuộn bên dưới */}
-        <ScrollView
-          style={{ width: '100%', marginTop: 60 }}
+        {/* Content */}
+        <FlatList
+          data={null}
+          ListHeaderComponent={
+            <>
+              <ProfileHeader total={total} />
+              <ProfileTabs setTab={setTab} tab={tab} posts={posts} loading={loading} loadMorePosts={loadMorePosts} />
+            </>
+          }
+          renderItem={() => null}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1, alignItems: 'center', paddingBottom: 20 }}
-        >
-          {/* Các thành phần khác */}
-          <ProfileHeader />
-          <ProfileTabs />
-        </ScrollView>
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+          onRefresh={() => tab === 1 && fetchUserPosts()}
+          refreshing={loading}
+        />
       </View>
     </KeyboardAvoidingView>
   );
 };
 
-export default ProfileViewModel;
+export default ProfileFeatures;

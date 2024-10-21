@@ -7,13 +7,11 @@ const PostContext = createContext<PostContextType | undefined>(undefined);
 
 export const PostProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [savedPostContent, setSavedPostContent] = useState<string | undefined>('');
-  const [savedSelectedImages, setSavedSelectedImages] = useState<string[] | undefined>([]);
   const [savedSelectedImageFiles, setSavedSelectedImageFiles] = useState<ImagePickerAsset[] | undefined>([]);
   const [savedPrivacy, setSavedPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
 
   const clearSavedPost = () => {
     setSavedPostContent('');
-    setSavedSelectedImages([]);
     setSavedSelectedImageFiles([]);
     setSavedPrivacy(Privacy.PUBLIC);
   }
@@ -22,8 +20,6 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <PostContext.Provider value={{
       savedPostContent,
       setSavedPostContent,
-      savedSelectedImages,
-      setSavedSelectedImages,
       savedSelectedImageFiles,
       setSavedSelectedImageFiles,
       savedPrivacy,

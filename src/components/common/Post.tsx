@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Button, Card } from '@ant-design/react-native';
+import { ActivityIndicator, Button, Card, Modal } from '@ant-design/react-native';
 import { Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
@@ -9,6 +9,8 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { router } from 'expo-router';
 import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer';
+import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
+import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 
 const Post = ({
   post,
@@ -22,11 +24,11 @@ const Post = ({
   const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
   const { user, localStrings } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
+  const { deletePost, deleteLoading } = EditPostViewModel(defaultPostRepo);
 
   const showAction = () => {
     const options = user?.id === post?.user?.id ? [
       localStrings.Post.EditPost,
-      localStrings.Post.EditPrivacy,
       localStrings.Post.DeletePost,
       localStrings.Post.Advertisement,
       localStrings.Public.Cancel
@@ -46,17 +48,19 @@ const Post = ({
         if (user?.id === post?.user?.id) {
           switch (buttonIndex) {
             case 0:
-              console.log('Chỉnh sửa bài viết action selected');
-              router.push('/updatePost');
+              router.push(`/edit-post/${post?.id}`);
               break;
             case 1:
-              console.log('Chỉnh sửa quyên riêng tư action selected');
-              router.push('/object')
+              Modal.alert(
+                localStrings.Public.Confirm,
+                localStrings.DeletePost.DeleteConfirm,
+                [
+                  { text: localStrings.Public.Cancel, style: 'cancel' },
+                  { text: localStrings.Public.Confirm, onPress: () => deletePost(post?.id as string) },
+                ]
+              );
               break;
             case 2:
-              console.log('Chuyển vào thể rác action selected');
-              break;
-            case 3:
               console.log('Quảng cách bài viết action selected');
               break;
             default:
@@ -65,7 +69,7 @@ const Post = ({
         } else {
           if (buttonIndex === 0) {
             console.log('báo cáo action selected');
-            router.push('/updatePost');
+            //router.push('/updatePost');
           }
         }
       }
@@ -158,6 +162,12 @@ const Post = ({
           }
         />
       ) : <></>}
+      <ActivityIndicator
+          animating={deleteLoading}
+          toast
+          size="large"
+          text="Deleting..."
+        />
     </Card>
   );
 }

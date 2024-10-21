@@ -125,7 +125,17 @@ export const ENGLocalizedStrings = {
   },
   Profile: {
     Posts: {
-      GetPostsFailed: "Failed to get posts!"
+      GetPostsFailed: "Failed to get posts!",
+      GetOnePostFailed: "Failed to get post!"
     }
+  },
+  UpdatePost: {
+    UpdatePostSuccess: "Update post successful!",
+    UpdatePostFailed: "Update post failed!",
+  },
+  DeletePost: {
+    DeleteConfirm: "Are you sure you want to delete this post?",
+    DeleteSuccess: "Delete post successful!",
+    DeleteFailed: "Delete post failed!",
   }
 }

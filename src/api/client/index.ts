@@ -2,12 +2,10 @@ import axios from "axios";
 import { BaseApiResponseModel } from "../baseApiResponseModel/baseApiResponseModel";
 import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ENV from "@/env-config"
 import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 import curlirize from "axios-curlirize";
 
 const api = axios.create({
-  baseURL: ENV.SERVER_ENDPOINT!,
   timeout: 60000,
 });
 

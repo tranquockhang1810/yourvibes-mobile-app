@@ -12,20 +12,20 @@ import useColor from '@/src/hooks/useColor';
 import MyInput from '@/src/components/foundation/MyInput';
 import { ActivityIndicator, Button } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useGlobalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Video } from 'expo-av';
-
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-import AddPostViewModel from '../viewModel/AddpostViewModel';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { CreatePostRequestModel } from '@/src/api/features/post/models/CreatePostRequestModel';
 import { convertMediaToFiles } from '@/src/utils/helper/TransferToFormData';
 import Toast from 'react-native-toast-message';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { usePostContext } from '@/src/context/post/usePostContext';
+import EditPostViewModel from '../viewModel/EditPostViewModel';
+import { UpdatePostRequestModel } from '@/src/api/features/post/models/UpdatePostRequestModel';
 
-const AddPostScreen = () => {
+const EditPostScreen = ({ id }: { id: string }) => {
   const { user, localStrings } = useAuth()
   const savedPost = usePostContext()
   const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } = useColor();
@@ -34,25 +34,29 @@ const AddPostScreen = () => {
   const {
     postContent,
     setPostContent,
-    selectedImageFiles,
-    setSelectedImageFiles,
-    createPost,
-    createLoading,
+    updatePost,
+    updateLoading,
     privacy,
     setPrivacy,
-  } = AddPostViewModel(defaultPostRepo);
+    getDetailPost,
+    post,
+    mediaIds,
+    originalImageFiles,
+    setOriginalImageFiles,
+    handleMedias,
+  } = EditPostViewModel(defaultPostRepo);
 
   const pickImage = async () => {
     setLoading(true);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsMultipleSelection: true, // Allow multiple images if needed
+        allowsMultipleSelection: true,
         quality: 0.2,
       });
 
       if (!result?.canceled && result?.assets) {
-        setSelectedImageFiles([...selectedImageFiles, ...result.assets]);
+        setOriginalImageFiles([...originalImageFiles, ...result.assets]);
       }
     } catch (error) {
       Toast.show({
@@ -65,13 +69,13 @@ const AddPostScreen = () => {
   };
 
   const removeImage = (index: number) => {
-    const updatedImageFile = [...selectedImageFiles];
+    const updatedImageFile = [...originalImageFiles];
     updatedImageFile.splice(index, 1);
-    setSelectedImageFiles(updatedImageFile);
+    setOriginalImageFiles(updatedImageFile);
   };
 
   const handleSubmitPost = async () => {
-    if (postContent.trim() === '' && selectedImageFiles.length === 0) {
+    if (postContent.trim() === '' && originalImageFiles.length === 0) {
       Toast.show({
         type: 'error',
         text1: localStrings.AddPost.CreatePostFailed,
@@ -79,15 +83,19 @@ const AddPostScreen = () => {
       })
       return;
     }
-    const mediaFiles = await convertMediaToFiles(selectedImageFiles);
-    const newPost: CreatePostRequestModel = {
+    const { detetedMedias, newMediaFiles } = handleMedias(mediaIds, originalImageFiles);
+    
+    const mediaFiles = await convertMediaToFiles(newMediaFiles);
+    const updatedPost: UpdatePostRequestModel = {
+      postId: id,
       content: postContent,
       privacy: privacy,
       location: 'HCM',
       title: user?.family_name + ' ' + user?.name + "'s post",
       media: mediaFiles.length > 0 ? mediaFiles : undefined,
+      media_ids: detetedMedias.length > 0 ? detetedMedias : undefined,
     };
-    await createPost(newPost);
+    await updatePost(updatedPost);
   };
 
   const renderPrivacyText = () => {
@@ -104,6 +112,12 @@ const AddPostScreen = () => {
   };
 
   useEffect(() => {
+    if (!post) {
+      getDetailPost(id)
+    }
+  }, [post])
+
+  useEffect(() => {
     if (savedPost.savedPostContent) {
       setPostContent(savedPost.savedPostContent)
     }
@@ -111,7 +125,7 @@ const AddPostScreen = () => {
       setPrivacy(savedPost.savedPrivacy)
     }
   }, [savedPost])
-  
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1 }}>
@@ -128,7 +142,7 @@ const AddPostScreen = () => {
               justifyContent: 'space-between',
             }}>
               <TouchableOpacity onPress={() => {
-                router.push("/(tabs)")
+                router.back();
               }}>
                 <Ionicons name="close" size={24} color={brandPrimary} />
               </TouchableOpacity>
@@ -137,7 +151,7 @@ const AddPostScreen = () => {
                 fontSize: 20,
                 marginLeft: 10,
               }}>
-                {localStrings.AddPost.NewPost}
+                {localStrings.Post.EditPost}
               </Text>
             </View>
           </View>
@@ -181,7 +195,7 @@ const AddPostScreen = () => {
         {/* Image Upload Section */}
         <View style={{ paddingRight: 10, paddingLeft: 60 }}>
           <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-            {selectedImageFiles.map((file, index) => (
+            {originalImageFiles.map((file, index) => (
               <View key={index} style={{ position: 'relative', marginRight: 10, marginBottom: 10 }}>
                 {file?.uri?.endsWith('.mp4') ? (
                   <Video
@@ -206,7 +220,7 @@ const AddPostScreen = () => {
                     padding: 2
                   }}
                 >
-                  <Ionicons name="close" size={18} color="red" />
+                  <Ionicons name="close" size={18} color={brandPrimary} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -248,7 +262,7 @@ const AddPostScreen = () => {
             onPress={() => {
               savedPost?.setSavedPostContent!(postContent as string);
               savedPost?.setSavedPrivacy!(privacy);
-              savedPost?.setSavedSelectedImageFiles!(selectedImageFiles);
+              savedPost?.setSavedSelectedImageFiles!(originalImageFiles);
               router.push('/object');
             }}
           >
@@ -270,14 +284,14 @@ const AddPostScreen = () => {
             }}
             size='large'
             onPress={handleSubmitPost}
-            loading={createLoading}
+            loading={updateLoading}
           >
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.AddPost.PostNow}</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.Public.Save}</Text>
           </Button>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
-export default AddPostScreen;
+export default EditPostScreen

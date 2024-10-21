@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import { Tabs } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
@@ -6,24 +6,36 @@ import useColor from '@/src/hooks/useColor';
 import AboutTab from './AboutTab';
 import SettingsTab from './SettingsTab';
 import PostList from './PostList';
+import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 
-const ProfileTabs: React.FC = () => {
+const ProfileTabs = ({
+  tab,
+  setTab,
+  posts,
+  loading,
+  loadMorePosts
+}: {
+  tab: number,
+  setTab: (number: number) => void,
+  posts: PostResponseModel[],
+  loading: boolean,
+  loadMorePosts: () => void
+}) => {
   const { brandPrimary } = useColor();
   const { localStrings } = useAuth();
-  const [tab, setTab] = useState(0);
 
   const renderBody = useCallback(() => {
     switch (tab) {
       case 0:
         return <AboutTab />;
       case 1:
-        return <PostList />;
+        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} />;
       case 2:
         return <SettingsTab />;
       default:
         return <AboutTab />;
     }
-  }, [tab]);
+  }, [tab, posts, loading]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>

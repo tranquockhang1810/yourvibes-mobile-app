@@ -8,7 +8,9 @@ export const ApiPath = {
   PROFILE: getApiPath('users/'),
   // Post
   CREATE_POST: getApiPath('posts/'),
-  GET_POSTS: getApiPath('posts/getMany/')
+  UPDATE_POST: getApiPath('posts/'),
+  GET_POSTS: getApiPath('posts/'),
+  DELETE_POST: getApiPath('posts/'),
 }
 
 function getApiPath(path: string) {
