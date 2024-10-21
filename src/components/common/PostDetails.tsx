@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, TextInput, Image,KeyboardAvoidingView,Platform  } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList, TextInput, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import usePostDetailsViewModel from './PostDetailsViewModel/PostDetailsViewModel';
 import { useRouter } from 'expo-router';
-  
+
 const PostDetails = () => {
   const { brandPrimary, brandPrimaryTap, backgroundColor, lightGray, grayBackground } = useColor();
   const router = useRouter();
@@ -15,14 +15,15 @@ const PostDetails = () => {
     newComment,
     replyToCommentId,
     replyToReplyId,
-    textInputRef, 
+    textInputRef,
     handleLike,
     handleReport,
     handleAddComment,
     setNewComment,
     setReplyToCommentId,
     setReplyToReplyId,
-  } = usePostDetailsViewModel();
+  } = usePostDetailsViewModel(); 
+  const [showMoreReplies, setShowMoreReplies] = useState<{ [key: number]: boolean }>({});
 
   const renderReplies = (replies: any[]) => {
     return replies.map((reply) => (
@@ -46,25 +47,34 @@ const PostDetails = () => {
           <TouchableOpacity
             style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}
             onPress={() => {
-              setReplyToCommentId(null); // Không trả lời bình luận cha
-              setReplyToReplyId(reply.id); // Trả lời bình luận con
-              setNewComment(''); // Xóa bình luận mới trước đó
-              textInputRef.current?.focus(); // Hiển thị bàn phím
+              setReplyToCommentId(null);
+              setReplyToReplyId(reply.id);
+              setNewComment('');
+              textInputRef.current?.focus();
             }}
           >
             <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
             <Text style={{ marginLeft: 5 }}>Trả lời</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleReport} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}>
-            <AntDesign name="warning" size={16} color={brandPrimaryTap} />
-            <Text style={{ marginLeft: 5 }}>Báo cáo</Text>
+            <AntDesign name="bars" size={16} color={brandPrimaryTap} />
+            <Text style={{ marginLeft: 5 }}>Hành Động</Text>
           </TouchableOpacity>
         </View>
-        {renderReplies(reply.replies)}
+
+        {reply.replies.length > 1 && !showMoreReplies[reply.id] && (
+          <TouchableOpacity
+            onPress={() => setShowMoreReplies((prev) => ({ ...prev, [reply.id]: true }))}
+            style={{ marginTop: 10 }}
+          >
+            <Text style={{ color: brandPrimaryTap }}>Xem thêm {reply.replies.length - 1} bình luận</Text>
+          </TouchableOpacity>
+        )}
+
+        {showMoreReplies[reply.id] ? renderReplies(reply.replies) : renderReplies(reply.replies.slice(0, 1))}
       </View>
     ));
   };
-  
 
   const renderComment = ({ item }: any) => (
     <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fff', borderRadius: 5, marginBottom: 10 }}>
@@ -88,20 +98,19 @@ const PostDetails = () => {
           <Text style={{ marginLeft: 5 }}>{likeCount[item.id] || item.likes}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
-            onPress={() => {
-              setReplyToCommentId(item.id); // Trả lời bình luận cha
-              setReplyToReplyId(null); // Không trả lời bình luận con
-              setNewComment('');
-              textInputRef.current?.focus(); // Hiển thị bàn phím
-            }}
-          >
-            <FontAwesome name="reply" size={20} color={brandPrimaryTap} />
-            <Text style={{ marginLeft: 5 }}>Trả lời</Text>
-          </TouchableOpacity>
-
+          onPress={() => {
+            setReplyToCommentId(item.id); // Trả lời bình luận cha
+            setReplyToReplyId(null); // Không trả lời bình luận con
+            setNewComment('');
+            textInputRef.current?.focus(); // Hiển thị bàn phím
+          }}
+        >
+          <FontAwesome name="reply" size={20} color={brandPrimaryTap} />
+          <Text style={{ marginLeft: 5 }}>Trả lời</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={handleReport}>
-          <AntDesign name="warning" size={20} color={brandPrimaryTap} />
-          <Text style={{ marginLeft: 5 }}>Báo cáo</Text>
+          <AntDesign name="bars" size={20} color={brandPrimaryTap} />
+          <Text style={{ marginLeft: 5 }}>Hành Động</Text>
         </TouchableOpacity>
       </View>
       {renderReplies(item.replies)}
@@ -110,80 +119,71 @@ const PostDetails = () => {
 
   return (
     <KeyboardAvoidingView
-    style={{ flex: 1, backgroundColor: backgroundColor, width: '100%' }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  >
-    <View style={{ flex: 1}}>
-      {/* Header */} 
-      <View style={{ flexDirection: 'row', alignItems: 'center' ,padding: 16,marginTop: 30}}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <AntDesign name="arrowleft" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10 }}>Bình luận</Text>
-      </View>
-
-      {/* Black Line */} 
-        <View style={{ height: 1, backgroundColor: '#000' }} /> 
-
-
-      {/* Comments */}
-      <FlatList
-        data={comments}
-        renderItem={renderComment}
-        keyExtractor={(item) => item.id.toString()}
-      />
-
-      {/* Add Comment */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
-        <Image
-          source={{ uri: 'https://i.pravatar.cc/150?img=8' }} // Avatar for the current user
-          style={{ width: 45, height: 45, borderRadius: 25, marginRight: 10 }}
-        />
-        <TextInput
-          ref={textInputRef}
-          style={{
-            flex: 1,
-            borderColor: '#ccc',
-            borderWidth: 1,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: '#fff',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}
-          placeholder="Nhập bình luận của bạn..."
-          value={newComment}
-          onChangeText={setNewComment}
-        />
-
-        <View style={{
-          backgroundColor: 'white',
-          borderRadius: 50,
-          marginLeft: 10,
-          padding: 10,
-          justifyContent: 'center',
-          alignItems: 'center',
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 1.5,
-          elevation: 5,
-        }}>
-          <TouchableOpacity
-            onPress={handleAddComment}
-            style={{ padding: 10 }}
-          >
-            <FontAwesome name="send-o" size={20} color={brandPrimary} />
+      style={{ flex: 1, backgroundColor: backgroundColor, width: '100%' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16, marginTop: 30 }}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <AntDesign name="arrowleft" size={24} color="black" />
           </TouchableOpacity>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10 }}>Bình luận</Text>
+        </View>
+
+        <View style={{ height: 1, backgroundColor: '#000' }} />
+
+        <FlatList
+          data={comments}
+          renderItem={renderComment}
+          keyExtractor={(item) => item.id.toString()}
+        />
+
+        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+          <Image
+            source={{ uri: 'https://i.pravatar.cc/150?img=8' }}
+            style={{ width: 45, height: 45, borderRadius: 25, marginRight: 10 }}
+          />
+          <TextInput
+            ref={textInputRef}
+            style={{
+              flex: 1,
+              borderColor: '#ccc',
+              borderWidth: 1,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: '#fff',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}
+            placeholder="Nhập bình luận của bạn..."
+            value={newComment}
+            onChangeText={setNewComment}
+          />
+
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 50,
+              marginLeft: 10,
+              padding: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.2,
+              shadowRadius: 1.5,
+              elevation: 5,
+            }}
+          >
+            <TouchableOpacity onPress={handleAddComment}>
+            <FontAwesome name="send-o" size={30} color={brandPrimary} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View> 
     </KeyboardAvoidingView>
   );
 };

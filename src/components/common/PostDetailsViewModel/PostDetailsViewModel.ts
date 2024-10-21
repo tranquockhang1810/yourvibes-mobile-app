@@ -31,7 +31,23 @@ const initialComments = [
           content: 'Bình luận 4',
           likes: 5,
           timestamp: Date.now(),
-          replies: [],
+          replies: [{
+            id: 5,
+            user: 'User 5',
+            content: 'Bình luận 5',
+            likes: 5,
+            timestamp: Date.now(),
+            replies: [
+              {
+                id: 6,
+                user: 'User 6',
+                content: 'Bình luận 6',
+                likes: 5,
+                timestamp: Date.now(),
+                replies: [],
+              },
+            ],
+          }],
         },],
       },
     ],
@@ -63,7 +79,7 @@ const usePostDetailsViewModel = () => {
   };
 
   const handleReport = () => {
-    const options = ['Báo cáo bình luận', 'Hủy'];
+    const options = ['Báo cáo bình luận',  'Hủy'];
     showActionSheetWithOptions(
       {
         title: 'Chọn hành động',
