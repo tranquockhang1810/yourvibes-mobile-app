@@ -53,6 +53,7 @@ export const VnLocalizedStrings = {
       GetOTP: "Nhập OTP",
       OTP: "Mã OTP",
       ConfirmPassword: "Xác nhận mật khẩu",
+      Biography: "Tiểu sử"
     },
     RequiredMessages: {
       FamilyNameRequiredMessage: "Vui lòng nhập họ!",
@@ -137,5 +138,8 @@ export const VnLocalizedStrings = {
     DeleteConfirm: "Bạn chắc chắn muốn xóa bài viết này?",
     DeleteSuccess: "Xóa bài viết thành công!",
     DeleteFailed: "Xóa bài viết thát bại!"
+  },
+  UpdateProfile: {
+    UpdateProfile: "Cập nhật trang cá nhân",
   }
 }

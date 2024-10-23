@@ -4,6 +4,7 @@ import useColor from '@/src/hooks/useColor';
 import { Button, Modal } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import { router } from 'expo-router';
 
 const SettingsTab = () => {
   const { brandPrimary } = useColor();
@@ -48,7 +49,7 @@ const SettingsTab = () => {
         <Button
           type="ghost"
           onPress={() => {
-            // Handle Edit Profile action here
+            router.push('/update-profile');
           }}
         >
           <Text style={{ color: brandPrimary, fontSize: 16 }}>

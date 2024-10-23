@@ -53,6 +53,7 @@ export const ENGLocalizedStrings = {
       GetOTP: "Enter OTP",
       OTP: "OTP Code",
       ConfirmPassword: "Confirm Password",
+      Biography: "Biography",
     },
     RequiredMessages: {
       FamilyNameRequiredMessage: "Please enter family name!",
@@ -137,5 +138,8 @@ export const ENGLocalizedStrings = {
     DeleteConfirm: "Are you sure you want to delete this post?",
     DeleteSuccess: "Delete post successful!",
     DeleteFailed: "Delete post failed!",
+  },
+  UpdateProfile: {
+    UpdateProfile: "Update profile",
   }
 }

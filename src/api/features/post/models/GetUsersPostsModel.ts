@@ -1,6 +1,5 @@
 export interface GetUsersPostsRequestModel {
   user_id?: string
-  title?: string
   content?: string
   location?: string
   is_advertisement?: boolean
