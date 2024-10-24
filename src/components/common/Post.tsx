@@ -11,7 +11,6 @@ import { router } from 'expo-router';
 import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer'; 
 import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-import PostDetails from './PostDetails';
 
 const Post = ({
   post,
@@ -22,6 +21,7 @@ const Post = ({
   isParentPost?: boolean,
   children?: React.ReactNode
 }) => {
+  const postDetails = post?.id; 
   const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
   const { user, localStrings } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
@@ -152,10 +152,18 @@ const Post = ({
                 <AntDesign name="hearto" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.like_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}  onPress={() => router.push(`/postDetails?postId=${post?.id}`)} >
+
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+                onPress={() => {
+                  console.log('postId bên post truyền qua postdetails:', post?.id);
+                  router.push(`/postDetails?postId=${post?.id}`);  
+                }}                                
+              >  
                 <FontAwesome name="comments-o" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.comment_count}</Text>
               </TouchableOpacity>
+
               <TouchableOpacity>
                 <AntDesign name="sharealt" size={20} color={brandPrimary} />
               </TouchableOpacity>

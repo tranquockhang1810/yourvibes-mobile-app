@@ -1,3 +1,5 @@
+import { CommonActions } from "@react-navigation/native";
+
 export const ENGLocalizedStrings = {
   Public: {
     All: "All",
@@ -41,6 +43,12 @@ export const ENGLocalizedStrings = {
     HourAgo: "hours ago",
     DayAgo: "days ago",
     Action: "Action",
+    CommonActions:"Click your comment ...",
+    Comment: "Comments",
+    Reply: "Reply",
+    ReportComment:"Report Comment"
+
+    
   },
   Form: {
     Label: {

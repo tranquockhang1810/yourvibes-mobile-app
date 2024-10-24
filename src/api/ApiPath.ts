@@ -11,6 +11,12 @@ export const ApiPath = {
   UPDATE_POST: getApiPath('posts/'),
   GET_POSTS: getApiPath('posts/'),
   DELETE_POST: getApiPath('posts/'),
+
+  // Comment
+  CREATE_COMMENT: getApiPath('comments/'),
+  GET_COMMENTS: getApiPath('comments/'),
+  DELETE_COMMENT: getApiPath('comments/'),
+  UPDATE_COMMENT: getApiPath('comments/'),
 }
 
 function getApiPath(path: string) {

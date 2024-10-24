@@ -1,68 +1,43 @@
-import { useState, useRef } from 'react';
-import { TextInput } from 'react-native';
-import { useActionSheet } from '@expo/react-native-action-sheet';
+import { useState, useRef, useEffect } from "react";
+import { TextInput } from "react-native";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
+import { useAuth } from "@/src/context/auth/useAuth";
+import useColor from "@/src/hooks/useColor";
+import { defaultCommentRepo } from "@/src/api/features/comment/CommentRepo";
+import { CreateCommentsRequestModel } from "@/src/api/features/comment/models/CreateCommentsModel";
+import Toast from "react-native-toast-message";
 
-// Dữ liệu cứng cho danh sách bình luận
-const initialComments = [
-  {
-    id: 1,
-    user: 'User 1',
-    content: 'Bình luận 1',
-    likes: 5,
-    timestamp: Date.now(),
-    replies: [],
-  },
-  {
-    id: 2,
-    user: 'User 2',
-    content: 'Bình luận 2',
-    likes: 10,
-    timestamp: Date.now(),
-    replies: [
-      {
-        id: 3,
-        user: 'User 3',
-        content: 'Trả lời cho Bình luận 2',
-        likes: 2,
-        timestamp: Date.now(),
-        replies: [{
-          id: 4,
-          user: 'User 4',
-          content: 'Bình luận 4',
-          likes: 5,
-          timestamp: Date.now(),
-          replies: [{
-            id: 5,
-            user: 'User 5',
-            content: 'Bình luận 5',
-            likes: 5,
-            timestamp: Date.now(),
-            replies: [
-              {
-                id: 6,
-                user: 'User 6',
-                content: 'Bình luận 6',
-                likes: 5,
-                timestamp: Date.now(),
-                replies: [],
-              },
-            ],
-          }],
-        },],
-      },
-    ],
-  },
-];
-
-const usePostDetailsViewModel = () => {
+const usePostDetailsViewModel = (postId: string) => {
   const { showActionSheetWithOptions } = useActionSheet();
-  const [comments, setComments] = useState(initialComments);
-  const [likeCount, setLikeCount] = useState<{ [key: number]: number }>({ 1: 5, 2: 10 });
+  const [comments, setComments] = useState<CommentsResponseModel[]>([]);
+  const [likeCount, setLikeCount] = useState<{ [key: number]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: number]: boolean }>({});
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
   const [replyToReplyId, setReplyToReplyId] = useState<number | null>(null);
   const textInputRef = useRef<TextInput>(null);
+  const limit = 10;
+  const { user, localStrings } = useAuth();
+
+  const { brandPrimary, brandPrimaryTap, backgroundColor } = useColor();
+
+  const fetchComments = async () => {
+    const response = await defaultCommentRepo.getComments({
+      PostId: `${postId}`,
+      page: 1,
+      limit: 10,
+    });
+    // Cập nhật comments
+    if (response && response?.data) {
+      setComments(response?.data); // Giả sử response.data chứa danh sách bình luận
+    }
+  };
+
+  // Lấy bình luận
+  useEffect(() => {
+    fetchComments();
+  }, [postId]);
 
   const handleLike = (commentId: number) => {
     setUserLikes((prevUserLikes) => {
@@ -79,72 +54,50 @@ const usePostDetailsViewModel = () => {
   };
 
   const handleReport = () => {
-    const options = ['Báo cáo bình luận',  'Hủy'];
+    const options = ["Báo cáo bình luận", "Hủy"];
     showActionSheetWithOptions(
       {
-        title: 'Chọn hành động',
+        title: "Chọn hành động",
         options: options,
         cancelButtonIndex: options.length - 1,
-        cancelButtonTintColor: '#F95454',
+        cancelButtonTintColor: "#F95454",
       },
       (buttonIndex) => {
         if (buttonIndex === 0) {
-          console.log('Báo cáo bình luận được chọn');
+          console.log("Báo cáo bình luận được chọn");
         }
       }
     );
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      const newCommentObject = {
-        id: Math.floor(Math.random() * 1000),  // Tạo ID ngẫu nhiên cho bình luận
-        user: 'Current User',  // Người dùng hiện tại
-        content: newComment,   // Nội dung bình luận
-        likes: 0,
-        timestamp: Date.now(),
-        replies: [],  // Bình luận mới chưa có trả lời nào
+      const newCommentObject: CreateCommentsRequestModel = {
+        content: newComment,
+        post_id: postId,
+        parent_id: replyToReplyId?.toString() || replyToCommentId?.toString(),//Comment con
       };
-  
-      // Hàm đệ quy để thêm trả lời vào đúng bình luận con
-      const addReplyToComment = (commentsArray: any[], commentId: number): any[] => {
-        return commentsArray.map((comment) => {
-          if (comment.id === commentId) {
-            return {
-              ...comment,
-              replies: [...comment.replies, newCommentObject],  // Thêm trả lời vào bình luận
-            };
-          } else if (comment.replies.length > 0) {
-            // Nếu comment có trả lời, gọi đệ quy để tiếp tục tìm kiếm comment cần thêm trả lời
-            return {
-              ...comment,
-              replies: addReplyToComment(comment.replies, commentId),
-            };
-          }
-          return comment;
+
+      const response = await defaultCommentRepo.createComment(newCommentObject);
+      if (!response.error) {
+        // Cập nhật danh sách bình luận sau khi tạo bình luận mới
+        Toast.show({
+          type: "success",
+          text1: "Comment thành công",
         });
-      };
-  
-      if (replyToReplyId !== null) {
-        // Nếu là trả lời cho một bình luận con (replies của comment cha)
-        setComments((prevComments) => addReplyToComment(prevComments, replyToReplyId));
-      } else if (replyToCommentId !== null) {
-        // Nếu là trả lời cho một bình luận cha
-        setComments((prevComments) => addReplyToComment(prevComments, replyToCommentId));
+        fetchComments();
+        setNewComment("");
+        setReplyToCommentId(null);
+        setReplyToReplyId(null);
+        textInputRef.current?.blur();
       } else {
-        // Nếu là bình luận mới
-        setComments((prevComments) => [...prevComments, newCommentObject]);
+        Toast.show({
+          type: "error",
+          text1: "Comment thất bại",
+        });
       }
-  
-      // Xóa dữ liệu nhập sau khi thêm bình luận
-      setNewComment('');
-      setReplyToCommentId(null);
-      setReplyToReplyId(null);
-      textInputRef.current?.blur();  // Ẩn bàn phím sau khi thêm
     }
   };
-  
-  
 
   return {
     comments,

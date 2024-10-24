@@ -3,8 +3,7 @@ import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"
 export interface PostResponseModel {
   id?: string
   parent_id?: string,
-  parent_post?: PostResponseModel,
-  title?: string,
+  parent_post?: PostResponseModel, 
   content: string,
   created_at?: string,
   updated_at?: string,

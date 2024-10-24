@@ -1,8 +1,7 @@
 import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"
 
 export interface UpdatePostRequestModel {
-  postId?: string
-  title?: string
+  postId?: string 
   content?: string
   privacy?: Privacy
   location?: string
