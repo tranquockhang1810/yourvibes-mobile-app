@@ -11,6 +11,9 @@ export const ApiPath = {
   UPDATE_POST: getApiPath('posts/'),
   GET_POSTS: getApiPath('posts/'),
   DELETE_POST: getApiPath('posts/'),
+  GET_USER_LIKES: getApiPath('posts/get_like_user/'),
+  LIKE_POST: getApiPath('posts/get_like_user/'),
+  SHARE_POST: getApiPath('posts/share_post/'),
 }
 
 function getApiPath(path: string) {

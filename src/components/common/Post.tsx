@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Modal } from '@ant-design/react-native';
-import { Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
+import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import MediaView from '../foundation/MediaView';
@@ -80,11 +80,11 @@ const Post = ({
   const renderPrivacyIcon = () => {
     switch (post?.privacy) {
       case Privacy.PUBLIC:
-        return <Entypo name="globe" size={16} color={brandPrimaryTap} />;
+        return <Ionicons name="globe" size={16} color={brandPrimaryTap} />;
       case Privacy.FRIEND_ONLY:
-        return <Entypo name="users" size={16} color={brandPrimaryTap} />;
+        return <Ionicons name="people" size={16} color={brandPrimaryTap} />;
       case Privacy.PRIVATE:
-        return <AntDesign name="lock" size={16} color={brandPrimaryTap} />;
+        return <Ionicons name="lock-closed" size={16} color={brandPrimaryTap} />;
       default:
         return null;
     }

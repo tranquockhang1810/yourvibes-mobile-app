@@ -205,7 +205,7 @@ const AddPostScreen = () => {
                     padding: 2
                   }}
                 >
-                  <Ionicons name="close" size={18} color="red" />
+                  <Ionicons name="close" size={18} color={brandPrimary} />
                 </TouchableOpacity>
               </View>
             ))}
