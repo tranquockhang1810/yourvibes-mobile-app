@@ -15,8 +15,14 @@ export const ApiPath = {
   GET_POSTS: getApiPath('posts/'),
   DELETE_POST: getApiPath('posts/'),
   GET_USER_LIKES: getApiPath('posts/get_like_user/'),
-  LIKE_POST: getApiPath('posts/like_post/'),
+  LIKE_POST: getApiPath('posts/get_like_user/'),
   SHARE_POST: getApiPath('posts/share_post/'),
+
+   //Comment
+   CREATE_COMMENT: getApiPath('comments/'),
+   UPDATE_COMMENT: getApiPath('comments/'),
+   GET_COMMENTS: getApiPath('comments/'),
+   DELETE_COMMENT: getApiPath('comments/'),
 }
 
 function getApiPath(path: string) {

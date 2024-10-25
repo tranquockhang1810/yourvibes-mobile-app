@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer';
 import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
+import PostDetails from './PostDetails';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
 
@@ -23,6 +24,7 @@ const Post = ({
   isParentPost?: boolean,
   children?: React.ReactNode
 }) => {
+  const postDetails = post?.id; 
   const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
   const { user, localStrings } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
@@ -75,7 +77,7 @@ const Post = ({
               );
               break;
             case 2:
-              console.log('Quảng cách bài viết action selected');
+              console.log('Quảng cáo bài viết action selected');
               break;
             default:
               break;

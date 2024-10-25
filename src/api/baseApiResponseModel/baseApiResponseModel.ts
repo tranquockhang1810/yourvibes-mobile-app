@@ -1,4 +1,5 @@
 export class BaseApiResponseModel<T extends Object> {
+  success: any;
   constructor(
     public data: T,
     public paging: Paging,

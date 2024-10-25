@@ -1,3 +1,5 @@
+import { CommonActions } from "@react-navigation/native";
+
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -41,6 +43,11 @@ export const VnLocalizedStrings = {
     HourAgo: "giờ trước",
     DayAgo: "ngày trước",
     Action: "Hành động",
+    CommonActions:"Nhập bình luận của bạn ...",
+    Comment: "Bình luận",
+    Reply: "Trả lời",  
+    ReportComment: "Báo cáo bình luận",
+
   },
   Form: {
     Label: {
