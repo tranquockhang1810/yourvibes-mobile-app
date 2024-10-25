@@ -1,5 +1,3 @@
-import { CommonActions } from "@react-navigation/native";
-
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
