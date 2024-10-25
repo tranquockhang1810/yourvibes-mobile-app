@@ -6,20 +6,12 @@ export const TransferToFormData = (data: any) => {
   for (const key in data) {
     if (data[key] === undefined) {
       continue;
-    } else if (key === 'media' && Array.isArray(data[key])) {
-      data[key].forEach((file: any) => {
-        formData.append(key, {
-          uri: file.uri,
-          name: file.name,
-          type: file.type
-        } as any);
-      });
     } else if (Array.isArray(data[key])) {
       data[key].forEach((item: any) => {
-        formData.append(key, item);
+        formData.append(key, item as any);
       });
     } else {
-      formData.append(key, data[key]);
+      formData.append(key, data[key] as any);
     }
   }
 

@@ -33,7 +33,7 @@ const SignUpViewModel = (repo: AuthenRepo) => {
           type: "success",
           text1: localStrings.SignUp.SignUpSuccess,
         });
-        router.push("/login");
+        router.push(`/login?email=${data?.email}&password=${data?.password}`);
       } else {
         Toast.show({
           type: "error",

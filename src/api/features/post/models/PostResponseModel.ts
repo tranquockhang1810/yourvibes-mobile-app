@@ -4,7 +4,7 @@ export interface PostResponseModel {
   id?: string
   parent_id?: string,
   parent_post?: PostResponseModel,
-  content: string,
+  content?: string,
   created_at?: string,
   updated_at?: string,
   user_id?: string,
@@ -20,6 +20,7 @@ export interface PostResponseModel {
   status?: boolean,
   location?: string,
   is_advertisement?: boolean,
+  is_liked?: boolean,
   media?: PostMediaModel[]
 }
 

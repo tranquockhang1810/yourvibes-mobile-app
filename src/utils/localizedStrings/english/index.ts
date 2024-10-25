@@ -123,6 +123,10 @@ export const ENGLocalizedStrings = {
     DeletePost: "Delete post",
     Advertisement: "Advertisement",
     ReportPost: "Report post",
+    LikePostFailed: "Like post failed!",
+    SharePostSuccess: "Share post successful!",
+    SharePostFailed: "Share post failed!",
+    SharePost: "Share",
   },
   Profile: {
     Posts: {
@@ -141,5 +145,7 @@ export const ENGLocalizedStrings = {
   },
   UpdateProfile: {
     UpdateProfile: "Update profile",
+    UpdateFailed: "Update profile failed!",
+    UpdateSuccess: "Update profile successful!",
   }
 }

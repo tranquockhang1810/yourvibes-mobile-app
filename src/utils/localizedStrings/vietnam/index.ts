@@ -97,7 +97,7 @@ export const VnLocalizedStrings = {
   AddPost: {
     NewPost: "Bài đăng mới",
     WhatDoYouThink: "Bạn đang nghĩ gì?",
-    PrivacyText: "Bài đăng sẽ được chia sẻ với",
+    PrivacyText: "Bài đăng được chia sẻ với",
     PostNow: "Đăng ngay",
     CreatePostSuccess: "Đăng bài thành công!",
     CreatePostFailed: "Đăng bài thất bại!",
@@ -123,6 +123,10 @@ export const VnLocalizedStrings = {
     DeletePost: "Xóa bài đăng",
     Advertisement: "Quảng cáo bài đăng",
     ReportPost: "Báo cáo bài đăng",
+    LikePostFailed: "Thích bài viết thất bại!",
+    SharePostSuccess: "Chia sẻ bài viết thành công!",
+    SharePostFailed: "Chia sẻ bài viết thất bại!",
+    SharePost: "Chia sẻ",
   },
   Profile: {
     Posts: {
@@ -141,5 +145,7 @@ export const VnLocalizedStrings = {
   },
   UpdateProfile: {
     UpdateProfile: "Cập nhật trang cá nhân",
+    UpdateFailed: "Cập nhật trang cá nhân thất bại!",
+    UpdateSuccess: "Cập nhật trang cá nhân thành công!",
   }
 }

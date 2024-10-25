@@ -1,7 +1,7 @@
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { useAuth } from "@/src/context/auth/useAuth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 const ProfileViewModel = () => {
@@ -54,6 +54,38 @@ const ProfileViewModel = () => {
     }
   };
 
+  const fetchUserPostsForHome = async () => {
+    try {
+      setLoading(true);
+      const response = await defaultPostRepo.getPosts({
+        user_id: "32a4f1c6-2b39-4e69-8fc0-22ede65a83a9",
+        sort_by: 'created_at',
+        isDescending: true,
+        page: 1,
+        limit: limit,
+      });
+
+      if (!response?.error) {
+        setPosts(response?.data);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Posts.GetPostsFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Posts.GetPostsFailed,
+        text2: error?.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadMorePosts = () => {
     if (!loading && hasMore) {
       setPage((prevPage) => prevPage + 1);
@@ -67,6 +99,7 @@ const ProfileViewModel = () => {
     hasMore,
     loadMorePosts,
     fetchUserPosts,
+    fetchUserPostsForHome,
     total
   }
 };

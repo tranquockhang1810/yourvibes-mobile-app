@@ -182,7 +182,7 @@ const AddPostScreen = () => {
           <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
             {selectedImageFiles.map((file, index) => (
               <View key={index} style={{ position: 'relative', marginRight: 10, marginBottom: 10 }}>
-                {file?.uri?.endsWith('.mp4') ? (
+                {file?.type?.includes('video') ? (
                   <Video
                     source={{ uri: file?.uri }}
                     useNativeControls

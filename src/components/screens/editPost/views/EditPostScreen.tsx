@@ -196,7 +196,7 @@ const EditPostScreen = ({ id }: { id: string }) => {
           <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
             {originalImageFiles.map((file, index) => (
               <View key={index} style={{ position: 'relative', marginRight: 10, marginBottom: 10 }}>
-                {file?.uri?.endsWith('.mp4') ? (
+                {file?.uri?.includes('mp4') || file?.uri?.includes('mov') ? (
                   <Video
                     source={{ uri: file?.uri }}
                     useNativeControls

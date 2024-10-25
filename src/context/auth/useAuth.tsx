@@ -44,6 +44,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     router.push('/(tabs)/home');
   }
 
+  const onUpdateProfile = async (user: any) => {
+    await AsyncStorage.removeItem('user');
+    await AsyncStorage.setItem('user', JSON.stringify(user));
+    // AsyncStorage.setItem('refreshtoken', user.refreshtoken);
+    setIsAuthenticated(true);
+    setUser(user); 
+    router.back();
+  }
+
   const onLogout = async () => {
     //Xóa dữ liệu trong storage và trong biến
     await AsyncStorage.removeItem('user');
@@ -83,7 +92,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       language,
       setLanguage,
       isAuthenticated,
-      user
+      user,
+      onUpdateProfile
     }}
     >
       {children}

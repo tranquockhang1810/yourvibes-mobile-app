@@ -10,11 +10,11 @@ import {
   Image,
   ScrollView
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, WingBlank, WhiteSpace, Form, ActivityIndicator } from '@ant-design/react-native';
 import MyInput from '@/src/components/foundation/MyInput';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useGlobalSearchParams } from 'expo-router';
 import useColor from '@/src/hooks/useColor';
 import { useAuth } from '@/src/context/auth/useAuth';
 import Toast from 'react-native-toast-message';
@@ -39,6 +39,13 @@ const LoginFeature = () => {
     googleLoading,
     setGoogleLoading
   } = LoginViewModel(defaultAuthenRepo, onLogin);
+  const { email, password } = useGlobalSearchParams();
+
+  useEffect(() => {
+    if (email && password) {
+      signInForm.setFieldsValue({ email, password });
+    }
+  }, [email, password]);
 
   return (
     <KeyboardAvoidingView
