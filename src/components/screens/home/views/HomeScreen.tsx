@@ -11,13 +11,21 @@ import useColor from '@/src/hooks/useColor'
 import Post from '@/src/components/common/Post'
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from 'expo-router'
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel'
+import ProfileViewModel from '../../profile/viewModel/ProfileViewModel'
 
 const HomeScreen = () => {
   const { brandPrimary, brandPrimaryTap, backgroundColor, lightGray } = useColor();
   const [postsList, setPosts] = useState<PostResponseModel[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  // const {
+  //   fetchUserPostsForHome,
+  //   posts
+  // } = ProfileViewModel()
+
+  // useEffect(() => {
+  //   fetchUserPostsForHome();
+  // }, [])
 
   const defaultPosts: PostResponseModel[] = [
     {
@@ -41,9 +49,9 @@ const HomeScreen = () => {
         privacy: Privacy.PUBLIC,
         status: true,
         media: [
-          { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
-          { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1712331864/samples/sea-turtle.mp4', status: true },
-          { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331883/cld-sample-3.jpg', status: true }
+          { post_id: '1', media_url: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
+          { post_id: '1', media_url: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1712331864/samples/sea-turtle.mp4', status: true },
+          { post_id: '1', media_url: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331883/cld-sample-3.jpg', status: true }
         ]
       },
       content: "Post nè hehehehe",
@@ -53,9 +61,9 @@ const HomeScreen = () => {
       privacy: Privacy.PUBLIC,
       status: true,
       media: [
-        { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
-        { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-5.jpg', status: true },
-        { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1727932039/bandicam_2024-05-18_14-56-58-243_tl8tsq.mp4', status: true }
+        { post_id: '1', media_url: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
+        { post_id: '1', media_url: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-5.jpg', status: true },
+        { post_id: '1', media_url: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1727932039/bandicam_2024-05-18_14-56-58-243_tl8tsq.mp4', status: true }
       ]
     },
     {
@@ -80,19 +88,19 @@ const HomeScreen = () => {
         status: true,
         media: [
           {
-            "mediaUrl": "https://loremflickr.com/640/480/city",
+            "media_url": "https://loremflickr.com/640/480/city",
             "status": true,
-            "postID": "1"
+            "post_id": "1"
           },
           {
-            "mediaUrl": "https://loremflickr.com/640/480/city",
+            "media_url": "https://loremflickr.com/640/480/city",
             "status": false,
-            "postID": "2"
+            "post_id": "2"
           },
           {
-            "mediaUrl": "https://loremflickr.com/640/480/city",
+            "media_url": "https://loremflickr.com/640/480/city",
             "status": true,
-            "postID": "3"
+            "post_id": "3"
           },
         ]
       },
@@ -104,20 +112,19 @@ const HomeScreen = () => {
       status: true,
       media: [
         {
-          "mediaUrl": "https://loremflickr.com/640/480/city",
+          "media_url": "https://loremflickr.com/640/480/city",
           "status": true,
-          "postID": "4"
+          "post_id": "4"
         },
         {
-          "mediaUrl": "https://loremflickr.com/640/480/city",
+          "media_url": "https://loremflickr.com/640/480/city",
           "status": false,
-          "postID": "5"
+          "post_id": "5"
         },
       ]
     },
   ];
 
-  // clear posts from async storage
   const clearPosts = async () => {
     try {
       await AsyncStorage.removeItem('posts');
@@ -142,14 +149,6 @@ const HomeScreen = () => {
       setPosts(defaultPosts); // Fallback to default posts on error
     }
   };
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadPosts(); // Reload posts when refresh is triggered
-    setRefreshing(false);
-  };
-
-  //Test nhánh
 
   useEffect(
     useCallback(() => {
@@ -180,7 +179,6 @@ const HomeScreen = () => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={onRefresh} // Trigger pull-to-refresh
           />
           }
         >

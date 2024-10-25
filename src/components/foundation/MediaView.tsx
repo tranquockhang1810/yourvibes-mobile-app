@@ -21,7 +21,7 @@ const MediaView = ({ mediaItems }: { mediaItems: PostMediaModel[] }) => {
       selectedIndex={0}
     >
       {mediaItems?.map((media, index) => {
-        const isVideo = media?.media_url?.endsWith('.mp4'); // Check if media is a video
+        const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov'); // Check if media is a video
         return isVideo ? (
           <Video
             key={index}

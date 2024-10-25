@@ -4,6 +4,7 @@ import { UserModel } from "../../api/features/authenticate/model/LoginModel";
 
 export interface AuthContextType {
   onLogin: (user: any) => void;
+  onUpdateProfile: (user: any) => void;
   onLogout: () => void;
   localStrings: typeof VnLocalizedStrings | typeof ENGLocalizedStrings; 
   changeLanguage: () => void;

@@ -5,7 +5,10 @@ export const ApiPath = {
   LOGIN: getApiPath('users/login'),
   REGISTER: getApiPath('users/register'),
   VERIFIED_EMAIL: getApiPath('users/verifyemail'),
+
+  // User
   PROFILE: getApiPath('users/'),
+  
   // Post
   CREATE_POST: getApiPath('posts/'),
   UPDATE_POST: getApiPath('posts/'),
@@ -14,6 +17,12 @@ export const ApiPath = {
   GET_USER_LIKES: getApiPath('posts/get_like_user/'),
   LIKE_POST: getApiPath('posts/get_like_user/'),
   SHARE_POST: getApiPath('posts/share_post/'),
+
+   //Comment
+   CREATE_COMMENT: getApiPath('comments/'),
+   UPDATE_COMMENT: getApiPath('comments/'),
+   GET_COMMENTS: getApiPath('comments/'),
+   DELETE_COMMENT: getApiPath('comments/'),
 }
 
 function getApiPath(path: string) {

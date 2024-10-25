@@ -9,7 +9,7 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 const EditPostViewModel = (repo: PostRepo) => {
-  const { localStrings } = useAuth();
+  const { localStrings, user } = useAuth();
   const [updateLoading, setUpdateLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState('');
@@ -17,6 +17,9 @@ const EditPostViewModel = (repo: PostRepo) => {
   const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
   const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
   const [mediaIds, setMediaIds] = useState<string[]>([]);
+  const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined);
+  const [liked, setLiked] = useState<boolean>(false);
+  const [shareLoading, setShareLoading] = useState<boolean>(false);
 
   const updatePost = async (data: UpdatePostRequestModel) => {
     try {
@@ -125,11 +128,66 @@ const EditPostViewModel = (repo: PostRepo) => {
       console.error(err);
       Toast.show({
         type: "error",
-        text1: localStrings.DeletePost.DeleteFailed,  
+        text1: localStrings.DeletePost.DeleteFailed,
         text2: err.message
       })
     } finally {
       setDeleteLoading(false);
+    }
+  }
+
+  const likePost = async (id: string) => {
+    try {
+      const res = await repo.likePost(id);
+      if (!res?.error) {
+        setLikedPost({ 
+          ...likedPost,
+          like_count: !liked ? likedPost?.like_count as number + 1 : likedPost?.like_count as number - 1,
+          is_liked: !liked
+        })
+        setLiked(!liked)
+      } else {
+        Toast.show({
+          type: "error",
+          text1: localStrings.Post.LikePostFailed,
+          text2: res?.error?.message
+        })
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: localStrings.Post.LikePostFailed,
+        text2: error?.error?.message
+      })
+    }
+  }
+
+  const sharePost = async (id: string) => {
+    try {
+      setShareLoading(true);
+      const res = await repo.sharePost(id);
+      if (!res?.error) {
+        Toast.show({
+          type: "success",
+          text1: localStrings.Post.SharePostSuccess
+        })
+      } else {
+        Toast.show({
+          type: "error",
+          text1: localStrings.Post.SharePostFailed,
+          text2: res?.error?.message
+        })
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: localStrings.Post.SharePostFailed,
+        text2: error?.error?.message
+      })
+    } finally {
+      setShareLoading(false);
     }
   }
 
@@ -147,7 +205,12 @@ const EditPostViewModel = (repo: PostRepo) => {
     mediaIds,
     handleMedias,
     deletePost,
-    deleteLoading
+    deleteLoading,
+    likePost,
+    likedPost,
+    setLikedPost,
+    sharePost,
+    shareLoading
   }
 }
 
