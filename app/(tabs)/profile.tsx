@@ -12,22 +12,6 @@ const Profile = () => {
   };
 
   return (
-    // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    //   <Text>Profile</Text>
-      // <Button
-      //   type="primary"
-      //   onPress={handleLogout}
-      // >
-      //   Đăng xuất
-      // </Button>
-      // <Button
-      //   type="primary"
-      //   onPress={() => changeLanguage()}
-      //   style={{ marginTop: 10 }}
-      // >
-      //   {localStrings.Public.Language}
-      // </Button>
-    // </View>
     <ProfileFeatures />
   );
 };
