@@ -48,7 +48,7 @@ const AddPostScreen = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsMultipleSelection: true, // Allow multiple images if needed
-        quality: 0.2,
+        quality: 1,
       });
 
       if (!result?.canceled && result?.assets) {
@@ -84,7 +84,6 @@ const AddPostScreen = () => {
       content: postContent,
       privacy: privacy,
       location: 'HCM',
-      title: user?.family_name + ' ' + user?.name + "'s post",
       media: mediaFiles.length > 0 ? mediaFiles : undefined,
     };
     await createPost(newPost);
@@ -206,7 +205,7 @@ const AddPostScreen = () => {
                     padding: 2
                   }}
                 >
-                  <Ionicons name="close" size={18} color="red" />
+                  <Ionicons name="close" size={18} color={brandPrimary} />
                 </TouchableOpacity>
               </View>
             ))}

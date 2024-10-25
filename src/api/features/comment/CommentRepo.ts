@@ -1,4 +1,4 @@
- import { ApiPath } from "../../ApiPath";
+import { ApiPath } from "../../ApiPath"; 
 import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponseModel";
 import client from "../../client";
 import { CommentsResponseModel } from "./models/CommentResponseModel";
@@ -8,6 +8,9 @@ import { GetCommentsRequestModel } from "./models/GetCommentsModel";
 interface ICommentRepo {
     createComment: (data: CreateCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel>>;
     getComments: (data: GetCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel[]>>;
+    deleteComment: (id: string) => Promise<BaseApiResponseModel<any>>;
+    updateComment: (data: CreateCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel>>;
+    getReplies: (parentId: string) => Promise<BaseApiResponseModel<CommentsResponseModel[]>>;
 }
 
 export class CommentRepo implements ICommentRepo {
@@ -18,9 +21,24 @@ export class CommentRepo implements ICommentRepo {
     async getComments(data: GetCommentsRequestModel): Promise<BaseApiResponseModel<CommentsResponseModel[]>> {
         const queryParams = new URLSearchParams({
             post_id: data.PostId,
-            // parent_id: data.parent_id || '', 
             page: data.page.toString(),
             limit: data.limit.toString(),
+        }).toString();
+
+        return client.get(`${ApiPath.GET_COMMENTS}?${queryParams}`); 
+    }
+
+    async deleteComment(id: string): Promise<BaseApiResponseModel<any>> {
+        return client.delete(ApiPath.DELETE_COMMENT + id);
+    }
+
+    async updateComment(data: { content: string }): Promise<BaseApiResponseModel<CommentsResponseModel>> {
+        return client.patch(ApiPath.UPDATE_COMMENT, data, { headers: { "Content-Type": "json" } });
+    }
+
+    async getReplies(parentId: string): Promise<BaseApiResponseModel<CommentsResponseModel[]>> {
+        const queryParams = new URLSearchParams({
+            parent_id: parentId,
         }).toString();
 
         return client.get(`${ApiPath.GET_COMMENTS}?${queryParams}`); 

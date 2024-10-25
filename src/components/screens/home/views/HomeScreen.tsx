@@ -41,9 +41,9 @@ const HomeScreen = () => {
         privacy: Privacy.PUBLIC,
         status: true,
         media: [
-          { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
-          { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1712331864/samples/sea-turtle.mp4', status: true },
-          { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331883/cld-sample-3.jpg', status: true }
+          // { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
+          // { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1712331864/samples/sea-turtle.mp4', status: true },
+          // { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331883/cld-sample-3.jpg', status: true }
         ]
       },
       content: "Post nè hehehehe",
@@ -53,9 +53,9 @@ const HomeScreen = () => {
       privacy: Privacy.PUBLIC,
       status: true,
       media: [
-        { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
-        { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-5.jpg', status: true },
-        { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1727932039/bandicam_2024-05-18_14-56-58-243_tl8tsq.mp4', status: true }
+        // { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-4.jpg', status: true },
+        // { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331884/cld-sample-5.jpg', status: true },
+        // { postID: '1', mediaUrl: 'https://res.cloudinary.com/dfqgxpk50/video/upload/v1727932039/bandicam_2024-05-18_14-56-58-243_tl8tsq.mp4', status: true }
       ]
     },
     {
@@ -80,19 +80,19 @@ const HomeScreen = () => {
         status: true,
         media: [
           {
-            "mediaUrl": "https://loremflickr.com/640/480/city",
+            // "mediaUrl": "https://loremflickr.com/640/480/city",
             "status": true,
-            "postID": "1"
+            // "postID": "1"
           },
           {
-            "mediaUrl": "https://loremflickr.com/640/480/city",
+            // "mediaUrl": "https://loremflickr.com/640/480/city",
             "status": false,
-            "postID": "2"
+            // "postID": "2"
           },
           {
-            "mediaUrl": "https://loremflickr.com/640/480/city",
+            // "mediaUrl": "https://loremflickr.com/640/480/city",
             "status": true,
-            "postID": "3"
+            // "postID": "3"
           },
         ]
       },
@@ -104,14 +104,14 @@ const HomeScreen = () => {
       status: true,
       media: [
         {
-          "mediaUrl": "https://loremflickr.com/640/480/city",
+          // "mediaUrl": "https://loremflickr.com/640/480/city",
           "status": true,
-          "postID": "4"
+          // "postID": "4"
         },
         {
-          "mediaUrl": "https://loremflickr.com/640/480/city",
+          // "mediaUrl": "https://loremflickr.com/640/480/city",
           "status": false,
-          "postID": "5"
+          // "postID": "5"
         },
       ]
     },

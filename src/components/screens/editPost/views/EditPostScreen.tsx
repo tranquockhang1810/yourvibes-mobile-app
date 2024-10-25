@@ -52,7 +52,7 @@ const EditPostScreen = ({ id }: { id: string }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsMultipleSelection: true,
-        quality: 0.2,
+        quality: 1,
       });
 
       if (!result?.canceled && result?.assets) {
@@ -91,7 +91,6 @@ const EditPostScreen = ({ id }: { id: string }) => {
       content: postContent,
       privacy: privacy,
       location: 'HCM',
-      title: user?.family_name + ' ' + user?.name + "'s post",
       media: mediaFiles.length > 0 ? mediaFiles : undefined,
       media_ids: detetedMedias.length > 0 ? detetedMedias : undefined,
     };

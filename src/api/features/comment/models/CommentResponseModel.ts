@@ -4,15 +4,15 @@ export interface CommentsResponseModel {
     id: string;
     postId: string;
     userId: string;
-    parentId?: string;
+    parent_id?: string;
     content: string;
     likeCount: number;
     repCommentCount: number;
-    createdAt: string;
-    updatedAt: string;
+    created_at: string;
     user: {
         id: string;
     };
     privacy?: Privacy;
     replies: any[];
 }
+

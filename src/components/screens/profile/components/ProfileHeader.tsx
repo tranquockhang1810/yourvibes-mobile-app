@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, Image } from 'react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 
@@ -17,18 +16,6 @@ const ProfileHeader = ({ total }: { total: number }) => {
           source={{ uri: user?.capwall_url }}
           style={{ width: '100%', height: '100%', backgroundColor: lightGray }}
         />
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            right: 10,
-            backgroundColor: backgroundColor,
-            borderRadius: 20,
-            padding: 5,
-          }}
-        >
-          <MaterialIcons name="camera-alt" size={20} color={brandPrimary} />
-        </TouchableOpacity>
       </View>
 
       {/* Profile Image */}
@@ -38,18 +25,6 @@ const ProfileHeader = ({ total }: { total: number }) => {
             source={{ uri: user?.avatar_url }}
             style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: lightGray }}
           />
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              right: 10,
-              backgroundColor: backgroundColor,
-              borderRadius: 20,
-              padding: 5,
-            }}
-          >
-            <MaterialIcons name="camera-alt" size={20} color={brandPrimary} />
-          </TouchableOpacity>
         </View>
       </View>
       {/* User Information */}

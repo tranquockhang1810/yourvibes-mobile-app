@@ -8,6 +8,8 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  Button,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import useColor from "@/src/hooks/useColor";
@@ -16,7 +18,11 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { render } from "react-dom";
+import { ActivityIndicator } from "@ant-design/react-native";
+import Post from "./Post";
+import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
+import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
+import dayjs from "dayjs";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -37,14 +43,40 @@ function PostDetails(): React.JSX.Element {
     newComment,
     textInputRef,
     handleLike,
-    handleReport,
+    handleAction,
     handleAddComment,
     setNewComment,
     setReplyToReplyId,
-  } = usePostDetailsViewModel(postId); //Nhận postId
+    handleEditComment,
+  } = usePostDetailsViewModel(postId);
+  const [post, setPost] = useState<PostResponseModel | null>(null);
+  const fetchPostDetails = async () => {
+    const fetchedPost = await defaultPostRepo.getPostById(postId); 
+    setPost(fetchedPost.data);
+  };
+  useEffect(() => {
+    fetchPostDetails();
+  }, [postId]);
+
+  const renderPost = () => {
+    if (!post) {
+      return (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
+    return <Post post={post} />;
+  };
+
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
+  const [editCommentContent, setEditCommentContent] = useState("");
 
   const renderReplies = (replies: CommentsResponseModel[]) => {
     if (!replies || !Array.isArray(replies)) {
@@ -73,18 +105,20 @@ function PostDetails(): React.JSX.Element {
               {user?.family_name} {user?.name}
             </Text>
             <Text style={{ fontSize: 12, color: "#888" }}>
-              {new Date(reply.createdAt).toLocaleString()}
+              {reply.created_at}
             </Text>
             <Text>{reply.content}</Text>
           </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity
+          <TouchableOpacity
             onPress={() => handleLike(parseInt(reply.id))}
             style={{ flexDirection: "row", alignItems: "center" }}
           >
             <AntDesign
-              name={userLikes[parseInt(reply.id) as number] ? "hearto" : "heart"}
+              name={
+                userLikes[parseInt(reply.id) as number] ? "hearto" : "heart"
+              }
               size={16}
               color={brandPrimary}
             />
@@ -93,34 +127,33 @@ function PostDetails(): React.JSX.Element {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginLeft: 20,
-            }}
-            onPress={() => {
-              setReplyToCommentId(null);
+              onPress={() => {
+                  setReplyToCommentId(reply.parent_id ?? null);
+                  textInputRef.current?.focus();
+              }}
+          >
+
+            <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
+            <Text style={{ marginLeft: 5 }}>{localStrings.Public.Reply}</Text>
+          </TouchableOpacity>
+
+          {/* <TouchableOpacity
+            onPress={(event) => {
+              setReplyToCommentId(reply.parent_id ?? null);
               setReplyToReplyId(parseInt(reply.id));
               setNewComment("");
               textInputRef.current?.focus();
             }}
-          >
-            <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
-            <Text style={{ marginLeft: 5 }}>{localStrings.Public.Reply}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleReport}
             style={{
               flexDirection: "row",
               alignItems: "center",
               marginLeft: 20,
             }}
           >
-            <AntDesign name="bars" size={16} color={brandPrimaryTap} />
-            <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
-          </TouchableOpacity>
+            <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
+            <Text style={{ marginLeft: 5 }}>{localStrings.Public.Reply}</Text>
+          </TouchableOpacity> */}
         </View>
-
         {reply.replies.length > 1 && !showMoreReplies[reply.id] && (
           <TouchableOpacity
             onPress={() =>
@@ -165,7 +198,7 @@ function PostDetails(): React.JSX.Element {
               {user?.family_name} {user?.name}
             </Text>
             <Text style={{ fontSize: 12, color: "#888" }}>
-              {comments.createdAt}
+              {dayjs(comments.created_at).format("DD/MM/YYYY")}
             </Text>
             <Text style={{ marginVertical: 5 }}>{comments.content} </Text>
           </View>
@@ -177,15 +210,19 @@ function PostDetails(): React.JSX.Element {
               alignItems: "center",
               marginRight: 20,
             }}
-            onPress={() => handleLike}
+            onPress={() => handleLike(comments.id)}
           >
             <AntDesign
-              name={userLikes ? "heart" : "hearto"}
+              name={userLikes[comments.id] ? "heart" : "hearto"} // Hiển thị icon "tim" tương ứng
               size={20}
-              color={brandPrimary}
+              color={userLikes[comments.id] ? "red" : brandPrimary} // Đổi màu đỏ nếu đã like
             />
-            <Text style={{ marginLeft: 5 }}>{}</Text>
+            <Text style={{ marginLeft: 5 }}>
+              {likeCount[comments.id.likeCount] || 0}{" "}
+              {/* Hiển thị số lượt like */}
+            </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={{
               flexDirection: "row",
@@ -202,30 +239,37 @@ function PostDetails(): React.JSX.Element {
             <FontAwesome name="reply" size={20} color={brandPrimaryTap} />
             <Text style={{ marginLeft: 5 }}>{localStrings.Public.Reply}</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={{ flexDirection: "row", alignItems: "center" }}
-            onPress={handleReport}
+            onPress={() => handleAction(comments.id)} // Giả sử comment.id là ID của bình luận
           >
             <AntDesign name="bars" size={20} color={brandPrimaryTap} />
             <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
           </TouchableOpacity>
         </View>
-        {comments.replies && renderReplies(comments.replies)}
+        {comments.replies && comments.replies.length > 0 && (
+                <View style={{ paddingLeft: 20 }}>
+                    {renderReplies(comments.replies)}
+                </View>
+            )}
       </View>
     );
   };
 
-  const renderFlatList = useCallback((comments: CommentsResponseModel[]) => {
-    console.log("comments: ", comments);
-    return (
-      <FlatList
-        style={{ flex: 1 }}
-        data={comments}
-        renderItem={({ item }) => renderCommentItem(item)}
-        keyExtractor={(comment) => comment.id.toString()}
-      />
-    );
-  }, [comments]);
+  const renderFlatList = useCallback(
+    (comments: CommentsResponseModel[]) => { 
+      return (
+        <FlatList
+          style={{ flex: 1 }}
+          data={comments}
+          renderItem={({ item }) => renderCommentItem(item)}
+          keyExtractor={(comment) => comment.id.toString()}
+        />
+      );
+    },
+    [comments]
+  );
 
   return (
     <KeyboardAvoidingView
@@ -250,8 +294,10 @@ function PostDetails(): React.JSX.Element {
         </View>
 
         <View style={{ height: 1, backgroundColor: "#000" }} />
+        {renderPost()}
+        <View style={{ height: 1, backgroundColor: "#000" }} />
 
-        {comments &&  comments.length > 0 && renderFlatList(comments)}
+        {comments && comments.length > 0 && renderFlatList(comments)}
 
         <View
           style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
@@ -300,6 +346,17 @@ function PostDetails(): React.JSX.Element {
             </TouchableOpacity>
           </View>
         </View>
+
+        <Modal visible={isEditModalVisible} animationType="slide">
+          <View>
+            <TextInput
+              value={editCommentContent}
+              onChangeText={setEditCommentContent}
+            />
+            <Button title="Lưu" onPress={handleEditComment} />
+            <Button title="Hủy" onPress={() => setEditModalVisible(false)} />
+          </View>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );

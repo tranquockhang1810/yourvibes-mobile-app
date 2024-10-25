@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Modal } from '@ant-design/react-native';
-import { Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
+import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import MediaView from '../foundation/MediaView';
@@ -11,7 +11,8 @@ import { router } from 'expo-router';
 import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer'; 
 import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-
+import PostDetails from './PostDetails';
+import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 const Post = ({
   post,
   isParentPost = false,
@@ -62,7 +63,7 @@ const Post = ({
               );
               break;
             case 2:
-              console.log('Quảng cách bài viết action selected');
+              console.log('Quảng cáo bài viết action selected');
               break;
             default:
               break;
@@ -76,6 +77,19 @@ const Post = ({
       }
     );
   };
+
+  const renderPrivacyIcon = () => {
+    switch (post?.privacy) {
+      case Privacy.PUBLIC:
+        return <Ionicons name="globe" size={16} color={brandPrimaryTap} />;
+      case Privacy.FRIEND_ONLY:
+        return <Ionicons name="people" size={16} color={brandPrimaryTap} />;
+      case Privacy.PRIVATE:
+        return <Ionicons name="lock-closed" size={16} color={brandPrimaryTap} />;
+      default:
+        return null;
+    }
+  }
 
   return (
     <Card style={{
@@ -91,8 +105,11 @@ const Post = ({
         title={
           <View style={{ flexDirection: 'row', marginRight: 8 }}>
             <View style={{ flexDirection: 'column', marginLeft: 8, width: '92%' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 14, width: '100%' }}>{post?.user?.family_name} {post?.user?.name}</Text>
-              <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5 }}>{getTimeDiff(post?.created_at, localStrings)}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{post?.user?.family_name} {post?.user?.name}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(post?.created_at, localStrings)}</Text>
+                {renderPrivacyIcon()}
+              </View>
             </View>
             {!isParentPost && (
               <TouchableOpacity
@@ -152,14 +169,7 @@ const Post = ({
                 <AntDesign name="hearto" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.like_count}</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{ flexDirection: "row", alignItems: "center" }}
-                onPress={() => {
-                  console.log('postId bên post truyền qua postdetails:', post?.id);
-                  router.push(`/postDetails?postId=${post?.id}`);  
-                }}                                
-              >  
+              <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}  onPress={() => router.push(`/postDetails?postId=${post?.id}`)} >
                 <FontAwesome name="comments-o" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{post?.comment_count}</Text>
               </TouchableOpacity>
@@ -172,11 +182,11 @@ const Post = ({
         />
       ) : <></>}
       <ActivityIndicator
-          animating={deleteLoading}
-          toast
-          size="large"
-          text="Deleting..."
-        />
+        animating={deleteLoading}
+        toast
+        size="large"
+        text="Deleting..."
+      />
     </Card>
   );
 }

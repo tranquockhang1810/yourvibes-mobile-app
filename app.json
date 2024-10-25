@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "entryPoint": "./node_modules/expo-router/entry.js",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/yourvibes_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
