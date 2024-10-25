@@ -326,10 +326,6 @@ const UpdateProfileScreen = () => {
                   placeholder={localStrings.Form.Label.Biography}
                   variant="outlined"
                   type="text"
-                  textArea={{
-                    autoSize: { minRows: 1, maxRows: 3 },
-                  }}
-                  moreStyle={{ width: "100%" }}
                 />
               </Form.Item>
 
