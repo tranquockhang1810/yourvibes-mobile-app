@@ -23,9 +23,8 @@ export const ApiPath = {
    UPDATE_COMMENT: getApiPath('comments/'),
    GET_COMMENTS: getApiPath('comments/'),
    DELETE_COMMENT: getApiPath('comments/'),
-    // Reply Comment -  TESTT TESTT
-    GET_COMMENT_REPLIES: (postId: string, parentId: string) =>
-      getApiPath(`comments/?post_id=${postId}&parent_id=${parentId}`)
+    // Reply Comment -  TESTT TESTT - test và nó chạy đúng
+    GET_COMMENT_REPLIES: (postId: string, parentId: string) => getApiPath(`comments/?post_id=${postId}&parent_id=${parentId}`) 
 }
 
 function getApiPath(path: string) {

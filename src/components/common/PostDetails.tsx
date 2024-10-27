@@ -67,6 +67,7 @@ function PostDetails(): React.JSX.Element {
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
 
+  // Cập nhật nút để xem phản hồi lồng nhau
   const renderReplies = (replies: CommentsResponseModel[]) => {
     return (
       <FlatList
@@ -81,10 +82,10 @@ function PostDetails(): React.JSX.Element {
               backgroundColor: "#f9f9f9",
               borderRadius: 5,
               marginBottom: 10,
-              paddingLeft: 20, // Indentation for nested replies
+              paddingLeft: 20, // Thụt lề cho các phản hồi lồng nhau
             }}
           >
-            {/* User Info and Reply Content */}
+            {/* Thông tin người dùng và nội dung phản hồi */}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
                 source={{
@@ -107,8 +108,8 @@ function PostDetails(): React.JSX.Element {
                 <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
               </View>
             </View>
-  
-            {/* Action Buttons: Like and Reply */}
+
+            {/* Nút Thích và Trả lời */}
             <View
               style={{
                 flexDirection: "row",
@@ -133,13 +134,14 @@ function PostDetails(): React.JSX.Element {
                   {likeCount[reply.id] || reply.likeCount}
                 </Text>
               </TouchableOpacity>
-  
+
               <TouchableOpacity
                 onPress={() => {
-                  setReplyToCommentId(reply.parent_id ?? null);
-                  textInputRef.current?.focus();
+                  setReplyToCommentId(reply.parent_id ?? null); // Trả lời phản hồi con
+                  setReplyToReplyId(reply.id); // Thiết lập ID phản hồi con
+                  textInputRef.current?.focus(); // Hiển thị bàn phím
                 }}
-                style={{ flexDirection: "row", alignItems: "center" }}
+                style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
               >
                 <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
                 <Text style={{ marginLeft: 5 }}>
@@ -154,8 +156,19 @@ function PostDetails(): React.JSX.Element {
                 <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
               </TouchableOpacity>
             </View>
-  
-            {/* Nested Replies */}
+
+            {/* Nút để xem phản hồi */}
+            <TouchableOpacity
+              onPress={() => {
+                console.log("Trả lời cho trả lời comment", "reply.id:", reply.id, "reply.parent_id:", reply.parent_id); 
+                fetchReplies(reply.id, reply.parent_id ?? reply.id);
+              }}
+              style={{ marginTop: 10 }}
+            >
+              <Text style={{ color: brandPrimaryTap }}>Xem phản hồi</Text>
+            </TouchableOpacity>
+
+            {/* Phản hồi lồng nhau */}
             {reply.replies && reply.replies.length > 0 && (
               <View style={{ marginTop: 10, paddingLeft: 20 }}>
                 {showMoreReplies[reply.id]
@@ -170,19 +183,18 @@ function PostDetails(): React.JSX.Element {
                       }))
                     }
                     style={{ marginTop: 10 }}
-                  >
-                    <Text style={{ color: brandPrimaryTap }}>
-                      Xem thêm {reply.replies.length - 1} bình luận
-                    </Text>
+                  > 
                   </TouchableOpacity>
+                  
                 )}
               </View>
             )}
+            
           </View>
         )}
       />
     );
-  };  
+  };
 
   const renderCommentItem = (comments: CommentsResponseModel) => {
     return (
@@ -261,16 +273,15 @@ function PostDetails(): React.JSX.Element {
         </View>
 
         {/* Nút để xem phản hồi */}
-      <TouchableOpacity
-        onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
-      >
-        <Text style={{ color: brandPrimaryTap }}>Xem phản hồi</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
+        >
+          <Text style={{ color: brandPrimaryTap }}>Xem phản hồi</Text>
+        </TouchableOpacity>
         {/* Hiển thị các phản hồi */}
         {comments.replies && comments.replies.length > 0 && (
           <View style={{ paddingLeft: 20 }}>
             {renderReplies(comments.replies)}
-            
           </View>
         )}
       </View>
@@ -320,7 +331,6 @@ function PostDetails(): React.JSX.Element {
             {localStrings.Public.Comment}
           </Text>
         </View>
- 
 
         {/* FlatList */}
         {!post ? (
