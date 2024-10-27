@@ -7,6 +7,7 @@ import { GetCommentsRequestModel } from "./models/GetCommentsModel";
 
 interface ICommentRepo {
     createComment: (data: CreateCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel>>;
+    createReply: (data: CreateCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel>>;  
     getComments: (data: GetCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel[]>>;
     deleteComment: (id: string) => Promise<BaseApiResponseModel<any>>;
     updateComment: (data: CreateCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel>>;
@@ -15,7 +16,11 @@ interface ICommentRepo {
 
 export class CommentRepo implements ICommentRepo {
     async createComment(data: CreateCommentsRequestModel): Promise<BaseApiResponseModel<CommentsResponseModel>> { 
-        return client.post(ApiPath.CREATE_COMMENT, data, { headers: { "Content-Type": "json" } });
+        return await client.post(ApiPath.CREATE_COMMENT, data, { headers: { "Content-Type": "application/json" } }); 
+    }
+
+    async createReply(data: CreateCommentsRequestModel): Promise<BaseApiResponseModel<CommentsResponseModel>> {   
+        return await client.post(ApiPath.CREATE_COMMENT, data, { headers: { "Content-Type": "application/json" } }); 
     }
 
     async getComments(data: GetCommentsRequestModel): Promise<BaseApiResponseModel<CommentsResponseModel[]>> {
@@ -33,7 +38,7 @@ export class CommentRepo implements ICommentRepo {
     }
 
     async updateComment(data: { content: string }): Promise<BaseApiResponseModel<CommentsResponseModel>> {
-        return client.patch(ApiPath.UPDATE_COMMENT, data, { headers: { "Content-Type": "json" } });
+        return client.patch(ApiPath.UPDATE_COMMENT, data, { headers: { "Content-Type": "application/json" } });
     }
 
     async getReplies(parentId: string): Promise<BaseApiResponseModel<CommentsResponseModel[]>> {

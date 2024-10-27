@@ -6,15 +6,15 @@ import { defaultCommentRepo } from "@/src/api/features/comment/CommentRepo";
 import { CreateCommentsRequestModel } from "@/src/api/features/comment/models/CreateCommentsModel";
 import Toast from "react-native-toast-message";
 
-const usePostDetailsViewModel = (postId: string) => {
+const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
 
-  const [likeCount, setLikeCount] = useState<{ [key: number]: number }>({});
-  const [userLikes, setUserLikes] = useState<{ [key: number]: boolean }>({});
-  const [newComment, setNewComment] = useState("");
-  const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
-  const [replyToReplyId, setReplyToReplyId] = useState<number | null>(null);
+  const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
+  const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
+  const [newComment, setNewComment] = useState(""); 
+  const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
+  const [setReplyToCommentId] = useState<string | null>(null);
   const textInputRef = useRef<TextInput>(null);
 
   const fetchComments = async () => {
@@ -30,20 +30,20 @@ const usePostDetailsViewModel = (postId: string) => {
 
   useEffect(() => {
     fetchComments();
-    handleLike(0);
+    handleLike(postId);
   }, [postId]);
 
-  const handleLike = (likeCount: number) => {
+  const handleLike = (commentOrReplyId: string) => {
     setUserLikes((prevUserLikes) => {
-      const currentlyLiked = prevUserLikes[likeCount];
+      const currentlyLiked = prevUserLikes[commentOrReplyId];
       const newLikeCount = currentlyLiked ? -1 : 1;
 
       setLikeCount((prevLikes) => ({
         ...prevLikes,
-        [likeCount]: (prevLikes[likeCount] || 0) + newLikeCount,
+        [commentOrReplyId]: (prevLikes[commentOrReplyId] || 0) + newLikeCount,
       }));
 
-      return { ...prevUserLikes, [likeCount]: !currentlyLiked };
+      return { ...prevUserLikes, [commentOrReplyId]: !currentlyLiked };
     });
   };
 
@@ -155,75 +155,67 @@ const usePostDetailsViewModel = (postId: string) => {
     }
   };
 
-  const handleAddComment = async () => {
-    if (newComment.trim()) {
-        const commentData: CreateCommentsRequestModel = {
-            post_id: postId,
-            content: newComment,
-            parent_id: replyToReplyId?.toString() || replyToCommentId?.toString(),
-        };
-
-        // Đảm bảo bạn đã truyền đúng parent_id
-        console.log("Comment Data:", commentData);
-
-        try {
-            const response = await defaultCommentRepo.createComment(commentData);
-            if (!response.error) {
-                Toast.show({
-                    type: "success",
-                    text1: "Comment thành công",
-                });
-                
-                // Logic để thêm bình luận vào đúng parent
-                const newComment = { ...response.data, replies: [] }; // Đảm bảo replies array có mặt
-                if (commentData.parent_id) {
-                    // Thêm bình luận vào replies của bình luận cha
-                    setComments(prev => 
-                        prev.map(comment => 
-                            comment.id === commentData.parent_id
-                                ? { ...comment, replies: [...(comment.replies || []), newComment] }
-                                : comment
-                        )
-                    );
-                } else {
-                    // Nếu là bình luận cấp 1
-                    setComments(prev => [...prev, newComment]);
-                }
-                
-                // Không cần gọi lại fetchComments() nữa vì đã cập nhật ở trên
-            } else {
-                Toast.show({
-                    type: "error",
-                    text1: "Comment thất bại",
-                });
-            }
-        } catch (error) {
-            console.error("Error adding comment:", error);
-            Toast.show({
-                type: "error",
-                text1: "Comment thất bại",
-            });
-        } finally {
-            setNewComment("");
-            setReplyToCommentId(null);
-            setReplyToReplyId(null);
-            textInputRef.current?.blur();
-        }
-    }
-};
-
-// const handleReplyToComment = (commentId: string) => {
-//   setReplyToCommentId(commentId);
-//   setReplyToReplyId(undefined); // Đặt lại replyToReplyId nếu đang trả lời bình luận cha
-//   textInputRef.current?.focus();
-// };
-
-// const handleReplyToReply = (parent_id: string,) => {
-//   setReplyToReplyId(replyId);
-//   textInputRef.current?.focus();
-// };
+  const handleAddComment = async (comment: string) => {
+    if (comment.trim()) {
+      // Xác định parentId
+      const parentId = replyToReplyId ? String(replyToReplyId) : (replyToCommentId ? String(replyToCommentId) : null);
+      
+      console.log("replyToReplyId:", replyToReplyId);
+      console.log("replyToCommentId:", replyToCommentId);
+      console.log("parentId:", parentId); // Kiểm tra giá trị parentId
+  
+      const commentData: CreateCommentsRequestModel = {
+        post_id: postId,
+        content: comment,
+        parent_id: parentId, // Sử dụng parentId ở đây
+      };console.log("parentId trước khi gửi:", parentId);
 
   
+      console.log("Comment Data:", commentData);
+  
+      try {
+        const response = await defaultCommentRepo.createComment(commentData);
+        if (!response.error) {
+          Toast.show({
+            type: "success",
+            text1: "Comment thành công",
+          });
+          
+          const newComment = { ...response.data, replies: [] };
+          if (commentData.parent_id) {
+            // Nếu có parent_id, thêm bình luận vào replies của bình luận cha
+            setComments(prev => 
+              prev.map(comment => 
+                comment.id === commentData.parent_id
+                  ? { ...comment, replies: [...(comment.replies || []), newComment] }
+                  : comment
+              )
+            );
+          } else {
+            // Nếu là bình luận cấp 1
+            setComments(prev => [...prev, newComment]);
+          }
+          
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Comment thất bại",
+          });
+        }
+      } catch (error) {
+        console.error("Error adding comment:", error);
+        Toast.show({
+          type: "error",
+          text1: "Comment thất bại",
+        });
+      } finally {
+        setNewComment("");
+        replyToCommentId = null;
+        setReplyToReplyId(null);
+        textInputRef.current?.blur();
+      }
+    }
+  };  
 
   return {
     comments,
@@ -245,7 +237,7 @@ const usePostDetailsViewModel = (postId: string) => {
     setEditModalVisible,
     editCommentContent,
     setEditCommentContent,
-    handleEditComment, 
+    handleEditComment,  
   };
 };
 
