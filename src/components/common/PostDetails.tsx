@@ -38,6 +38,9 @@ function PostDetails(): React.JSX.Element {
   const postId = useLocalSearchParams().postId as string;
   const { user, localStrings } = useAuth();
   const [commentForm] = Form.useForm();
+  const [commentBeingEdited, setCommentBeingEdited] = useState<string | null>(
+    null
+  );
   const {
     comments,
     likeCount,
@@ -49,8 +52,9 @@ function PostDetails(): React.JSX.Element {
     handleAddComment,
     setNewComment,
     setReplyToReplyId,
-    handleEditComment,
+    handleUpdate,
     fetchReplies,
+    currentCommentId,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const fetchPostDetails = async () => {
@@ -141,7 +145,11 @@ function PostDetails(): React.JSX.Element {
                   setReplyToReplyId(reply.id); // Thiết lập ID phản hồi con
                   textInputRef.current?.focus(); // Hiển thị bàn phím
                 }}
-                style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginRight: 20,
+                }}
               >
                 <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
                 <Text style={{ marginLeft: 5 }}>
@@ -153,14 +161,22 @@ function PostDetails(): React.JSX.Element {
                 onPress={() => handleAction(reply.id)}
               >
                 <AntDesign name="bars" size={20} color={brandPrimaryTap} />
-                <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
+                <Text style={{ marginLeft: 5 }}>
+                  {localStrings.Public.Action}
+                </Text>
               </TouchableOpacity>
             </View>
 
             {/* Nút để xem phản hồi */}
             <TouchableOpacity
               onPress={() => {
-                console.log("Trả lời cho trả lời comment", "reply.id:", reply.id, "reply.parent_id:", reply.parent_id); 
+                console.log(
+                  "Trả lời cho trả lời comment",
+                  "reply.id:",
+                  reply.id,
+                  "reply.parent_id:",
+                  reply.parent_id
+                );
                 fetchReplies(reply.id, reply.parent_id ?? reply.id);
               }}
               style={{ marginTop: 10 }}
@@ -183,13 +199,10 @@ function PostDetails(): React.JSX.Element {
                       }))
                     }
                     style={{ marginTop: 10 }}
-                  > 
-                  </TouchableOpacity>
-                  
+                  ></TouchableOpacity>
                 )}
               </View>
             )}
-            
           </View>
         )}
       />
@@ -400,25 +413,6 @@ function PostDetails(): React.JSX.Element {
                     elevation: 5,
                   }}
                 >
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      commentForm.submit();
-                      console.log(
-                        "comment form: ",
-                        commentForm.getFieldValue("comment")
-                      );
-
-                      const comment = commentForm.getFieldValue("comment");
-                      if (!comment) {
-                        return;
-                      }
-                      handleAddComment(comment).then(() => {
-                        commentForm.resetFields();
-                      });
-                    }}
-                  >
-                    <FontAwesome name="send-o" size={30} color={brandPrimary} />
-                  </TouchableOpacity> */}
                   <TouchableOpacity
                     onPress={() => {
                       commentForm.submit();
@@ -444,15 +438,43 @@ function PostDetails(): React.JSX.Element {
           </>
         )}
 
-        {/* Modal */}
-        <Modal visible={isEditModalVisible} animationType="slide">
-          <View>
-            <TextInput
-              value={editCommentContent}
-              onChangeText={setEditCommentContent}
-            />
-            <Button title="Lưu" onPress={handleEditComment} />
-            <Button title="Hủy" onPress={() => setEditModalVisible(false)} />
+        {/* Modal Chỉnh sửa bình luận */}
+        <Modal
+          visible={isEditModalVisible}
+          animationType="slide"
+          transparent={false}
+          onRequestClose={() => setEditModalVisible(true)}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <View
+              style={{
+                width: "80%",
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 10,
+                elevation: 5,
+              }}
+            >
+              <TextInput
+                value={editCommentContent}
+                onChangeText={setEditCommentContent}
+                placeholder="Nhập nội dung bình luận"
+              />
+              <Button
+                title="Lưu"
+                onPress={() =>
+                  handleUpdate(currentCommentId, editCommentContent)
+                }
+              />
+              <Button title="Hủy" onPress={() => setEditModalVisible(false)} />
+            </View>
           </View>
         </Modal>
       </View>

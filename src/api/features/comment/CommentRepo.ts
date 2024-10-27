@@ -37,7 +37,7 @@ export class CommentRepo implements ICommentRepo {
         return client.delete(ApiPath.DELETE_COMMENT + id);
     }
 
-    async updateComment(data: { content: string }): Promise<BaseApiResponseModel<CommentsResponseModel>> {
+    async updateComment(data: CreateCommentsRequestModel): Promise<BaseApiResponseModel<CommentsResponseModel>>{
         return client.patch(ApiPath.UPDATE_COMMENT, data, { headers: { "Content-Type": "application/json" } });
     }
 

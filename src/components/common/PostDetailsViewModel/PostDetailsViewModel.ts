@@ -1,20 +1,25 @@
 import { useState, useRef, useEffect } from "react";
-import { TextInput } from "react-native";
+import { TextInput, Modal, LogBox } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/src/api/features/comment/CommentRepo";
 import { CreateCommentsRequestModel } from "@/src/api/features/comment/models/CreateCommentsModel";
+import { UpdateCommentsRequestModel } from "@/src/api/features/comment/models/UpdateCommentsModel";
 import Toast from "react-native-toast-message";
 
-const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null) => {
+const usePostDetailsViewModel = (
+  postId: string,
+  replyToCommentId: string | null
+) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
 
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
-  const [newComment, setNewComment] = useState(""); 
+  const [newComment, setNewComment] = useState("");
   const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
   const [setReplyToCommentId] = useState<string | null>(null);
+
   const textInputRef = useRef<TextInput>(null);
 
   const fetchComments = async () => {
@@ -32,7 +37,7 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
     try {
       const response = await defaultCommentRepo.getReplies(postId, parentId);
       console.log("PostId: ", postId, " parentId: ", parentId);
-      
+
       if (response && response.data) {
         setComments((prevComments) =>
           prevComments.map((comment) =>
@@ -49,7 +54,7 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
       });
       console.error("Error fetching replies:", error);
     }
-  };  
+  };
 
   useEffect(() => {
     fetchComments();
@@ -100,7 +105,7 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
                 text2: commentToReport.content,
               });
               console.log(
-                `Báo cáo bình luận được chọn: } "${commentToReport.content}"`
+                `Báo cáo bình luận với nội dung: "${commentToReport.content}" có id: ${commentId} "tại bài viết ${postId}"`
               );
             }
             break;
@@ -113,6 +118,8 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
               setEditCommentContent(commentToEdit.content);
               setCurrentCommentId(commentId);
               setEditModalVisible(true);
+              console.log(
+                `Sửa bình luận với nội dung: "${commentToEdit.content}" có id: ${commentId} "tại bài viết ${postId}"`);
             }
             break;
 
@@ -133,12 +140,19 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
     setEditCommentContent("");
     setCurrentCommentId("");
   };
+
   const handleUpdate = async (commentId: string, updatedContent: string) => {
     try {
-      const response = await defaultCommentRepo.updateComment({
-        commentId,
+      const updateCommentData: UpdateCommentsRequestModel = {
+        post_id: postId,
+        comments_id: commentId,
         content: updatedContent,
-      } as { commentId: string; content: string });
+      };
+
+      const response = await defaultCommentRepo.updateComment(
+        updateCommentData
+      );
+
       if (response && response.data) {
         setComments((prevComments) =>
           prevComments.map((comment) =>
@@ -181,21 +195,25 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
       // Xác định parentId
-      const parentId = replyToReplyId ? String(replyToReplyId) : (replyToCommentId ? String(replyToCommentId) : null);
-      
+      const parentId = replyToReplyId
+        ? String(replyToReplyId)
+        : replyToCommentId
+        ? String(replyToCommentId)
+        : null;
+
       console.log("replyToReplyId:", replyToReplyId);
       console.log("replyToCommentId:", replyToCommentId);
       console.log("parentId:", parentId); // Kiểm tra giá trị parentId
-  
+
       const commentData: CreateCommentsRequestModel = {
         post_id: postId,
         content: comment,
         parent_id: parentId, // Sử dụng parentId ở đây
-      };console.log("parentId trước khi gửi:", parentId);
+      };
+      console.log("parentId trước khi gửi:", parentId);
 
-  
       console.log("Comment Data:", commentData);
-  
+
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
@@ -203,22 +221,24 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
             type: "success",
             text1: "Comment thành công",
           });
-          
+
           const newComment = { ...response.data, replies: [] };
           if (commentData.parent_id) {
             // Nếu có parent_id, thêm bình luận vào replies của bình luận cha
-            setComments(prev => 
-              prev.map(comment => 
+            setComments((prev) =>
+              prev.map((comment) =>
                 comment.id === commentData.parent_id
-                  ? { ...comment, replies: [...(comment.replies || []), newComment] }
+                  ? {
+                      ...comment,
+                      replies: [...(comment.replies || []), newComment],
+                    }
                   : comment
               )
             );
           } else {
             // Nếu là bình luận cấp 1
-            setComments(prev => [...prev, newComment]);
+            setComments((prev) => [...prev, newComment]);
           }
-          
         } else {
           Toast.show({
             type: "error",
@@ -238,7 +258,7 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
         textInputRef.current?.blur();
       }
     }
-  };  
+  };
 
   return {
     comments,
@@ -261,7 +281,8 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
     setEditModalVisible,
     editCommentContent,
     setEditCommentContent,
-    handleEditComment,  
+    handleEditComment,
+    currentCommentId,
   };
 };
 
