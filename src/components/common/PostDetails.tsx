@@ -10,6 +10,8 @@ import {
   Platform,
   Modal,
   Button,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import useColor from "@/src/hooks/useColor";
@@ -38,9 +40,7 @@ function PostDetails(): React.JSX.Element {
   const postId = useLocalSearchParams().postId as string;
   const { user, localStrings } = useAuth();
   const [commentForm] = Form.useForm();
-  const [commentBeingEdited, setCommentBeingEdited] = useState<string | null>(
-    null
-  );
+  const [editComment, setEditComment] = useState("");
   const {
     comments,
     likeCount,
@@ -52,7 +52,7 @@ function PostDetails(): React.JSX.Element {
     handleAddComment,
     setNewComment,
     setReplyToReplyId,
-    handleUpdate,
+    handleEditComment,
     fetchReplies,
     currentCommentId,
   } = usePostDetailsViewModel(postId, replyToCommentId);
@@ -70,6 +70,10 @@ function PostDetails(): React.JSX.Element {
   }>({});
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
+
+  useEffect(() => {
+    console.log("Edit modal visibility changed:", isEditModalVisible);
+  }, [isEditModalVisible]);
 
   // Cập nhật nút để xem phản hồi lồng nhau
   const renderReplies = (replies: CommentsResponseModel[]) => {
@@ -277,7 +281,7 @@ function PostDetails(): React.JSX.Element {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
             onPress={() => handleAction(comments.id)}
           >
             <AntDesign name="bars" size={20} color={brandPrimaryTap} />
@@ -438,13 +442,8 @@ function PostDetails(): React.JSX.Element {
           </>
         )}
 
-        {/* Modal Chỉnh sửa bình luận */}
-        <Modal
-          visible={isEditModalVisible}
-          animationType="slide"
-          transparent={false}
-          onRequestClose={() => setEditModalVisible(true)}
-        >
+        {/* Modal edit comment */}
+        <Modal visible={isEditModalVisible} transparent={true} animationType="slide">
           <View
             style={{
               flex: 1,
@@ -456,24 +455,73 @@ function PostDetails(): React.JSX.Element {
             <View
               style={{
                 width: "80%",
-                backgroundColor: "white",
-                padding: 20,
+                backgroundColor: "#fff",
                 borderRadius: 10,
-                elevation: 5,
+                padding: 20,
               }}
             >
-              <TextInput
-                value={editCommentContent}
-                onChangeText={setEditCommentContent}
-                placeholder="Nhập nội dung bình luận"
-              />
-              <Button
-                title="Lưu"
-                onPress={() =>
-                  handleUpdate(currentCommentId, editCommentContent)
-                }
-              />
-              <Button title="Hủy" onPress={() => setEditModalVisible(false)} />
+              {/* Avatar và Input chỉnh sửa bình luận */}
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <View>
+                    <Image
+                      source={{
+                        uri:
+                          user?.avatar_url ||
+                          "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg",
+                      }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 30,
+                      }}
+                    />
+                  </View>
+                  <View style={{ marginLeft: 10, flex: 1 }}>
+                    <View style={{ flexDirection: "column" }}>
+                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                        {user?.family_name + " " + user?.name ||
+                          localStrings.Public.UnknownUser}
+                      </Text>
+                      <TextInput
+                        value={editCommentContent}
+                        onChangeText={setEditCommentContent}
+                        placeholder="Edit your comment"
+                        style={{
+                          borderWidth: 1,
+                          borderColor: lightGray,
+                          borderRadius: 5,
+                          padding: 10,
+                          backgroundColor: grayBackground,
+                          marginTop: 10,
+                        }}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+
+              {/* Nút lưu và hủy */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <Button title="Save" onPress={() => handleEditComment()} />
+                <Button
+                  title="Cancel"
+                  onPress={() => setEditModalVisible(false)}
+                />
+              </View>
             </View>
           </View>
         </Modal>

@@ -110,18 +110,22 @@ const usePostDetailsViewModel = (
             }
             break;
 
-          case 1:
-            const commentToEdit = comments.find(
-              (comment) => comment.id === commentId
-            );
-            if (commentToEdit) {
-              setEditCommentContent(commentToEdit.content);
-              setCurrentCommentId(commentId);
-              setEditModalVisible(true);
-              console.log(
-                `Sửa bình luận với nội dung: "${commentToEdit.content}" có id: ${commentId} "tại bài viết ${postId}"`);
-            }
-            break;
+            case 1:
+              const commentToEdit = comments.find(
+                (comment) => comment.id === commentId
+              );
+              if (commentToEdit) {
+                console.log("Comment Được Chọn để Sửa:", commentToEdit);
+                setEditCommentContent(commentToEdit.content);
+                setCurrentCommentId(commentId);
+                console.log(
+                  "Setting edit modal to visible for comment ID:",
+                  commentId
+                );
+                setEditModalVisible(true);
+                console.log("Edit modal visible status:", isEditModalVisible);
+              }
+              break;
 
           case 2:
             handleDelete(commentId);
@@ -134,12 +138,20 @@ const usePostDetailsViewModel = (
     );
   };
 
+  useEffect(() => {
+    if (isEditModalVisible) {
+      console.log("Edit modal is now visible.");
+    }
+  }, [isEditModalVisible]);
+  
   const handleEditComment = async () => {
     await handleUpdate(currentCommentId, editCommentContent);
-    setEditModalVisible(false);
+    setEditModalVisible(false); // Close modal
     setEditCommentContent("");
     setCurrentCommentId("");
+    console.log("Edit comment saved and modal closed.");
   };
+  
 
   const handleUpdate = async (commentId: string, updatedContent: string) => {
     try {
