@@ -50,6 +50,7 @@ function PostDetails(): React.JSX.Element {
     setNewComment,
     setReplyToReplyId,
     handleEditComment,
+    fetchReplies,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const fetchPostDetails = async () => {
@@ -80,10 +81,10 @@ function PostDetails(): React.JSX.Element {
               backgroundColor: "#f9f9f9",
               borderRadius: 5,
               marginBottom: 10,
-              paddingLeft: 20, // Indentation for replies
+              paddingLeft: 20, // Indentation for nested replies
             }}
           >
-            {/* User Information and Reply Content */}
+            {/* User Info and Reply Content */}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
                 source={{
@@ -107,7 +108,7 @@ function PostDetails(): React.JSX.Element {
               </View>
             </View>
   
-            {/* Action Buttons for Like and Reply */}
+            {/* Action Buttons: Like and Reply */}
             <View
               style={{
                 flexDirection: "row",
@@ -145,6 +146,13 @@ function PostDetails(): React.JSX.Element {
                   {localStrings.Public.Reply}
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+                onPress={() => handleAction(reply.id)}
+              >
+                <AntDesign name="bars" size={20} color={brandPrimaryTap} />
+                <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
+              </TouchableOpacity>
             </View>
   
             {/* Nested Replies */}
@@ -174,7 +182,7 @@ function PostDetails(): React.JSX.Element {
         )}
       />
     );
-  };
+  };  
 
   const renderCommentItem = (comments: CommentsResponseModel) => {
     return (
@@ -251,9 +259,18 @@ function PostDetails(): React.JSX.Element {
             <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Nút để xem phản hồi */}
+      <TouchableOpacity
+        onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
+      >
+        <Text style={{ color: brandPrimaryTap }}>Xem phản hồi</Text>
+      </TouchableOpacity>
+        {/* Hiển thị các phản hồi */}
         {comments.replies && comments.replies.length > 0 && (
           <View style={{ paddingLeft: 20 }}>
             {renderReplies(comments.replies)}
+            
           </View>
         )}
       </View>

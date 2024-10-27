@@ -11,7 +11,7 @@ interface ICommentRepo {
     getComments: (data: GetCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel[]>>;
     deleteComment: (id: string) => Promise<BaseApiResponseModel<any>>;
     updateComment: (data: CreateCommentsRequestModel) => Promise<BaseApiResponseModel<CommentsResponseModel>>;
-    getReplies: (parentId: string) => Promise<BaseApiResponseModel<CommentsResponseModel[]>>;
+    getReplies: (postId: string, parentId: string) => Promise<BaseApiResponseModel<CommentsResponseModel[]>>;
 }
 
 export class CommentRepo implements ICommentRepo {
@@ -41,8 +41,9 @@ export class CommentRepo implements ICommentRepo {
         return client.patch(ApiPath.UPDATE_COMMENT, data, { headers: { "Content-Type": "application/json" } });
     }
 
-    async getReplies(parentId: string): Promise<BaseApiResponseModel<CommentsResponseModel[]>> {
+    async getReplies(postId: string, parentId: string): Promise<BaseApiResponseModel<CommentsResponseModel[]>> {
         const queryParams = new URLSearchParams({
+            post_id: postId,
             parent_id: parentId,
         }).toString();
 

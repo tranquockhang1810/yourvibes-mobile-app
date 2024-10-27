@@ -28,6 +28,29 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
     }
   };
 
+  const fetchReplies = async (commentId: string, parentId: string) => {
+    try {
+      const response = await defaultCommentRepo.getReplies(postId, parentId);
+      console.log("PostId: ", postId, " parentId: ", parentId);
+      
+      if (response && response.data) {
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id === commentId
+              ? { ...comment, replies: response.data }
+              : comment
+          )
+        );
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Lỗi tải phản hồi",
+      });
+      console.error("Error fetching replies:", error);
+    }
+  };  
+
   useEffect(() => {
     fetchComments();
     handleLike(postId);
@@ -230,6 +253,7 @@ const usePostDetailsViewModel = (postId: string, replyToCommentId: string | null
     setNewComment,
     setReplyToCommentId,
     setReplyToReplyId,
+    fetchReplies,
     handleUpdate,
     handleDelete,
     handleAction,
