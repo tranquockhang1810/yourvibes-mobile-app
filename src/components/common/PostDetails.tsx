@@ -185,7 +185,10 @@ function PostDetails(): React.JSX.Element {
               }}
               style={{ marginTop: 10 }}
             >
-              <Text style={{ color: brandPrimaryTap }}>Xem phản hồi</Text>
+              <View style={{ alignItems: "center" }}>
+                <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                <Text style={{ fontSize: 12, color: brandPrimaryTap }}> Xem thêm</Text>
+              </View>
             </TouchableOpacity>
 
             {/* Phản hồi lồng nhau */}
@@ -281,7 +284,11 @@ function PostDetails(): React.JSX.Element {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginRight: 20,
+            }}
             onPress={() => handleAction(comments.id)}
           >
             <AntDesign name="bars" size={20} color={brandPrimaryTap} />
@@ -293,7 +300,10 @@ function PostDetails(): React.JSX.Element {
         <TouchableOpacity
           onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
         >
-          <Text style={{ color: brandPrimaryTap }}>Xem phản hồi</Text>
+          <View style={{ alignItems: "center" }}>
+            <AntDesign name="down" size={16} color={brandPrimaryTap} />
+            <Text style={{ fontSize: 12, color: brandPrimaryTap }}> Xem thêm</Text>
+          </View>
         </TouchableOpacity>
         {/* Hiển thị các phản hồi */}
         {comments.replies && comments.replies.length > 0 && (
@@ -443,7 +453,11 @@ function PostDetails(): React.JSX.Element {
         )}
 
         {/* Modal edit comment */}
-        <Modal visible={isEditModalVisible} transparent={true} animationType="slide">
+        <Modal
+          visible={isEditModalVisible}
+          transparent={true}
+          animationType="slide"
+        >
           <View
             style={{
               flex: 1,
