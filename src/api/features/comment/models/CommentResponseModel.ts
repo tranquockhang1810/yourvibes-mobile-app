@@ -12,7 +12,6 @@ export interface CommentsResponseModel {
     user: {
         id: string;
     };
-    privacy?: Privacy;
-    replies: any[];
+    privacy?: Privacy; 
+    replies?: CommentsResponseModel[];
 }
-
