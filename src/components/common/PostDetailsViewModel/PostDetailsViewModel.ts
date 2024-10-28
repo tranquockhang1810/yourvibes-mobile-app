@@ -33,28 +33,25 @@ const usePostDetailsViewModel = (
     }
   };
 
-  // const fetchReplies = async (PostId: string, parentId: string) => {
-  //   try {
-  //     const response = await defaultCommentRepo.getReplies(postId, parentId);
-  //     console.log("replies:", response);
-  
-  //     if (response && response.data) {
-  //       setComments((prevComments) =>
-  //         prevComments.map((comment) =>
-  //           comment.id === PostId
-  //             ? { ...comment, replies: response.data }
-  //             : comment
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Lỗi tải phản hồi",
-  //     });
-  //     console.error("Error fetching replies:", error);
-  //   }
-  // };
+  const fetchRepliesToReply = async (postId: string, parentId: string): Promise<CommentsResponseModel[]> => {
+    try {
+      const response = await defaultCommentRepo.getReplies(postId, parentId);
+      console.log("replies to reply:", response);
+      if (response && Array.isArray(response.data)) {
+        return response.data;
+      } else {
+        return [];
+      }
+      
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Lỗi tải phản hồi",
+      });
+      console.error("Error fetching replies to reply:", error);
+      return [];
+    }
+  };
 
   const fetchReplies = async (postId: string, parentId: string) => {
     try {
@@ -320,6 +317,7 @@ const usePostDetailsViewModel = (
     setEditCommentContent,
     handleEditComment,
     currentCommentId,
+    fetchRepliesToReply,
   };
 };
 

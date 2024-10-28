@@ -39,8 +39,7 @@ function PostDetails(): React.JSX.Element {
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
   const postId = useLocalSearchParams().postId as string;
   const { user, localStrings } = useAuth();
-  const [commentForm] = Form.useForm();
-  const [editComment, setEditComment] = useState("");
+  const [commentForm] = Form.useForm(); 
   const {
     comments,
     likeCount,
@@ -54,6 +53,7 @@ function PostDetails(): React.JSX.Element {
     setReplyToReplyId,
     handleEditComment,
     fetchReplies,
+    fetchRepliesToReply,
     currentCommentId,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
@@ -75,10 +75,46 @@ function PostDetails(): React.JSX.Element {
     console.log("Edit modal visibility changed:", isEditModalVisible);
   }, [isEditModalVisible]);
 
+  // Hàm renderReplyToReplies để hiển thị các phản hồi cho phản hồi
+  const renderReplyToReplies = (reply: CommentsResponseModel) => {
+    console.log("renderReplyToReplies:", reply);
+    
+    const [nestedReplies, setNestedReplies] = useState(reply.replies || []);
+  
+    const loadNestedReplies = useCallback(async () => {
+      if (!nestedReplies || nestedReplies.length === 0) {
+          try {
+              const response: CommentsResponseModel[] = await fetchRepliesToReply(reply.postId, reply.id);
+              setNestedReplies(response || []);
+          } catch (error) {
+              console.error("Error loading nested replies:", error);
+          }
+      }
+  }, [nestedReplies, reply.postId, reply.id]);
+  
+    return (
+      <View style={{ paddingLeft: 20 }}>
+        {nestedReplies && nestedReplies.length > 0 ? (
+          nestedReplies.map((nestedReply) => (
+            <View key={nestedReply.id} style={{ paddingVertical: 5 }}>
+              <Text>{nestedReply.content}</Text>
+              {renderReplyToReplies(nestedReply)}
+            </View>
+          ))
+        ) : (
+          <TouchableOpacity onPress={loadNestedReplies}>
+            <Text style={{ color: "blue" }}>Load replies</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
+
   // Chức năng hiển thị phản hồi
   const renderReplies = (replies: CommentsResponseModel[]) => {
     console.log("renderReplies TSX", replies);
-
+  
     return (
       <FlatList
         data={replies}
@@ -118,7 +154,7 @@ function PostDetails(): React.JSX.Element {
                 <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
               </View>
             </View>
-
+  
             {/* Nút Thích, Trả lời và Hành động */}
             <View
               style={{
@@ -144,7 +180,7 @@ function PostDetails(): React.JSX.Element {
                   {likeCount[reply.id] || reply.likeCount}
                 </Text>
               </TouchableOpacity>
-
+  
               <TouchableOpacity
                 onPress={() => {
                   setReplyToCommentId(reply.parent_id ?? null);
@@ -162,7 +198,7 @@ function PostDetails(): React.JSX.Element {
                   {localStrings.Public.Reply}
                 </Text>
               </TouchableOpacity>
-
+  
               <TouchableOpacity
                 style={{ flexDirection: "row", alignItems: "center" }}
                 onPress={() => handleAction(reply.id)}
@@ -173,7 +209,7 @@ function PostDetails(): React.JSX.Element {
                 </Text>
               </TouchableOpacity>
             </View>
-
+  
             {/* Nút để xem phản hồi lồng nhau */}
             <TouchableOpacity
               onPress={() => {
@@ -192,14 +228,14 @@ function PostDetails(): React.JSX.Element {
                 </Text>
               </View>
             </TouchableOpacity>
-
+  
             {/* Hiển thị các phản hồi lồng nhau */}
             {showMoreReplies[reply.id] &&
-            reply.replies &&
-            Array.isArray(reply.replies) ? (
+              reply.replies &&
+              Array.isArray(reply.replies) ? (
               <View style={{ marginTop: 10, paddingLeft: 20 }}>
                 {reply.replies.length > 0 ? (
-                  renderReplies(reply.replies)
+                  renderReplyToReplies(reply) // Gọi hàm renderReplyToReplies ở đây
                 ) : (
                   <Text>Không có phản hồi nào.</Text>
                 )}
@@ -210,6 +246,7 @@ function PostDetails(): React.JSX.Element {
       />
     );
   };
+  
 
   const renderCommentItem = (comments: CommentsResponseModel) => {
     return (
@@ -541,5 +578,4 @@ function PostDetails(): React.JSX.Element {
     </KeyboardAvoidingView>
   );
 }
-
 export default PostDetails;
