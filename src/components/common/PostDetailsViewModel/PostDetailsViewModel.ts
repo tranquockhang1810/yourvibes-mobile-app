@@ -26,6 +26,23 @@ const usePostDetailsViewModel = (postId: string) => {
     if (response && response?.data) {
       setComments(response?.data);
     }
+
+    setComments([
+      {
+        content: "Chính sửa bình luận",
+        created_at: "new Date()",
+        id: "0",
+        likeCount: 0,
+        postId: postId,
+        repCommentCount: 0,
+        replies: [],
+        user: {
+          id: "0",
+        },
+        userId: "0",
+
+      }
+    ])
   };
 
   useEffect(() => {
@@ -155,11 +172,11 @@ const usePostDetailsViewModel = (postId: string) => {
     }
   };
 
-  const handleAddComment = async () => {
-    if (newComment.trim()) {
+  const handleAddComment = async (comment: string) => {
+    if (comment.trim()) {
         const commentData: CreateCommentsRequestModel = {
             post_id: postId,
-            content: newComment,
+            content: comment,
             parent_id: replyToReplyId?.toString() || replyToCommentId?.toString(),
         };
 
@@ -175,19 +192,19 @@ const usePostDetailsViewModel = (postId: string) => {
                 });
                 
                 // Logic để thêm bình luận vào đúng parent
-                const newComment = { ...response.data, replies: [] }; // Đảm bảo replies array có mặt
+                const comment = { ...response.data, replies: [] }; // Đảm bảo replies array có mặt
                 if (commentData.parent_id) {
                     // Thêm bình luận vào replies của bình luận cha
                     setComments(prev => 
                         prev.map(comment => 
                             comment.id === commentData.parent_id
-                                ? { ...comment, replies: [...(comment.replies || []), newComment] }
+                                ? { ...comment, replies: [...(comment.replies || []), comment] }
                                 : comment
                         )
                     );
                 } else {
                     // Nếu là bình luận cấp 1
-                    setComments(prev => [...prev, newComment]);
+                    setComments(prev => [...prev, comment]);
                 }
                 
                 // Không cần gọi lại fetchComments() nữa vì đã cập nhật ở trên

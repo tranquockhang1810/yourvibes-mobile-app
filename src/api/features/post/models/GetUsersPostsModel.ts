@@ -1,3 +1,5 @@
+import { PostResponseModel } from "./PostResponseModel"
+
 export interface GetUsersPostsRequestModel {
   user_id?: string
   title?: string
@@ -5,7 +7,7 @@ export interface GetUsersPostsRequestModel {
   location?: string
   is_advertisement?: boolean
   created_at?: string
-  sort_by?: keyof GetUsersPostsRequestModel
+  sort_by?: keyof PostResponseModel
   isDescending?: boolean
   limit?: number
   page?: number

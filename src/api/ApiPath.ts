@@ -8,6 +8,7 @@ export const ApiPath = {
 
   // User
   PROFILE: getApiPath('users/'),
+  SEARCH: getApiPath('users/'),
   
   // Post
   CREATE_POST: getApiPath('posts/'),

@@ -152,5 +152,12 @@ export const VnLocalizedStrings = {
     UpdateProfile: "Cập nhật trang cá nhân",
     UpdateFailed: "Cập nhật trang cá nhân thất bại!",
     UpdateSuccess: "Cập nhật trang cá nhân thành công!",
+  },
+  Search: {
+    Search: "Tim kiếm",
+    SearchPlaceholder: "Bạn đang tìm gì...",
+    SearchFailed: "Tìm kiếm thất bại!",
+    NoUsers: "Không tìm thấy người dùng",
+    TrySearch: "Hãy nhập từ khóa cần tìm"
   }
 }

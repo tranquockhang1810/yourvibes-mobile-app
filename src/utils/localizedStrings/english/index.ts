@@ -153,5 +153,12 @@ export const ENGLocalizedStrings = {
     UpdateProfile: "Update profile",
     UpdateFailed: "Update profile failed!",
     UpdateSuccess: "Update profile successful!",
+  },
+  Search: {
+    Search: "Search",
+    SearchPlaceholder: "Searching...",
+    SearchFailed: "Search failed!",
+    NoUsers: "No user found",
+    TrySearch: "Try searching some keyword"
   }
 }

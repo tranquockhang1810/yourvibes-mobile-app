@@ -18,7 +18,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { ActivityIndicator } from "@ant-design/react-native";
+import { ActivityIndicator, Form } from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
@@ -36,6 +36,7 @@ function PostDetails(): React.JSX.Element {
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
   const postId = useLocalSearchParams().postId as string;
   const { user, localStrings } = useAuth();
+  const [commentForm] = Form.useForm();
   const {
     comments,
     likeCount,
@@ -51,26 +52,12 @@ function PostDetails(): React.JSX.Element {
   } = usePostDetailsViewModel(postId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const fetchPostDetails = async () => {
-    const fetchedPost = await defaultPostRepo.getPostById(postId); 
+    const fetchedPost = await defaultPostRepo.getPostById(postId);
     setPost(fetchedPost.data);
   };
   useEffect(() => {
     fetchPostDetails();
   }, [postId]);
-
-  const renderPost = () => {
-    if (!post) {
-      return (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ActivityIndicator size="large" color="#0000ff" />
-          <Text>Loading...</Text>
-        </View>
-      );
-    }
-    return <Post post={post} />;
-  };
 
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
@@ -127,10 +114,10 @@ function PostDetails(): React.JSX.Element {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={() => {
-                  setReplyToCommentId(reply.parent_id ?? null);
-                  textInputRef.current?.focus();
-              }}
+            onPress={() => {
+              setReplyToCommentId(reply.parent_id ?? null);
+              textInputRef.current?.focus();
+            }}
           >
 
             <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
@@ -249,18 +236,26 @@ function PostDetails(): React.JSX.Element {
           </TouchableOpacity>
         </View>
         {comments.replies && comments.replies.length > 0 && (
-                <View style={{ paddingLeft: 20 }}>
-                    {renderReplies(comments.replies)}
-                </View>
-            )}
+          <View style={{ paddingLeft: 20 }}>
+            {renderReplies(comments.replies)}
+          </View>
+        )}
       </View>
     );
   };
 
   const renderFlatList = useCallback(
-    (comments: CommentsResponseModel[]) => { 
+    (comments: CommentsResponseModel[]) => {
+      console.log("comments: ", comments);
       return (
         <FlatList
+          ListHeaderComponent={(
+            <>
+              <View style={{ height: 1, backgroundColor: "#000" }} />
+              <Post post={post as PostResponseModel} />
+              <View style={{ height: 1, backgroundColor: "#000" }} />
+            </>
+          )}
           style={{ flex: 1 }}
           data={comments}
           renderItem={({ item }) => renderCommentItem(item)}
@@ -268,7 +263,7 @@ function PostDetails(): React.JSX.Element {
         />
       );
     },
-    [comments]
+    [comments, post]
   );
 
   return (
@@ -277,6 +272,7 @@ function PostDetails(): React.JSX.Element {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={{ flex: 1 }}>
+        {/* Header */}
         <View
           style={{
             flexDirection: "row",
@@ -293,60 +289,85 @@ function PostDetails(): React.JSX.Element {
           </Text>
         </View>
 
-        <View style={{ height: 1, backgroundColor: "#000" }} />
-        {renderPost()}
-        <View style={{ height: 1, backgroundColor: "#000" }} />
-
-        {comments && comments.length > 0 && renderFlatList(comments)}
-
-        <View
-          style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
-        >
-          <Image
-            source={{ uri: user?.avatar_url }}
-            style={{ width: 45, height: 45, borderRadius: 25, marginRight: 10 }}
-          />
-          <TextInput
-            ref={textInputRef}
-            style={{
-              flex: 1,
-              borderColor: "#ccc",
-              borderWidth: 1,
-              borderRadius: 5,
-              padding: 10,
-              backgroundColor: "#fff",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-            }}
-            placeholder={localStrings.Public.CommonActions}
-            value={newComment}
-            onChangeText={setNewComment}
-          />
-
+        {/* FlatList */}
+        {!post ? (
           <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 50,
-              marginLeft: 10,
-              padding: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.2,
-              shadowRadius: 1.5,
-              elevation: 5,
-            }}
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <TouchableOpacity onPress={handleAddComment}>
-              <FontAwesome name="send-o" size={30} color={brandPrimary} />
-            </TouchableOpacity>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Loading...</Text>
           </View>
-        </View>
+        ) : (
+          <>
+            {renderFlatList(comments)}
+            <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+              >
+                <Image
+                  source={{ uri: user?.avatar_url }}
+                  style={{ width: 45, height: 45, borderRadius: 25, marginRight: 10 }}
+                />
 
+                <Form.Item noStyle name="comment" layout="vertical">
+                  <TextInput
+                    //ref={textInputRef}
+                    style={{
+                      flex: 1,
+                      borderColor: "#ccc",
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      padding: 10,
+                      backgroundColor: "#fff",
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+                      elevation: 5,
+                    }}
+                    placeholder={localStrings.Public.CommonActions}
+                    value={commentForm.getFieldValue("comment")}
+                    onChangeText={(value) =>
+                      commentForm.setFieldValue("comment", value)}
+                  />
+                </Form.Item>
+
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 50,
+                    marginLeft: 10,
+                    padding: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 1.5,
+                    elevation: 5,
+                  }}
+                >
+                  <TouchableOpacity onPress={() => {
+                    commentForm.submit();
+                    console.log("comment form: ", commentForm.getFieldValue("comment"));
+                    
+                    const comment = commentForm.getFieldValue("comment");
+                    if (!comment) {
+                      return;
+                    }
+                    handleAddComment(comment).then(() => {
+                      commentForm.resetFields();
+                    });
+                  }}>
+                    <FontAwesome name="send-o" size={30} color={brandPrimary} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Form>
+          </>
+        )}
+
+        {/* Modal */}
         <Modal visible={isEditModalVisible} animationType="slide">
           <View>
             <TextInput
