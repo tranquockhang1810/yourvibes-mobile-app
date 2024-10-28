@@ -166,9 +166,10 @@ function PostDetails(): React.JSX.Element {
 
               <TouchableOpacity
                 onPress={() => {
-                  setReplyToCommentId(reply.parent_id ?? null);
-                  setReplyToReplyId(reply.id);
-                  textInputRef.current?.focus();
+                  // setReplyToCommentId(reply.parent_id ?? null);
+                  // setReplyToReplyId(reply.id);
+                  // textInputRef.current?.focus();
+                  fetchReplies(postId, reply.id);
                 }}
                 style={{
                   flexDirection: "row",
@@ -541,7 +542,7 @@ function PostDetails(): React.JSX.Element {
                   marginTop: 20,
                 }}
               >
-                <Button title="Save" onPress={() => handleEditComment()} />
+                <Button title="Save" onPress={() => handleEditComment(currentCommentId)} />
                 <Button
                   title="Cancel"
                   onPress={() => setEditModalVisible(false)}

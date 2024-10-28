@@ -118,7 +118,6 @@ const usePostDetailsViewModel = (
               );
               if (commentToEdit) {
                 console.log("Comment Được Chọn để Sửa:", commentToEdit);
-                // setEditCommentContent(commentToEdit.content);
                 setEditCommentContent(comments.find((comment) => comment.id === commentId)?.content || "");
                 setCurrentCommentId(commentId);
                 console.log(
@@ -147,7 +146,7 @@ const usePostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
   
-  const handleEditComment = async () => {
+  const handleEditComment = async (commentId: string) => {
     await handleUpdate(currentCommentId, editCommentContent);
     setEditModalVisible(false); // Close modal
     setEditCommentContent("");
