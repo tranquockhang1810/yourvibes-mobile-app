@@ -75,8 +75,10 @@ function PostDetails(): React.JSX.Element {
     console.log("Edit modal visibility changed:", isEditModalVisible);
   }, [isEditModalVisible]);
 
-  // Cập nhật nút để xem phản hồi lồng nhau
+  // Chức năng hiển thị phản hồi
   const renderReplies = (replies: CommentsResponseModel[]) => {
+    console.log("renderReplies TSX", replies);
+
     return (
       <FlatList
         data={replies}
@@ -117,7 +119,7 @@ function PostDetails(): React.JSX.Element {
               </View>
             </View>
 
-            {/* Nút Thích và Trả lời */}
+            {/* Nút Thích, Trả lời và Hành động */}
             <View
               style={{
                 flexDirection: "row",
@@ -145,9 +147,9 @@ function PostDetails(): React.JSX.Element {
 
               <TouchableOpacity
                 onPress={() => {
-                  setReplyToCommentId(reply.parent_id ?? null); // Trả lời phản hồi con
-                  setReplyToReplyId(reply.id); // Thiết lập ID phản hồi con
-                  textInputRef.current?.focus(); // Hiển thị bàn phím
+                  setReplyToCommentId(reply.parent_id ?? null);
+                  setReplyToReplyId(reply.id);
+                  textInputRef.current?.focus();
                 }}
                 style={{
                   flexDirection: "row",
@@ -160,6 +162,7 @@ function PostDetails(): React.JSX.Element {
                   {localStrings.Public.Reply}
                 </Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={{ flexDirection: "row", alignItems: "center" }}
                 onPress={() => handleAction(reply.id)}
@@ -171,45 +174,37 @@ function PostDetails(): React.JSX.Element {
               </TouchableOpacity>
             </View>
 
-            {/* Nút để xem phản hồi */}
+            {/* Nút để xem phản hồi lồng nhau */}
             <TouchableOpacity
               onPress={() => {
-                console.log(
-                  "Trả lời cho trả lời comment",
-                  "reply.id:",
-                  reply.id,
-                  "reply.parent_id:",
-                  reply.parent_id
-                );
-                fetchReplies(reply.id, reply.parent_id ?? reply.id);
+                fetchReplies(postId, reply.id);
+                setShowMoreReplies((prev) => ({
+                  ...prev,
+                  [reply.id]: !prev[reply.id],
+                })); // Chuyển đổi trạng thái xem thêm
               }}
               style={{ marginTop: 10 }}
             >
               <View style={{ alignItems: "center" }}>
                 <AntDesign name="down" size={16} color={brandPrimaryTap} />
-                <Text style={{ fontSize: 12, color: brandPrimaryTap }}> Xem thêm</Text>
+                <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                  {showMoreReplies[reply.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
+                </Text>
               </View>
             </TouchableOpacity>
 
-            {/* Phản hồi lồng nhau */}
-            {reply.replies && reply.replies.length > 0 && (
+            {/* Hiển thị các phản hồi lồng nhau */}
+            {showMoreReplies[reply.id] &&
+            reply.replies &&
+            Array.isArray(reply.replies) ? (
               <View style={{ marginTop: 10, paddingLeft: 20 }}>
-                {showMoreReplies[reply.id]
-                  ? renderReplies(reply.replies)
-                  : renderReplies(reply.replies.slice(0, 1))}
-                {reply.replies.length > 1 && !showMoreReplies[reply.id] && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      setShowMoreReplies((prev) => ({
-                        ...prev,
-                        [reply.id]: true,
-                      }))
-                    }
-                    style={{ marginTop: 10 }}
-                  ></TouchableOpacity>
+                {reply.replies.length > 0 ? (
+                  renderReplies(reply.replies)
+                ) : (
+                  <Text>Không có phản hồi nào.</Text>
                 )}
               </View>
-            )}
+            ) : null}
           </View>
         )}
       />
@@ -302,7 +297,10 @@ function PostDetails(): React.JSX.Element {
         >
           <View style={{ alignItems: "center" }}>
             <AntDesign name="down" size={16} color={brandPrimaryTap} />
-            <Text style={{ fontSize: 12, color: brandPrimaryTap }}> Xem thêm</Text>
+            <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+              {" "}
+              Xem phản hồi
+            </Text>
           </View>
         </TouchableOpacity>
         {/* Hiển thị các phản hồi */}

@@ -33,15 +33,38 @@ const usePostDetailsViewModel = (
     }
   };
 
-  const fetchReplies = async (commentId: string, parentId: string) => {
+  // const fetchReplies = async (PostId: string, parentId: string) => {
+  //   try {
+  //     const response = await defaultCommentRepo.getReplies(postId, parentId);
+  //     console.log("replies:", response);
+  
+  //     if (response && response.data) {
+  //       setComments((prevComments) =>
+  //         prevComments.map((comment) =>
+  //           comment.id === PostId
+  //             ? { ...comment, replies: response.data }
+  //             : comment
+  //         )
+  //       );
+  //     }
+  //   } catch (error) {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Lỗi tải phản hồi",
+  //     });
+  //     console.error("Error fetching replies:", error);
+  //   }
+  // };
+
+  const fetchReplies = async (postId: string, parentId: string) => {
     try {
       const response = await defaultCommentRepo.getReplies(postId, parentId);
-      console.log("PostId: ", postId, " parentId: ", parentId);
-
+      console.log("replies TS:", response);
+  
       if (response && response.data) {
         setComments((prevComments) =>
           prevComments.map((comment) =>
-            comment.id === commentId
+            comment.id === parentId
               ? { ...comment, replies: response.data }
               : comment
           )
@@ -55,11 +78,13 @@ const usePostDetailsViewModel = (
       console.error("Error fetching replies:", error);
     }
   };
+  
 
   useEffect(() => {
     fetchComments();
     handleLike(postId);
   }, [postId]);
+  
 
   const handleLike = (commentOrReplyId: string) => {
     setUserLikes((prevUserLikes) => {
