@@ -311,9 +311,8 @@ function PostDetails(): React.JSX.Element {
         >
           <View style={{ alignItems: "center" }}>
             <AntDesign name="down" size={16} color={brandPrimaryTap} />
-            <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-              {" "}
-              Xem phản hồi
+            <Text style={{ fontSize: 12, color: brandPrimaryTap }}> 
+              {showMoreReplies[comments.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
             </Text>
           </View>
         </TouchableOpacity>
