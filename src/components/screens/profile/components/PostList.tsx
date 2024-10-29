@@ -5,19 +5,22 @@ import { useRouter } from 'expo-router';
 import Post from '@/src/components/common/Post';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
+import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 
 const PostList = ({
   loading,
   posts,
-  loadMorePosts
+  loadMorePosts,
+  user
 }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
+  user: UserModel
 }) => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const router = useRouter();
-  const { user, localStrings } = useAuth();
+  const { localStrings } = useAuth();
 
   const renderFooter = () => {
     if (!loading) return null;

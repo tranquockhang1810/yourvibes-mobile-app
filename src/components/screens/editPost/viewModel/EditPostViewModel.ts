@@ -1,5 +1,6 @@
 import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
+import { SharePostRequestModel } from "@/src/api/features/post/models/SharePostRequestModel";
 import { UpdatePostRequestModel } from "@/src/api/features/post/models/UpdatePostRequestModel";
 import { PostRepo } from "@/src/api/features/post/PostRepo"
 import { useAuth } from "@/src/context/auth/useAuth";
@@ -18,7 +19,6 @@ const EditPostViewModel = (repo: PostRepo) => {
   const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
   const [mediaIds, setMediaIds] = useState<string[]>([]);
   const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined);
-  const [liked, setLiked] = useState<boolean>(false);
   const [shareLoading, setShareLoading] = useState<boolean>(false);
 
   const updatePost = async (data: UpdatePostRequestModel) => {
@@ -140,12 +140,7 @@ const EditPostViewModel = (repo: PostRepo) => {
     try {
       const res = await repo.likePost(id);
       if (!res?.error) {
-        setLikedPost({ 
-          ...likedPost,
-          like_count: !liked ? likedPost?.like_count as number + 1 : likedPost?.like_count as number - 1,
-          is_liked: !liked
-        })
-        setLiked(!liked)
+        setLikedPost(res?.data);
       } else {
         Toast.show({
           type: "error",
@@ -163,10 +158,10 @@ const EditPostViewModel = (repo: PostRepo) => {
     }
   }
 
-  const sharePost = async (id: string) => {
+  const sharePost = async (id: string, data: SharePostRequestModel) => {
     try {
       setShareLoading(true);
-      const res = await repo.sharePost(id);
+      const res = await repo.sharePost(id, data);
       if (!res?.error) {
         Toast.show({
           type: "success",

@@ -138,6 +138,9 @@ export const ENGLocalizedStrings = {
     Posts: {
       GetPostsFailed: "Failed to get posts!",
       GetOnePostFailed: "Failed to get post!"
+    },
+    Info: {
+      GetInfoFailed: "Failed to get user's infomation!",
     }
   },
   UpdatePost: {

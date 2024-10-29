@@ -137,6 +137,9 @@ export const VnLocalizedStrings = {
     Posts: {
       GetPostsFailed: "Lấy danh sách bài viết thất bại!",
       GetOnePostFailed: "Lấy bài viết thất bại!"
+    },
+    Info: {
+      GetInfoFailed: "Lấy thống tin người dùng thất bại!"
     }
   },
   UpdatePost: {

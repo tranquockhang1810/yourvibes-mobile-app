@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Button, Card, Modal } from '@ant-design/react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Button, Card, Form, Modal } from '@ant-design/react-native';
 import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
@@ -8,30 +8,29 @@ import MediaView from '../foundation/MediaView';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { router } from 'expo-router';
-import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer';
+import { getTimeDiff } from '../../utils/helper/DateTransfer';
 import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-import PostDetails from './PostDetails';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
 
-const Post = ({
-  post,
-  isParentPost = false,
-  children
-}: {
+interface IPost {
   post?: PostResponseModel,
   isParentPost?: boolean,
   children?: React.ReactNode
+}
+
+const Post: React.FC<IPost> = React.memo(({
+  post,
+  isParentPost = false,
+  children
 }) => {
-  const postDetails = post?.id; 
-  const { brandPrimary, brandPrimaryTap, lightGray } = useColor();
+  const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
+  const [shareForm] = Form.useForm();
   const { showActionSheetWithOptions } = useActionSheet();
   const [showSharePopup, setShowSharePopup] = useState(false);
-  const [postContent, setPostContent] = useState("");
   const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
-  const [showPrivacyPopup, setShowPrivacyPopup] = useState(false);
   const {
     deletePost,
     deleteLoading,
@@ -225,6 +224,7 @@ const Post = ({
                     onPress={() => {
                       // sharePost(likedPost?.id as string);
                       setShowSharePopup(true);
+                      shareForm.setFieldValue("privacy", Privacy.PUBLIC);
                     }}
                   >
                     <AntDesign name="sharealt" size={20} color={brandPrimary} />
@@ -252,99 +252,108 @@ const Post = ({
         maskClosable
         onClose={() => setShowSharePopup(false)}>
         <View style={{ paddingVertical: 20 }}>
-          {/* Avatar anh Input */}
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                marginHorizontal: 10,
-              }}>
-              <View>
-                <Image
-                  source={{ uri: user?.avatar_url || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 30
-                  }}
-                />
-              </View>
-              <View style={{ marginLeft: 10, flex: 1 }}>
-                <View style={{ flexDirection: 'column' }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.family_name + " " + user?.name || localStrings.Public.UnknownUser}</Text>
-                  <MyInput
-                    placeholder={localStrings.AddPost.WhatDoYouThink}
-                    variant='outlined'
-                    moreStyle={{ paddingLeft: 10, marginTop: 10, borderColor: brandPrimaryTap }}
-                    textArea={{
-                      autoSize: { minRows: 3, maxRows: 3 },
+          <Form form={shareForm} style={{ backgroundColor, borderWidth: 0 }}>
+            {/* Avatar anh Input */}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  marginHorizontal: 10,
+                }}>
+                <View>
+                  <Image
+                    source={{ uri: user?.avatar_url || "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg" }}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 30
                     }}
-                    value={postContent}
-                    onChangeText={setPostContent}
                   />
                 </View>
+                <View style={{ marginLeft: 10, flex: 1 }}>
+                  <View style={{ flexDirection: 'column' }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{user?.family_name + " " + user?.name || localStrings.Public.UnknownUser}</Text>
+                    <Form.Item name="content" noStyle>
+                      <MyInput
+                        placeholder={localStrings.AddPost.WhatDoYouThink}
+                        variant='outlined'
+                        moreStyle={{ paddingLeft: 10, marginTop: 10, borderColor: brandPrimaryTap }}
+                        textArea={{
+                          autoSize: { minRows: 3, maxRows: 3 },
+                        }}
+                      // value={shareForm}
+                      // onChangeText={setPostContent}
+                      />
+                    </Form.Item>
+                  </View>
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
 
-          {/* Buttons */}
-          <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginHorizontal: 10,
-            marginTop: 20
-          }}>
-            {/* Privacy Section */}
+            {/* Buttons */}
             <View style={{
               flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center'
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginHorizontal: 10,
+              marginTop: 20
             }}>
-              <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
-                {localStrings.AddPost.PrivacyText}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowPrivacyPopup(true);
-                  Modal.operation([
-                    { text: localStrings.Public.Everyone, onPress: () => setSharePostPrivacy(Privacy.PUBLIC) },
-                    { text: localStrings.Public.Friend, onPress: () => setSharePostPrivacy(Privacy.FRIEND_ONLY) },
-                    { text: localStrings.Public.Private, onPress: () => setSharePostPrivacy(Privacy.PRIVATE) },
-                  ])
-                }}
-                style={{ flexDirection: 'row', alignItems: 'center' }}
-              >
-                <Text style={{ color: 'gray', fontSize: 14, fontWeight: 'bold' }}>
-                  {renderPrivacyText()}!
+              {/* Privacy Section */}
+              <View style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center'
+              }}>
+                <Text style={{ color: 'gray', fontSize: 14, paddingRight: 5 }}>
+                  {localStrings.AddPost.PrivacyText}
                 </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    Modal.operation([
+                      { text: localStrings.Public.Everyone, onPress: () => setSharePostPrivacy(Privacy.PUBLIC) },
+                      { text: localStrings.Public.Friend, onPress: () => setSharePostPrivacy(Privacy.FRIEND_ONLY) },
+                      { text: localStrings.Public.Private, onPress: () => setSharePostPrivacy(Privacy.PRIVATE) },
+                    ])
+                  }}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                  <Text style={{ color: 'gray', fontSize: 14, fontWeight: 'bold' }}>
+                    {renderPrivacyText()}!
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Post Button */}
+              <Button
+                style={{
+                  borderWidth: 1,
+                  borderColor: 'black',
+                  borderRadius: 20,
+                  height: 30,
+                }}
+                size='large'
+                onPress={() => {
+                  sharePost(likedPost?.id as string, {
+                    content: shareForm.getFieldValue("content"),
+                    privacy: sharePostPrivacy,
+                  }).then(() => {
+                    setShowSharePopup(false)
+                  });
+                }}
+                loading={shareLoading}
+              >
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.Post.SharePost}</Text>
+              </Button>
             </View>
 
-            {/* Post Button */}
-            <Button
-              style={{
-                borderWidth: 1,
-                borderColor: 'black',
-                borderRadius: 20,
-                height: 30,
-              }}
-              size='large'
-              onPress={() => sharePost(likedPost?.id as string)}
-              loading={shareLoading}
-            >
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.Post.SharePost}</Text>
-            </Button>
-          </View>
-
-          {/* Parent Post */}
-          <Post post={likedPost} isParentPost />
+            {/* Parent Post */}
+            <Post post={likedPost} isParentPost />
+          </Form>
         </View>
       </Modal>
-
-    </Card>
+    </Card >
   );
-}
+})
 
 export default Post;

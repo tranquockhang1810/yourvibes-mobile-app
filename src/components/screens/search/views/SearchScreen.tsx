@@ -38,8 +38,6 @@ const SearchScreen = React.memo(() => {
     return () => clearTimeout(timer);
   }, [keyword]);
 
-  console.log("rendering search screen");
-
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
@@ -98,7 +96,11 @@ const SearchScreen = React.memo(() => {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                      }}>
+                      }}
+                        onPress={() => {
+                          router.push(`/user/${item?.id}`);
+                        }}
+                      >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: "60%" }}>
                           <Image
                             source={{ uri: item?.avatar_url }}

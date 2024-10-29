@@ -4,10 +4,11 @@ import { Feather, MaterialIcons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { DateTransfer } from '../../../../utils/helper/DateTransfer';
+import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 
-const AboutTab = () => {
+const AboutTab = ({ user }: { user: UserModel }) => {
   const { lightGray, brandPrimaryTap } = useColor();
-  const { user, localStrings } = useAuth();
+  const {localStrings } = useAuth();
   const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
 
   return (
