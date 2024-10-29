@@ -153,5 +153,15 @@ export const ENGLocalizedStrings = {
     UpdateProfile: "Update profile",
     UpdateFailed: "Update profile failed!",
     UpdateSuccess: "Update profile successful!",
+  },
+  Notification: {
+   Notification: "Notification",
+   Items: {
+    LikePost: "liked your post: ",
+    SharePost: "shared your post: ",
+    CommentPost: "commented on your post: ",
+    Friend: "sent you a friend request."
   }
+  },
+
 }

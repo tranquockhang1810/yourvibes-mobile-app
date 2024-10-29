@@ -152,5 +152,14 @@ export const VnLocalizedStrings = {
     UpdateProfile: "Cập nhật trang cá nhân",
     UpdateFailed: "Cập nhật trang cá nhân thất bại!",
     UpdateSuccess: "Cập nhật trang cá nhân thành công!",
+  },
+Notification: {
+  Notification: "Thông báo",
+  Items:{
+    LikePost: "đã thích bài viết của bạn: ",
+    SharePost: "đã chia sẻ bài viết của bạn: ",
+    CommentPost: "đã bình luận về bài viết của bạn: ",
+    Friend: "đã gưi lời mời kết bạn.",
   }
-}
+}}
+  

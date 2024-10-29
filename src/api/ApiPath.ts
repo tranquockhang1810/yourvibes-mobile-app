@@ -23,6 +23,11 @@ export const ApiPath = {
    UPDATE_COMMENT: getApiPath('comments/'),
    GET_COMMENTS: getApiPath('comments/'),
    DELETE_COMMENT: getApiPath('comments/'),
+
+   // Notification
+   GET_NOTIFICATIONS: getApiPath('users/notifications/'),
+   READ_NOTIFICATION: getApiPath('users/notifications/'),
+   READ_ALL_NOTIFICATION: getApiPath('users/notifications/'),
 }
 
 function getApiPath(path: string) {
