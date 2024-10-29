@@ -33,36 +33,16 @@ const usePostDetailsViewModel = (
     }
   };
 
-  const fetchRepliesToReply = async (postId: string, parentId: string): Promise<CommentsResponseModel[]> => {
-    try {
-      const response = await defaultCommentRepo.getReplies(postId, parentId);
-      console.log("replies to reply:", response);
-      if (response && Array.isArray(response.data)) {
-        return response.data;
-      } else {
-        return [];
-      }
-      
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Lỗi tải phản hồi",
-      });
-      console.error("Error fetching replies to reply:", error);
-      return [];
-    }
-  };
-
   const fetchReplies = async (postId: string, parentId: string) => {
     try {
-      const response = await defaultCommentRepo.getReplies(postId, parentId);
-      console.log("replies TS:", response);
+      const replies = await defaultCommentRepo.getReplies(postId, parentId);
+      console.log("replies TS:", replies);
   
-      if (response && response.data) {
+      if (replies && replies.data) {
         setComments((prevComments) =>
           prevComments.map((comment) =>
             comment.id === parentId
-              ? { ...comment, replies: response.data }
+              ? { ...comment, replies: replies.data }
               : comment
           )
         );
@@ -138,7 +118,7 @@ const usePostDetailsViewModel = (
               );
               if (commentToEdit) {
                 console.log("Comment Được Chọn để Sửa:", commentToEdit);
-                setEditCommentContent(commentToEdit.content);
+                setEditCommentContent(comments.find((comment) => comment.id === commentId)?.content || "");
                 setCurrentCommentId(commentId);
                 console.log(
                   "Setting edit modal to visible for comment ID:",
@@ -147,7 +127,7 @@ const usePostDetailsViewModel = (
                 setEditModalVisible(true);
                 console.log("Edit modal visible status:", isEditModalVisible);
               }
-              break;
+              break; 
 
           case 2:
             handleDelete(commentId);
@@ -166,7 +146,7 @@ const usePostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
   
-  const handleEditComment = async () => {
+  const handleEditComment = async (commentId: string) => {
     await handleUpdate(currentCommentId, editCommentContent);
     setEditModalVisible(false); // Close modal
     setEditCommentContent("");
@@ -316,8 +296,7 @@ const usePostDetailsViewModel = (
     editCommentContent,
     setEditCommentContent,
     handleEditComment,
-    currentCommentId,
-    fetchRepliesToReply,
+    currentCommentId, 
   };
 };
 
