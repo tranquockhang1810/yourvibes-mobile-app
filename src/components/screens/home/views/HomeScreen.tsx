@@ -18,14 +18,14 @@ const HomeScreen = () => {
   const { brandPrimary, brandPrimaryTap, backgroundColor, lightGray } = useColor();
   const [postsList, setPosts] = useState<PostResponseModel[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const {
-    fetchUserPostsForHome,
-    posts
-  } = ProfileViewModel()
+  // const {
+  //   fetchUserPostsForHome,
+  //   posts
+  // } = ProfileViewModel()
 
-  useEffect(() => {
-    fetchUserPostsForHome();
-  }, [])
+  // useEffect(() => {
+  //   fetchUserPostsForHome();
+  // }, [])
 
   const defaultPosts: PostResponseModel[] = [
     {

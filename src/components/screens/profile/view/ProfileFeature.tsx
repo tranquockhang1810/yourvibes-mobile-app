@@ -1,24 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import React, { useEffect } from 'react';
+import { KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import ProfileViewModel from '../viewModel/ProfileViewModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 
-const ProfileFeatures = () => {
+const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
-  const [tab, setTab] = useState(0);
   const router = useRouter();
   const { loading, posts, fetchUserPosts, loadMorePosts, total } = ProfileViewModel();
 
   useEffect(() => {
-    fetchUserPosts();
-  }, [])
+    if (tab === 0 || tab === 1) {
+      fetchUserPosts();
+    }
+  }, [tab]);
 
   return (
     <KeyboardAvoidingView
@@ -55,14 +56,14 @@ const ProfileFeatures = () => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader total={total} user={user as UserModel} loading={false}/>
-              <ProfileTabs setTab={setTab} tab={tab} posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={user as UserModel} />
+              <ProfileHeader total={total} user={user as UserModel} loading={false} />
+              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={false} loadMorePosts={loadMorePosts} userInfo={user as UserModel} />
             </>
           }
           renderItem={() => null}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-          onRefresh={() => tab === 1 && fetchUserPosts()}
+          onRefresh={() => (tab === 0 || tab === 1) && fetchUserPosts()}
           refreshing={loading}
         />
       </View>

@@ -9,6 +9,11 @@ export const ApiPath = {
   // User
   PROFILE: getApiPath('users/'),
   SEARCH: getApiPath('users/'),
+
+  //Friend
+  FRIEND_REQUEST: getApiPath('users/friends/friend_request/'),
+  FRIEND_RESPONSE: getApiPath('users/friends/friend_response/'),
+  UNFRIEND: getApiPath('users/friends/'),
   
   // Post
   CREATE_POST: getApiPath('posts/'),

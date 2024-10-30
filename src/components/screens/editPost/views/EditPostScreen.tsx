@@ -247,58 +247,6 @@ const EditPostScreen = ({ id }: { id: string }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={{ paddingRight: 10, paddingLeft: 60 }}>
-              <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                {originalImageFiles.map((file, index) => (
-                  <View key={index} style={{ position: 'relative', marginRight: 10, marginBottom: 10 }}>
-                    {file?.uri?.includes('mp4') || file?.uri?.includes('mov') ? (
-                      <Video
-                        source={{ uri: file?.uri }}
-                        useNativeControls
-                        style={{ width: 75, height: 75, borderRadius: 10, backgroundColor: '#f0f0f0' }}
-                      />
-                    ) : (
-                      <Image
-                        source={{ uri: file?.uri }}
-                        style={{ width: 75, height: 75, borderRadius: 10, backgroundColor: '#f0f0f0' }}
-                      />
-                    )}
-                    <TouchableOpacity
-                      onPress={() => removeImage(index)}
-                      style={{
-                        position: 'absolute',
-                        top: -10,
-                        right: -10,
-                        backgroundColor: 'white',
-                        borderRadius: 12,
-                        padding: 2
-                      }}
-                    >
-                      <Ionicons name="close" size={18} color={brandPrimary} />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-                {/* Add Image Button */}
-                <TouchableOpacity
-                  onPress={pickImage}
-                  style={{
-                    width: 75,
-                    height: 75,
-                    borderRadius: 10,
-                    backgroundColor: lightGray,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  disabled={loading} // Disable the button while loading
-                >
-                  {loading ? (
-                    <ActivityIndicator size="small" color={brandPrimary} /> // Show loader when loading
-                  ) : (
-                    <Ionicons name="image-outline" size={30} color={brandPrimary} />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
           </>
         ) : (
           <Post post={post?.parent_post} isParentPost />

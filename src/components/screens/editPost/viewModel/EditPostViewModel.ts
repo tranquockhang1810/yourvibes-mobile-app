@@ -10,7 +10,7 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 const EditPostViewModel = (repo: PostRepo) => {
-  const { localStrings, user } = useAuth();
+  const { localStrings } = useAuth();
   const [updateLoading, setUpdateLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState('');
@@ -34,7 +34,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         setOriginalImageFiles([]);
         setMediaIds([]);
         setPrivacy(Privacy.PUBLIC);
-        router.push('/(tabs)/profile');
+        router.push("/(tabs)/profile?tabNum=1");
       } else {
         Toast.show({
           type: "error",
@@ -116,7 +116,7 @@ const EditPostViewModel = (repo: PostRepo) => {
           type: "success",
           text1: localStrings.DeletePost.DeleteSuccess
         })
-        router.push('/(tabs)/home');
+        router.push('/(tabs)/profile?tabNum=1');
       } else {
         Toast.show({
           type: "error",
@@ -167,6 +167,7 @@ const EditPostViewModel = (repo: PostRepo) => {
           type: "success",
           text1: localStrings.Post.SharePostSuccess
         })
+        router.push('/(tabs)/profile?tabNum=1');
       } else {
         Toast.show({
           type: "error",

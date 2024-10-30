@@ -17,7 +17,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
   const {
     loading,
     posts,
-    fetchUserPosts,
     loadMorePosts,
     total,
     fetchUserProfile,
@@ -28,6 +27,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
   useEffect(() => {
     if (!id) return;
     fetchUserProfile(id);
+    setTab(0);
   }, [id])
 
   return (
@@ -65,14 +65,18 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading}/>
-              <ProfileTabs setTab={setTab} tab={tab} posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={userInfo as UserModel} />
+              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} />
+              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} />
             </>
           }
           renderItem={() => null}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-          onRefresh={() => tab === 1 && fetchUserPosts()}
+          onRefresh={() => {
+            if (tab === 0 || tab === 1) {
+              fetchUserProfile(id)
+            }
+          }}
           refreshing={loading}
         />
       </View>

@@ -8,37 +8,39 @@ import SettingsTab from './SettingsTab';
 import PostList from './PostList';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
+import MoreTab from './MoreTab';
 
 const ProfileTabs = ({
-  tab,
-  setTab,
+  tabNum,
   posts,
   loading,
+  profileLoading,
   loadMorePosts,
-  user
+  userInfo
 }: {
-  tab: number,
-  setTab: (number: number) => void,
+  tabNum: number,
   posts: PostResponseModel[],
   loading: boolean,
+  profileLoading: boolean,
   loadMorePosts: () => void,
-  user: UserModel
+  userInfo: UserModel
 }) => {
   const { brandPrimary } = useColor();
-  const { localStrings } = useAuth();
+  const { localStrings, user } = useAuth();
+  const [tab, setTab] = React.useState(tabNum);
 
   const renderBody = useCallback(() => {
     switch (tab) {
       case 0:
-        return <AboutTab user={user} />;
+        return <AboutTab user={userInfo} loading={profileLoading} />;
       case 1:
-        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={user} />;
+        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={userInfo} />;
       case 2:
-        return <SettingsTab />;
+        return userInfo?.id === user?.id ? <SettingsTab /> : <MoreTab userInfoProps={userInfo}/>;
       default:
-        return <AboutTab user={user} />;
+        return <AboutTab user={userInfo} loading={profileLoading} />;
     }
-  }, [tab, posts, loading]);
+  }, [tab, posts, loading, profileLoading, userInfo]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>
@@ -46,7 +48,7 @@ const ProfileTabs = ({
         tabs={[
           { title: localStrings.Public.About },
           { title: localStrings.Public.Post },
-          { title: localStrings.Public.SetingProfile },
+          { title: userInfo?.id === user?.id ? localStrings.Public.SetingProfile : localStrings.Public.More },
         ]}
         initialPage={tab}
         tabBarPosition="top"

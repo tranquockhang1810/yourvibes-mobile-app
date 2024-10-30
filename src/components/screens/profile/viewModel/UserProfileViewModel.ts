@@ -1,8 +1,10 @@
+import { FriendStatus } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
 import { useAuth } from "@/src/context/auth/useAuth";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 
@@ -16,6 +18,8 @@ const UserProfileViewModel = () => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
   const [userInfo, setUserInfo] = useState<UserModel | null>(null);
+  const [sendRequestLoading, setSendRequestLoading] = useState(false);
+  const [newFriendStatus, setNewFriendStatus] = useState<FriendStatus | undefined>(undefined);
 
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
@@ -64,6 +68,7 @@ const UserProfileViewModel = () => {
       const response = await defaultProfileRepo.getProfile(id);
       if (!response?.error) {
         setUserInfo(response?.data);
+        setNewFriendStatus(response?.data?.friend_status);
       } else {
         Toast.show({
           type: 'error',
@@ -90,6 +95,151 @@ const UserProfileViewModel = () => {
     }
   };
 
+  const sendFriendRequest = async (id: string) => {
+    try {
+      setSendRequestLoading(true);
+      const response = await defaultProfileRepo.sendFriendRequest(id);
+      if (!response?.error) {
+        Toast.show({
+          type: 'success',
+          text1: localStrings.Profile.Friend.SendRequestSuccess,
+        });
+        setNewFriendStatus(FriendStatus.SendFriendRequest);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Friend.SendRequestFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Friend.SendRequestFailed,
+        text2: error?.message,
+      });
+    } finally {
+      setSendRequestLoading(false);
+    }
+  }
+
+  const cancelFriendRequest = async (id: string) => {
+    try {
+      setSendRequestLoading(true);
+      const response = await defaultProfileRepo.cancelFriendRequest(id);
+      if (!response?.error) {
+        Toast.show({
+          type: 'success',
+          text1: localStrings.Profile.Friend.CancelRequestSuccess,
+        });
+        setNewFriendStatus(FriendStatus.NotFriend);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Friend.CancelRequestFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Friend.CancelRequestFailed,
+        text2: error?.message,
+      });
+    } finally {
+      setSendRequestLoading(false);
+    }
+  }
+
+  const refuseFriendRequest = async (id: string) => {
+    try {
+      setSendRequestLoading(true);
+      const response = await defaultProfileRepo.refuseFriendRequest(id);
+      if (!response?.error) {
+        Toast.show({
+          type: 'success',
+          text1: localStrings.Profile.Friend.FriendResponseSuccess,
+        });
+        setNewFriendStatus(FriendStatus.NotFriend);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Friend.FriendResponseFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Friend.FriendResponseFailed,
+        text2: error?.message,
+      });
+    } finally {
+      setSendRequestLoading(false);
+    }
+  }
+
+  const acceptFriendRequest = async (id: string) => {
+    try {
+      setSendRequestLoading(true);
+      const response = await defaultProfileRepo.acceptFriendRequest(id);
+      if (!response?.error) {
+        Toast.show({
+          type: 'success',
+          text1: localStrings.Profile.Friend.FriendResponseSuccess,
+        });
+        setNewFriendStatus(FriendStatus.IsFriend);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Friend.FriendResponseFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Friend.FriendResponseFailed,
+        text2: error?.message,
+      });
+    } finally {
+      setSendRequestLoading(false);
+    }
+  }
+
+  const unFriend = async (id: string) => {
+    try {
+      setSendRequestLoading(true);
+      const response = await defaultProfileRepo.unfriend(id);
+      if (!response?.error) {
+        Toast.show({
+          type: 'success',
+          text1: localStrings.Profile.Friend.UnfriendSuccess,
+        });
+        setNewFriendStatus(FriendStatus.NotFriend);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Friend.UnfriendFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Friend.UnfriendFailed,
+        text2: error?.message,
+      });
+    } finally {
+      setSendRequestLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (userInfo) {
       fetchUserPosts();
@@ -105,7 +255,15 @@ const UserProfileViewModel = () => {
     fetchUserPosts,
     total,
     fetchUserProfile,
-    userInfo
+    userInfo,
+    sendFriendRequest,
+    sendRequestLoading,
+    refuseFriendRequest,
+    cancelFriendRequest,
+    newFriendStatus,
+    setNewFriendStatus,
+    acceptFriendRequest,
+    unFriend
   }
 }
 

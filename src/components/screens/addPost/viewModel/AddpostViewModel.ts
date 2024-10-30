@@ -20,15 +20,15 @@ const AddPostViewModel = (repo: PostRepo) => {
     try {
       setCreateLoading(true);
       const response = await repo.createPost(data);
-      if (response?.data) {
-        setPostContent('');
-        setSelectedImageFiles([]);
-        clearSavedPost!();
+      if (!response?.error) {
         Toast.show({
           type: "success",
           text1: localStrings.AddPost.CreatePostSuccess,
         })
-        router.push("/(tabs)/home");
+        setPostContent('');
+        setSelectedImageFiles([]);
+        clearSavedPost!();
+        router.push("/(tabs)/profile?tabNum=0");
       } else {
         Toast.show({
           type: "error",

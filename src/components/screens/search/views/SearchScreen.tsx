@@ -98,7 +98,7 @@ const SearchScreen = React.memo(() => {
                         alignItems: 'center',
                       }}
                         onPress={() => {
-                          router.push(`/user/${item?.id}`);
+                          router.push(`/(tabs)/user/${item?.id}`);
                         }}
                       >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: "60%" }}>

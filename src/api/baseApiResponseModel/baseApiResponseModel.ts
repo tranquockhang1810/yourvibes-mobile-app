@@ -24,3 +24,10 @@ export enum Privacy {
   PRIVATE = "private",
   FRIEND_ONLY = "friend_only",
 }
+
+export enum FriendStatus {
+  NotFriend = "not_friend",
+  IsFriend = "is_friend",
+  SendFriendRequest = "send_friend_request",
+  ReceiveFriendRequest = "receive_friend_request",
+}

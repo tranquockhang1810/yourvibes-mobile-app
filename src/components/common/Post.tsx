@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Form, Modal } from '@ant-design/react-native';
 import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
@@ -20,7 +20,7 @@ interface IPost {
   children?: React.ReactNode
 }
 
-const Post: React.FC<IPost> = React.memo(({
+const Post: React.FC<IPost> = ({
   post,
   isParentPost = false,
   children
@@ -92,10 +92,8 @@ const Post: React.FC<IPost> = React.memo(({
   };
 
   useEffect(() => {
-    if (!likedPost) {
-      setLikedPost(post);
-    }
-  }, [post, likedPost]);
+    setLikedPost(post);
+  }, [post]);
 
   const renderPrivacyIcon = () => {
     switch (likedPost?.privacy) {
@@ -122,6 +120,14 @@ const Post: React.FC<IPost> = React.memo(({
         return localStrings.Public.Everyone.toLowerCase();
     }
   };
+
+  const renderLikeIcon = useCallback(() => {
+    if (likedPost?.is_liked) {
+      return <AntDesign name="heart" size={16} color={"red"} />;
+    } else {
+      return <AntDesign name="hearto" size={16} color={brandPrimaryTap} />;
+    }
+  }, [likedPost?.is_liked]);
 
   return (
     <Card style={{
@@ -168,16 +174,20 @@ const Post: React.FC<IPost> = React.memo(({
       {/* Content */}
       {!isParentPost && children ? (
         <View>
-          <View style={{ paddingLeft: 10 }}>
-            <Text>{likedPost?.content}</Text>
-          </View>
+          {likedPost?.content && (
+            <View style={{ paddingLeft: 10 }}>
+              <Text>{likedPost?.content}</Text>
+            </View>
+          )}
           {children}
         </View>
       ) : (
         <View style={{ paddingLeft: 65, paddingRight: 35 }}>
-          <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
-            <Text>{likedPost?.content}</Text>
-          </View>
+          {likedPost?.content && (
+            <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
+              <Text>{likedPost?.content}</Text>
+            </View>
+          )}
           {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
         </View>
       )}
@@ -202,7 +212,7 @@ const Post: React.FC<IPost> = React.memo(({
                   likePost(likedPost?.id as string)
                 }}
                 >
-                  <AntDesign name={likedPost?.is_liked ? "heart" : "hearto"} size={20} color={likedPost?.is_liked ? "red" : brandPrimary} />
+                  {renderLikeIcon()}
                 </TouchableOpacity>
                 <TouchableOpacity style={{ marginLeft: 5 }}>
                   <Text style={{ color: brandPrimary }}>{likedPost?.like_count}</Text>
@@ -251,7 +261,7 @@ const Post: React.FC<IPost> = React.memo(({
         animationType="slide-up"
         maskClosable
         onClose={() => setShowSharePopup(false)}>
-        <View style={{ paddingVertical: 20 }}>
+        <View style={{ paddingVertical: 20, height: 600 }}>
           <Form form={shareForm} style={{ backgroundColor, borderWidth: 0 }}>
             {/* Avatar anh Input */}
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -282,8 +292,7 @@ const Post: React.FC<IPost> = React.memo(({
                         textArea={{
                           autoSize: { minRows: 3, maxRows: 3 },
                         }}
-                      // value={shareForm}
-                      // onChangeText={setPostContent}
+                        autoFocus
                       />
                     </Form.Item>
                   </View>
@@ -339,6 +348,7 @@ const Post: React.FC<IPost> = React.memo(({
                     privacy: sharePostPrivacy,
                   }).then(() => {
                     setShowSharePopup(false)
+                    router.dismiss();
                   });
                 }}
                 loading={shareLoading}
@@ -354,6 +364,6 @@ const Post: React.FC<IPost> = React.memo(({
       </Modal>
     </Card >
   );
-})
+}
 
 export default Post;

@@ -27,6 +27,10 @@ export const ENGLocalizedStrings = {
     LogoutConfirm: "Are you sure you want to log out?",
     More: "More",
     AddFriend: "Add Friend",
+    UnFriend: "Unfriend",
+    CancelFriendRequest: "Cancel request",
+    RefuseFriendRequest: "Refuse",
+    AcceptFriendRequest: "Accept",
     ReportFriend: "Report",
     Block: "Block",
     Vietnamese: "Vietnamese",
@@ -41,12 +45,12 @@ export const ENGLocalizedStrings = {
     HourAgo: "hours ago",
     DayAgo: "days ago",
     Action: "Action",
-    CommonActions:"Click your comment ...",
+    CommonActions: "Click your comment ...",
     Comment: "Comments",
     Reply: "Reply",
-    ReportComment:"Report Comment"
+    ReportComment: "Report Comment"
 
-    
+
   },
   Form: {
     Label: {
@@ -141,6 +145,17 @@ export const ENGLocalizedStrings = {
     },
     Info: {
       GetInfoFailed: "Failed to get user's infomation!",
+    },
+    Friend: {
+      SendRequestFailed: "Failed to send friend request!",
+      SendRequestSuccess: "Friend request sent successfully!",
+      FriendResponseFailed: "Failed to respond to friend request!",
+      FriendResponseSuccess: "Friend request response successful!",
+      CancelRequestFailed: "Failed to cancel friend request!",
+      CancelRequestSuccess: "Friend request canceled successfully!",
+      UnfriendFailed: "Failed to unfriend!",
+      UnfriendSuccess: "Unfriend successful!",
+      UnfriendConfirm: "Are you sure you want to unfriend this user?",
     }
   },
   UpdatePost: {
