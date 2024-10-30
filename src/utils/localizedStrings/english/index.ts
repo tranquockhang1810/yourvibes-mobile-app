@@ -178,5 +178,15 @@ export const ENGLocalizedStrings = {
     SearchFailed: "Search failed!",
     NoUsers: "No user found",
     TrySearch: "Try searching some keyword"
+  },
+  Notification: {
+   Notification: "Notification",
+   Items: {
+    LikePost: "liked your post: ",
+    SharePost: "shared your post: ",
+    CommentPost: "commented on your post: ",
+    Friend: "sent you a friend request."
   }
+  },
+
 }

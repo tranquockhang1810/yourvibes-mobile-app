@@ -261,7 +261,7 @@ const Post: React.FC<IPost> = ({
         animationType="slide-up"
         maskClosable
         onClose={() => setShowSharePopup(false)}>
-        <View style={{ paddingVertical: 20, height: 600 }}>
+        <View style={{ paddingVertical: 20, height: Platform.OS === 'android' ? 'auto' : 600 }}>
           <Form form={shareForm} style={{ backgroundColor, borderWidth: 0 }}>
             {/* Avatar anh Input */}
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

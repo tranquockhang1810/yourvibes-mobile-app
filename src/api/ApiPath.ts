@@ -30,8 +30,18 @@ export const ApiPath = {
    GET_COMMENTS: getApiPath('comments/'),
    DELETE_COMMENT: getApiPath('comments/'),
     GET_COMMENT_REPLIES: getApiPath('comments/'), 
+
+   // Notification
+   GET_WS_PATH: getWSPath('users/notifications/ws/'),
+   GET_NOTIFICATIONS: getApiPath('users/notifications'),
+   READ_NOTIFICATION: getApiPath('users/notifications/'),
+   READ_ALL_NOTIFICATION: getApiPath('users/notifications/'),
 }
 
 function getApiPath(path: string) {
   return `${ENV.SERVER_ENDPOINT!}/v1/2024/${path}`
+}
+
+function getWSPath(path: string) {
+  return `${ENV.SERVER_ENDPOINT.replace('http', 'ws')!}/v1/2024/${path}`
 }

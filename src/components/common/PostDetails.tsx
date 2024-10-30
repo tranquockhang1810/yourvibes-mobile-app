@@ -44,7 +44,6 @@ function PostDetails(): React.JSX.Element {
     comments,
     likeCount,
     userLikes,
-    newComment,
     textInputRef,
     handleLike,
     handleAction,
@@ -52,53 +51,24 @@ function PostDetails(): React.JSX.Element {
     setNewComment,
     setReplyToReplyId,
     handleEditComment,
-    fetchReplies, 
+    fetchReplies,
     currentCommentId,
+    isEditModalVisible,
+    setEditModalVisible,
+    replyMap
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
+  const [editCommentContent, setEditCommentContent] = useState("");
+  const [showMoreReplies, setShowMoreReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+
   const fetchPostDetails = async () => {
     const fetchedPost = await defaultPostRepo.getPostById(postId);
     setPost(fetchedPost.data);
   };
-  useEffect(() => {
-    fetchPostDetails();
-  }, [postId]);
 
-  const [showMoreReplies, setShowMoreReplies] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [isEditModalVisible, setEditModalVisible] = useState(false);
-  const [editCommentContent, setEditCommentContent] = useState("");
-
-  useEffect(() => {
-    console.log("Edit modal visibility changed:", isEditModalVisible);
-  }, [isEditModalVisible]);
-
-
-  const renderNestedReplies = (replies: CommentsResponseModel[], level = 0) => {
-    if (level > 2301) return null; // chỉ hiển thị tối đa 2301 cấp độ lồng nhau
-  
-    return (
-      <View>
-        {replies.map((reply) => (
-          <View key={reply.id}>
-            {/* Hiển thị nội dung phản hồi lồng nhau */}
-            <Text>{reply.content}</Text>
-            {/* Hiển thị các phản hồi lồng nhau tiếp theo */}
-            {reply.replies && Array.isArray(reply.replies) && (
-              <View style={{ paddingLeft: 20 }}>
-                {renderNestedReplies(reply.replies, level + 1)}
-              </View>
-            )}
-          </View>
-        ))}
-      </View>
-    );
-  };
-
-  // Chức năng hiển thị phản hồi 
-  const renderReplies = (replies: CommentsResponseModel[]) => {
-    console.log("renderReplies TSX", replies);
+  const renderReplies = useCallback((replies: CommentsResponseModel[]) => {
     return (
       <FlatList
         data={replies}
@@ -138,8 +108,8 @@ function PostDetails(): React.JSX.Element {
                 <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
               </View>
             </View>
-           {/* Nút Thích, Trả lời và Hành động */}
-           <View
+            {/* Nút Thích, Trả lời và Hành động */}
+            <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -160,7 +130,7 @@ function PostDetails(): React.JSX.Element {
                   color={userLikes[reply.id] ? "red" : brandPrimary}
                 />
                 <Text style={{ marginLeft: 5 }}>
-                  {likeCount[reply.id] || reply.likeCount}
+                  {likeCount[reply.id] || reply.like_count}
                 </Text>
               </TouchableOpacity>
 
@@ -194,38 +164,39 @@ function PostDetails(): React.JSX.Element {
               </TouchableOpacity>
             </View>
             {/* Nút để xem phản hồi lồng nhau */}
-            <TouchableOpacity
-              onPress={() => {
-                fetchReplies(postId, reply.id);
-                setShowMoreReplies((prev) => ({
-                  ...prev,
-                  [reply.id]: !prev[reply.id],
-                }));
-              }}
-              style={{ marginTop: 10 }}
-            >
-              <View style={{ alignItems: "center" }}>
-                <AntDesign name="down" size={16} color={brandPrimaryTap} />
-                <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-                  {showMoreReplies[reply.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {reply.rep_comment_count > 0 && (
+              <TouchableOpacity
+                onPress={() => {
+                  fetchReplies(postId, reply.id);
+                  setShowMoreReplies((prev) => ({
+                    ...prev,
+                    [reply.id]: !prev[reply.id],
+                  }));
+                }}
+                style={{ marginTop: 10 }}
+              >
+                <View style={{ alignItems: "center" }}>
+                  <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                  <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                    {showMoreReplies[reply.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
 
             {/* Hiển thị các phản hồi lồng nhau */}
-            {showMoreReplies[reply.id] && reply.replies && (
+            {showMoreReplies[reply.id] && replyMap[reply.id] && (
               <View style={{ marginTop: 10, paddingLeft: 20 }}>
-                {renderNestedReplies(reply.replies)}
+                {renderReplies(replyMap[reply.id])}
               </View>
             )}
           </View>
         )}
       />
     );
-  };
- 
+  }, [replyMap, comments]);
 
-  const renderCommentItem = (comments: CommentsResponseModel) => {
+  const renderCommentItem = useCallback((comments: CommentsResponseModel) => {
     return (
       <View
         style={{
@@ -306,25 +277,27 @@ function PostDetails(): React.JSX.Element {
         </View>
 
         {/* Nút để xem phản hồi */}
-        <TouchableOpacity
-          onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
-        >
-          <View style={{ alignItems: "center" }}>
-            <AntDesign name="down" size={16} color={brandPrimaryTap} />
-            <Text style={{ fontSize: 12, color: brandPrimaryTap }}> 
-              {showMoreReplies[comments.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        {comments.rep_comment_count > 0 && (
+          <TouchableOpacity
+            onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
+          >
+            <View style={{ alignItems: "center" }}>
+              <AntDesign name="down" size={16} color={brandPrimaryTap} />
+              <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                {showMoreReplies[comments.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
         {/* Hiển thị các phản hồi */}
-        {comments.replies && comments.replies.length > 0 && (
+        {replyMap[comments.id] && replyMap[comments.id].length > 0 && (
           <View style={{ paddingLeft: 20 }}>
-            {renderReplies(comments.replies)}
+            {renderReplies(replyMap[comments.id])}
           </View>
         )}
       </View>
     );
-  };
+  }, [comments, replyMap]);
 
   const renderFlatList = useCallback(
     (comments: CommentsResponseModel[]) => {
@@ -344,8 +317,12 @@ function PostDetails(): React.JSX.Element {
         />
       );
     },
-    [comments, post]
+    [comments, post, replyMap]
   );
+
+  useEffect(() => {
+    fetchPostDetails();
+  }, [postId]);
 
   return (
     <KeyboardAvoidingView
@@ -466,7 +443,7 @@ function PostDetails(): React.JSX.Element {
         {/* Modal edit comment */}
         <Modal
           visible={isEditModalVisible}
-          transparent={true}
+          transparent
           animationType="slide"
         >
           <View

@@ -13,7 +13,7 @@ const usePostDetailsViewModel = (
 ) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
-
+  const [replyMap, setReplyMap] = useState<{ [key: string]: CommentsResponseModel[] }>({});
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
   const [newComment, setNewComment] = useState("");
@@ -36,16 +36,19 @@ const usePostDetailsViewModel = (
   const fetchReplies = async (postId: string, parentId: string) => {
     try {
       const replies = await defaultCommentRepo.getReplies(postId, parentId);
-      console.log("replies TS:", replies);
-  
       if (replies && replies.data) {
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id === parentId
-              ? { ...comment, replies: replies.data }
-              : comment
-          )
-        );
+        console.log("Data vừa lấy: ", replies.data);
+        setReplyMap((prevReplyMap) => {
+          console.log("replyMap updated: ", {
+            ...prevReplyMap,
+            [parentId]: replies.data,
+          });
+          
+          return {
+            ...prevReplyMap,
+            [parentId]: replies.data,
+          }
+        })
       }
     } catch (error) {
       Toast.show({
@@ -55,13 +58,12 @@ const usePostDetailsViewModel = (
       console.error("Error fetching replies:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchComments();
     handleLike(postId);
   }, [postId]);
-  
+
 
   const handleLike = (commentOrReplyId: string) => {
     setUserLikes((prevUserLikes) => {
@@ -112,22 +114,22 @@ const usePostDetailsViewModel = (
             }
             break;
 
-            case 1:
-              const commentToEdit = comments.find(
-                (comment) => comment.id === commentId
+          case 1:
+            const commentToEdit = comments.find(
+              (comment) => comment.id === commentId
+            );
+            if (commentToEdit) {
+              console.log("Comment Được Chọn để Sửa:", commentToEdit);
+              setEditCommentContent(comments.find((comment) => comment.id === commentId)?.content || "");
+              setCurrentCommentId(commentId);
+              console.log(
+                "Setting edit modal to visible for comment ID:",
+                commentId
               );
-              if (commentToEdit) {
-                console.log("Comment Được Chọn để Sửa:", commentToEdit);
-                setEditCommentContent(comments.find((comment) => comment.id === commentId)?.content || "");
-                setCurrentCommentId(commentId);
-                console.log(
-                  "Setting edit modal to visible for comment ID:",
-                  commentId
-                );
-                setEditModalVisible(true);
-                console.log("Edit modal visible status:", isEditModalVisible);
-              }
-              break; 
+              setEditModalVisible(true);
+              console.log("Edit modal visible status:", isEditModalVisible);
+            }
+            break;
 
           case 2:
             handleDelete(commentId);
@@ -145,7 +147,7 @@ const usePostDetailsViewModel = (
       console.log("Edit modal is now visible.");
     }
   }, [isEditModalVisible]);
-  
+
   const handleEditComment = async (commentId: string) => {
     await handleUpdate(currentCommentId, editCommentContent);
     setEditModalVisible(false); // Close modal
@@ -153,7 +155,6 @@ const usePostDetailsViewModel = (
     setCurrentCommentId("");
     console.log("Edit comment saved and modal closed.");
   };
-  
 
   const handleUpdate = async (commentId: string, updatedContent: string) => {
     try {
@@ -212,8 +213,8 @@ const usePostDetailsViewModel = (
       const parentId = replyToReplyId
         ? String(replyToReplyId)
         : replyToCommentId
-        ? String(replyToCommentId)
-        : null;
+          ? String(replyToCommentId)
+          : null;
 
       console.log("replyToReplyId:", replyToReplyId);
       console.log("replyToCommentId:", replyToCommentId);
@@ -243,9 +244,9 @@ const usePostDetailsViewModel = (
               prev.map((comment) =>
                 comment.id === commentData.parent_id
                   ? {
-                      ...comment,
-                      replies: [...(comment.replies || []), newComment],
-                    }
+                    ...comment,
+                    //replies: [...(comment.replies || []), newComment],
+                  }
                   : comment
               )
             );
@@ -296,7 +297,8 @@ const usePostDetailsViewModel = (
     editCommentContent,
     setEditCommentContent,
     handleEditComment,
-    currentCommentId, 
+    currentCommentId,
+    replyMap
   };
 };
 

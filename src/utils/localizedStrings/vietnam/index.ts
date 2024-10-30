@@ -176,5 +176,14 @@ export const VnLocalizedStrings = {
     SearchFailed: "Tìm kiếm thất bại!",
     NoUsers: "Không tìm thấy người dùng",
     TrySearch: "Hãy nhập từ khóa cần tìm"
+  },
+Notification: {
+  Notification: "Thông báo",
+  Items:{
+    LikePost: "đã thích bài viết của bạn: ",
+    SharePost: "đã chia sẻ bài viết của bạn: ",
+    CommentPost: "đã bình luận về bài viết của bạn: ",
+    Friend: "đã gưi lời mời kết bạn.",
   }
-}
+}}
+  
