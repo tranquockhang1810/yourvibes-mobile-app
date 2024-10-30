@@ -160,6 +160,7 @@ Notification: {
     SharePost: "đã chia sẻ bài viết của bạn: ",
     CommentPost: "đã bình luận về bài viết của bạn: ",
     Friend: "đã gưi lời mời kết bạn.",
+    AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
   }
 }}
   

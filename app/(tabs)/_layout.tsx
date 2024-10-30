@@ -1,3 +1,4 @@
+import { ApiPath } from '@/src/api/ApiPath';
 import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 import { Badge } from '@ant-design/react-native';
@@ -18,18 +19,20 @@ const TabLayout = () => {
     switch (type) {
         case 'like_post':
             return 'đã thích bài viết của bạn: '
-        case 'share_post':
+        case 'new_share':
             return 'đã chia sẻ bài viết của bạn: '
-        case 'comment_post':
+        case 'new_comment':
             return 'đã bình luận về bài viết của bạn: '
-        case 'friend':
+        case 'friend_request':
             return 'đã gưi lời mời kết bạn.'
+        case 'accept_friend_request':
+            return 'đã chấp nhận lời mời kết bạn.'
         default:
             return 'notifications'
     }
 }
 const connectWebSocket = async () => {
-  const ws = new WebSocket(`ws://192.168.1.152:8080/v1/2024/users/notifications/ws/${user?.id}`);
+  const ws = new WebSocket (`${ApiPath.GETWS_APIPATH}${user?.id}`);
 
   ws.onopen = () => {
       console.log('Web Socket connected');

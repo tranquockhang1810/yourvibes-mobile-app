@@ -4,14 +4,16 @@ import useColor from '@/src/hooks/useColor';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import Post from '@/src/components/common/Post';
-import { DatePicker } from '@ant-design/react-native';
 import MyDateTimePicker from '@/src/components/foundation/MyDateTimePicker';
+import { useAuth } from '@/src/context/auth/useAuth';
+import { DateTransfer } from '@/src/utils/helper/DateTransfer';
 
 const Ads = () => {
     const { brandPrimary, backgroundColor } = useColor();
     const [days, setDays] = useState(1);
     const [method, setMethod] = useState('momo');
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const { user, localStrings } = useAuth();
 
     const getTomorrow = () => {
         const tomorrow = new Date();
@@ -131,19 +133,9 @@ const Ads = () => {
                                 setShowDatePicker(true);
                             }}>
                                 <FontAwesome name="calendar" size={24} color={brandPrimary} />
-                                <Text  style={{paddingLeft:20}}>Chạy quảng cáo đến ngày: {date.toLocaleDateString()}</Text>
+                                <Text  style={{paddingLeft:20}}>Chạy quảng cáo đến ngày: {DateTransfer(date.toLocaleDateString())}</Text>
                             </TouchableOpacity>
-                            {showDatePicker && (
-                                <MyDateTimePicker
-                                    value={date}
-                                    onSubmit={(selectedDate) => {
-                                        setDate(selectedDate);
-                                        updateDaysFromDate(selectedDate);
-                                        setShowDatePicker(false);
-                                    } }
-                                    onCancel={() => setShowDatePicker(false)} show={false}                            
-                                />
-                            )}
+                        
                         {/* Ngân sách */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }}>
                             <Ionicons name="cash" size={24} color={brandPrimary}/>

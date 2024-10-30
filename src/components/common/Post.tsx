@@ -8,7 +8,7 @@ import MediaView from '../foundation/MediaView';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { router } from 'expo-router';
-import { DateTransfer, getTimeDiff } from '../../utils/helper/DateTransfer';
+import { getTimeDiff } from '../../utils/helper/DateTransfer';
 import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import PostDetails from './PostDetails';
