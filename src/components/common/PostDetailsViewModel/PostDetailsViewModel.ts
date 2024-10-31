@@ -147,44 +147,47 @@ const usePostDetailsViewModel = (
     );
   };
 
-  useEffect(() => {
-    if (isEditModalVisible) {
-      console.log("Edit modal is now visible.");
-    }
-  }, [isEditModalVisible]);
-
   const handleEditComment = async (commentId: string) => {
+    if (!currentCommentId || !editCommentContent) {
+      console.error("Invalid comment ID or content");
+      return;
+    }
+  
     await handleUpdate(currentCommentId, editCommentContent);
     setEditModalVisible(false); // Close modal
     setEditCommentContent("");
     setCurrentCommentId("");
     console.log("Edit comment saved and modal closed.");
   };
-
+  
   const handleUpdate = async (commentId: string, updatedContent: string) => {
+    if (!defaultCommentRepo) {
+      console.error("Default comment repo is not defined");
+      throw new Error("Default comment repo is not defined");
+    }
     try {
       const updateCommentData: UpdateCommentsRequestModel = {
-        post_id: postId,
         comments_id: commentId,
         content: updatedContent,
       };
-
-      const response = await defaultCommentRepo.updateComment(
-        updateCommentData
-      );
-
+  
+      // Removed unnecessary check for defaultCommentRepo here
+  
+      const response = await defaultCommentRepo.updateComment(commentId, updateCommentData);
+  
       if (response && response.data) {
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id === commentId
-              ? { ...comment, content: updatedContent }
-              : comment
-          )
-        );
+        const updatedComments = comments.map((comment) => {
+          if (comment.id === commentId) {
+            return { ...comment, content: updatedContent };
+          }
+          return comment;
+        });
+        setComments(updatedComments);
         Toast.show({
           type: "success",
           text1: "Cập nhật bình luận thành công",
         });
+        fetchComments();
       }
     } catch (error) {
       Toast.show({
@@ -193,6 +196,13 @@ const usePostDetailsViewModel = (
       });
     }
   };
+
+  useEffect(() => {
+    if (isEditModalVisible) {
+      console.log("Edit modal is now visible.");
+    }
+  }, [isEditModalVisible]);
+
 
   const handleDelete = async (commentId: string) => {
     try {
@@ -211,74 +221,6 @@ const usePostDetailsViewModel = (
       });
     }
   };
-
-  // const handleAddComment = async (comment: string) => {
-  //   if (comment.trim()) {
-  //     // Xác định parentId
-  //     const parentId = replyToReplyId
-  //       ? String(replyToReplyId)
-  //       : replyToCommentId
-  //         ? String(replyToCommentId)
-  //         : null;
-
-  //     console.log("replyToReplyId:", replyToReplyId);
-  //     console.log("replyToCommentId:", replyToCommentId);
-  //     console.log("parentId:", parentId); // Kiểm tra giá trị parentId
-
-  //     const commentData: CreateCommentsRequestModel = {
-  //       post_id: postId,
-  //       content: comment,
-  //       parent_id: parentId, // Sử dụng parentId ở đây
-  //     };
-  //     console.log("parentId trước khi gửi:", parentId);
-
-  //     console.log("Comment Data:", commentData);
-
-  //     try {
-  //       const response = await defaultCommentRepo.createComment(commentData);
-  //       if (!response.error) {
-  //         Toast.show({
-  //           type: "success",
-  //           text1: "Comment thành công",
-  //         });
-
-  //         const newComment = { ...response.data, replies: [] };
-  //         if (commentData.parent_id) {
-  //           // Nếu có parent_id, thêm bình luận vào replies của bình luận cha
-  //           setComments((prev) =>
-  //             prev.map((comment) =>
-  //               comment.id === commentData.parent_id
-  //                 ? {
-  //                   ...comment,
-  //                   //replies: [...(comment.replies || []), newComment],
-  //                 }
-  //                 : comment
-  //             )
-  //           );
-  //         } else {
-  //           // Nếu là bình luận cấp 1
-  //           setComments((prev) => [...prev, newComment]);
-  //         }
-  //       } else {
-  //         Toast.show({
-  //           type: "error",
-  //           text1: "Comment thất bại",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error("Error adding comment:", error);
-  //       Toast.show({
-  //         type: "error",
-  //         text1: "Comment thất bại",
-  //       });
-  //     } finally {
-  //       setNewComment("");
-  //       replyToCommentId = null;
-  //       setReplyToReplyId(null);
-  //       textInputRef.current?.blur();
-  //     }
-  //   }
-  // };
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {

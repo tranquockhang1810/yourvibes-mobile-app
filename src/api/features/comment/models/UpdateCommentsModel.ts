@@ -1,5 +1,4 @@
-export interface UpdateCommentsRequestModel {
-    post_id: string;
+export interface UpdateCommentsRequestModel { 
     comments_id: string;
     content: string;
   }

@@ -51,7 +51,7 @@ function PostDetails(): React.JSX.Element {
     handleAddReply,
     setNewComment,
     setReplyToReplyId,
-    handleEditComment,
+    handleUpdate,
     fetchReplies,
     currentCommentId,
     isEditModalVisible,
@@ -292,7 +292,7 @@ function PostDetails(): React.JSX.Element {
           </View>
 
           {/* Nút để xem phản hồi */}
-          {comments.rep_comment_count > 0 && ( 
+          {comments.rep_comment_count > 0 && (
             <TouchableOpacity
               onPress={() => {
                 fetchReplies(postId, comments.id);
@@ -312,7 +312,7 @@ function PostDetails(): React.JSX.Element {
               </View>
             </TouchableOpacity>
           )}
-          {/* Hiển thị các phản hồi */} 
+          {/* Hiển thị các phản hồi */}
           {replyMap[comments.id] &&
             replyMap[comments.id].length > 0 &&
             showMoreReplies[comments.id] && (
@@ -571,7 +571,17 @@ function PostDetails(): React.JSX.Element {
               >
                 <Button
                   title="Save"
-                  onPress={() => handleEditComment(currentCommentId)}
+                  onPress={() => {
+                    if (currentCommentId && editCommentContent) {
+                      handleUpdate(currentCommentId, editCommentContent).then(
+                        () => {
+                          setEditModalVisible(false);
+                        }
+                      );
+                    } else {
+                      console.error("Invalid comment ID or content");
+                    }
+                  }}
                 />
                 <Button
                   title="Cancel"
