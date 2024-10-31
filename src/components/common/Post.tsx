@@ -77,6 +77,7 @@ const Post = ({
               );
               break;
             case 2:
+              router.push(`/ads`);
               console.log('Quảng cáo bài viết action selected');
               break;
             default:
@@ -85,7 +86,7 @@ const Post = ({
         } else {
           if (buttonIndex === 0) {
             console.log('báo cáo action selected');
-            //router.push('/updatePost');
+            router.push('/reportPost');
           }
         }
       }

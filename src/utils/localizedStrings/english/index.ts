@@ -164,5 +164,16 @@ export const ENGLocalizedStrings = {
     AcceptFriend:"accepted your friend request."
   }
   },
+  Ads: {
+    Ads: "Post Advertisement",
+    TimeAndBudget: "Duration and Budget",
+    Minimum: "Minimum: 30,000 VND/day",
+    DaysAds: "Number of advertisement days:",
+    TimeAds: "Select advertisement duration",
+    StartDate: "Start Date",
+    EndDate: "End Date",
+    BudgetAds: "Budget",
+  }
+  
 
 }

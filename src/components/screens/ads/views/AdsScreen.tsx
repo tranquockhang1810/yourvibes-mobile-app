@@ -74,7 +74,7 @@ const Ads = () => {
                         </TouchableOpacity>
 
                         <Text style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 10 }}>
-                            Quảng cáo bài viết
+                            {localStrings.Ads.Ads}
                         </Text>
                     </View>
                 </View>
@@ -90,15 +90,15 @@ const Ads = () => {
                     <View style={{ flex: 1, paddingHorizontal: 10, paddingVertical: 20}}>
                         <View>
                             <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>
-                                Khoảng thời gian và Ngân sách
+                                {localStrings.Ads.TimeAndBudget}
                             </Text>
-                            <Text style={{ color: 'gray', fontSize: 14 }}>Tối thiểu: 30.000VND/1 ngày</Text>
+                            <Text style={{ color: 'gray', fontSize: 14 }}>{localStrings.Ads.Minimum}</Text>
                         </View>
 
                         {/* Nhập số ngày bạn muốn quảng cáo */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', marginVertical: 10, paddingHorizontal: 10, justifyContent: 'space-between'}}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ paddingRight: 5 }}>Số ngày quảng cáo:</Text>
+                                <Text style={{ paddingRight: 5 }}>{localStrings.Ads.DaysAds}</Text>
                                 <TextInput
                                     style={{ 
                                         textAlign: 'center', 
@@ -133,20 +133,29 @@ const Ads = () => {
                                 setShowDatePicker(true);
                             }}>
                                 <FontAwesome name="calendar" size={24} color={brandPrimary} />
-                                <Text  style={{paddingLeft:20}}>Chạy quảng cáo đến ngày: {DateTransfer(date.toLocaleDateString())}</Text>
+                                <Text  style={{paddingLeft:20}}>{localStrings.Ads.TimeAds} {DateTransfer(date.toLocaleDateString())}</Text>
                             </TouchableOpacity>
-                        
+                            <MyDateTimePicker
+                                value={date}
+                                show={showDatePicker}
+                                onCancel={() => setShowDatePicker(false)}
+                                onSubmit={(selectedDate) => {
+                                setDate(selectedDate);
+                                updateDaysFromDate(selectedDate);
+                                setShowDatePicker(false);
+                                }}
+                            />
                         {/* Ngân sách */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }}>
                             <Ionicons name="cash" size={24} color={brandPrimary}/>
-                            <Text style={{paddingLeft:20}}>Ngân sách: {days * 30000} VND</Text>
+                            <Text style={{paddingLeft:20}}>{localStrings.Ads.BudgetAds} {days * 30000} VND</Text>
                         </View>
 
                         {/* Phương thức thanh toán */}
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                         <Text style={{fontWeight: 'bold',  marginRight: 10, }}>Phương thức thanh toán</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around',}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
                         {paymentMethods.map((item) => (
                             <TouchableOpacity key={item.id} onPress={() => selectMethod(item.id)} style={[
                                 styles.option,
@@ -174,7 +183,7 @@ const Ads = () => {
                     }}
                     onPress={() => Alert.alert('Quảng cáo', 'Quảng cáo thành công!')}
                 >
-                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Quảng cáo bài viết</Text>
+                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Ads.Ads}</Text>
                 </TouchableOpacity>
             </View>
         </View>
