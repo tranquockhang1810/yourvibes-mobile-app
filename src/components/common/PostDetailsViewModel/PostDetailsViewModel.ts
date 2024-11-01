@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Modal, LogBox } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { useAuth } from "@/src/context/auth/useAuth";
 //Comments
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/src/api/features/comment/CommentRepo";
@@ -20,13 +21,19 @@ const usePostDetailsViewModel = (
     [key: string]: CommentsResponseModel[];
   }>({});
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
-  const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
+  const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({}); 
   const [newComment, setNewComment] = useState("");
   const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
   const [setReplyToCommentId] = useState<string | null>(null);
   const [likeIcon, setLikeIcon] = useState("heart-outline");
-  const textInputRef = useRef<TextInput>(null);
-  const [renderLikeIconState, setRenderLikeIcon] = useState(false);
+  const textInputRef = useRef<TextInput>(null); 
+  const [renderLikeIconState, setRenderLikeIconState] = useState(false);
+  
+  const { user } = useAuth();
+  useEffect(() => {
+    fetchComments();
+  }, [userLikes]);
+
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -34,7 +41,7 @@ const usePostDetailsViewModel = (
       limit: 10,
     });
     if (response && response?.data) {
-      setComments(response?.data);
+      setComments(response?.data); 
     }
   };
 
@@ -62,48 +69,47 @@ const usePostDetailsViewModel = (
       });
       console.error("Error fetching replies:", error);
     }
+    // fetchReplies(postId, parentId); 
   };
 
   useEffect(() => {
     fetchComments();
   }, []);
-
+ 
   const handleLike = async (commentOrReplyId: string) => {
-    const isLike =
-      userLikes[commentOrReplyId] === undefined
-        ? true
-        : !userLikes[commentOrReplyId];
+    const isLike = userLikes[commentOrReplyId] === undefined
+      ? true
+      : !userLikes[commentOrReplyId];
+  
     try {
       await defaultLikeCommentRepo.postLikeComment({
         commentId: commentOrReplyId,
         isLike,
       });
-
+  
       setUserLikes((prevUserLikes) => ({
         ...prevUserLikes,
         [commentOrReplyId]: isLike,
       }));
-
+  
       setLikeCount((prevLikes) => ({
         ...prevLikes,
         [commentOrReplyId]: isLike
           ? (prevLikes[commentOrReplyId] || 0) + 1
           : (prevLikes[commentOrReplyId] || 0) - 1,
-      })); 
-      fetchComments();
-
-      // Cập nhật trạng thái like của người dùng và gọi renderLikeIcon lại
-      setRenderLikeIcon(!renderLikeIconState);
+      }));
+  
+      // Cập nhật biến renderLikeIconState
+      setRenderLikeIconState(isLike);
+      await fetchComments();
     } catch (error) {
       console.error("Error liking comment:", error);
     }
   };
   
-
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
-
   const handleAction = (commentId: string) => {
     const options = [
       "Báo cáo bình luận",
@@ -111,6 +117,9 @@ const usePostDetailsViewModel = (
       "Xóa bình luận",
       "Hủy",
     ];
+    if (user?.id !== comments.find((comment) => comment.id === commentId)?.user?.id) {
+      options.splice(1, 1); // Xóa tùy chọn "Chỉnh sửa bình luận" nếu comment là của người khác
+    }
     showActionSheetWithOptions(
       {
         title: "Chọn hành động",

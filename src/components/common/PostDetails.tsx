@@ -41,10 +41,9 @@ function PostDetails(): React.JSX.Element {
   const { user, localStrings } = useAuth();
   const [commentForm] = Form.useForm();
   const {
-    comments,
-    likeCount,
-    userLikes,
+    comments,  
     textInputRef,
+    userLikes,
     handleLike,
     handleAction,
     handleAddComment,
@@ -56,32 +55,30 @@ function PostDetails(): React.JSX.Element {
     currentCommentId,
     isEditModalVisible,
     setEditModalVisible,
-    replyMap,
-    likeIcon,
+    replyMap,  
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
-  }>({});
+  }>({}); 
   const [commentOrReplyId] = useState<string | null>(null);
   const fetchPostDetails = async () => {
     const fetchedPost = await defaultPostRepo.getPostById(postId);
     setPost(fetchedPost.data);
   };
   const [likedComment, setLikedComment] = useState({ is_liked: false });
+  
 
-  const renderLikeIcon = useCallback(
-    (commentOrReplyId: string) => {
-      const isLiked = userLikes[commentOrReplyId] === true;
-      return isLiked ? (
-        <AntDesign name="heart" size={16} color="red" />
-      ) : (
-        <AntDesign name="hearto" size={16} color={brandPrimaryTap} />
-      );
-    },
-    [userLikes]
-  );
+  const renderLikeIcon = useCallback((commentOrReplyId: string) => {
+    const isLiked = userLikes[commentOrReplyId] === true;
+    return isLiked ? (
+      <AntDesign name="heart" size={16} color="red" />
+    ) : (
+      <AntDesign name="hearto" size={16} color={brandPrimaryTap} />
+    );
+  }, [userLikes]);
+
 
   const renderReplies = useCallback(
     (replies: CommentsResponseModel[]) => {
@@ -135,6 +132,7 @@ function PostDetails(): React.JSX.Element {
                   marginTop: 5,
                 }}
               >
+                {/* Like */}
                 <TouchableOpacity
                   onPress={() =>
                     handleLike(likedComment ? (reply.id as string) : "")
@@ -144,7 +142,7 @@ function PostDetails(): React.JSX.Element {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ marginLeft: 5 }}>
-                  <Text style={{ color: brandPrimary }}>
+                  <Text style={{ color: brandPrimary, marginRight: 20 }}>
                     {reply.like_count}
                   </Text>
                 </TouchableOpacity>
@@ -253,6 +251,7 @@ function PostDetails(): React.JSX.Element {
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {/* Like */}
             <TouchableOpacity
               onPress={() =>
                 handleLike(likedComment ? (comments.id as string) : "")
@@ -261,7 +260,7 @@ function PostDetails(): React.JSX.Element {
               {renderLikeIcon(likedComment ? (comments.id as string) : "")}
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ marginLeft: 5 }}>
+            <TouchableOpacity style={{ marginLeft: 5, marginRight: 20  }}>
               <Text style={{ color: brandPrimary }}>{comments.like_count}</Text>
             </TouchableOpacity>
 
