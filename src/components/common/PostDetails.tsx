@@ -57,17 +57,31 @@ function PostDetails(): React.JSX.Element {
     isEditModalVisible,
     setEditModalVisible,
     replyMap,
+    likeIcon,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
-
+  const [commentOrReplyId] = useState<string | null>(null);
   const fetchPostDetails = async () => {
     const fetchedPost = await defaultPostRepo.getPostById(postId);
     setPost(fetchedPost.data);
   };
+  const [likedComment, setLikedComment] = useState({ is_liked: false });
+
+  const renderLikeIcon = useCallback(
+    (commentOrReplyId: string) => {
+      const isLiked = userLikes[commentOrReplyId] === true;
+      return isLiked ? (
+        <AntDesign name="heart" size={16} color="red" />
+      ) : (
+        <AntDesign name="hearto" size={16} color={brandPrimaryTap} />
+      );
+    },
+    [userLikes]
+  );
 
   const renderReplies = useCallback(
     (replies: CommentsResponseModel[]) => {
@@ -91,7 +105,9 @@ function PostDetails(): React.JSX.Element {
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Image
                   source={{
-                    uri: user?.avatar_url || "https://i.pravatar.cc/150?img=1",
+                    uri:
+                      reply?.user?.avatar_url ||
+                      "https://i.pravatar.cc/150?img=1",
                   }}
                   style={{
                     width: 30,
@@ -102,7 +118,7 @@ function PostDetails(): React.JSX.Element {
                 />
                 <View>
                   <Text style={{ fontWeight: "bold" }}>
-                    {user?.family_name} {user?.name}
+                    {reply?.user?.family_name} {reply?.user?.name}
                   </Text>
                   <Text style={{ fontSize: 12, color: "#888" }}>
                     {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
@@ -120,20 +136,16 @@ function PostDetails(): React.JSX.Element {
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => handleLike(reply.id)}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginRight: 20,
-                  }}
+                  onPress={() =>
+                    handleLike(likedComment ? (reply.id as string) : "")
+                  }
                 >
-                  <AntDesign
-                    name={userLikes[reply.id] ? "heart" : "hearto"}
-                    size={16}
-                    color={userLikes[reply.id] ? "red" : brandPrimary}
-                  />
-                  <Text style={{ marginLeft: 5 }}>
-                    {likeCount[reply.id] || reply.like_count}
+                  {renderLikeIcon(likedComment ? (reply.id as string) : "")}
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{ marginLeft: 5 }}>
+                  <Text style={{ color: brandPrimary }}>
+                    {reply.like_count}
                   </Text>
                 </TouchableOpacity>
 
@@ -219,7 +231,9 @@ function PostDetails(): React.JSX.Element {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image
               source={{
-                uri: user?.avatar_url || "https://i.pravatar.cc/150?img=1",
+                uri:
+                  comments?.user?.avatar_url ||
+                  "https://i.pravatar.cc/150?img=1",
               }}
               style={{
                 width: 50,
@@ -230,7 +244,7 @@ function PostDetails(): React.JSX.Element {
             />
             <View>
               <Text style={{ fontWeight: "bold" }}>
-                {user?.family_name} {user?.name}
+                {comments?.user?.family_name} {comments?.user?.name}
               </Text>
               <Text style={{ fontSize: 12, color: "#888" }}>
                 {dayjs(comments.created_at).format("DD/MM/YYYY")}
@@ -240,21 +254,15 @@ function PostDetails(): React.JSX.Element {
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginRight: 20,
-              }}
-              onPress={() => handleLike(comments.id)}
+              onPress={() =>
+                handleLike(likedComment ? (comments.id as string) : "")
+              }
             >
-              <AntDesign
-                name={userLikes[comments.id] ? "heart" : "hearto"} // Hiển thị icon "tim" tương ứng
-                size={20}
-                color={userLikes[comments.id] ? "red" : brandPrimary} // Đổi màu đỏ nếu đã like
-              />
-              <Text style={{ marginLeft: 5 }}>
-                {likeCount[comments.id] || 0} {/* Hiển thị số lượt like */}
-              </Text>
+              {renderLikeIcon(likedComment ? (comments.id as string) : "")}
+            </TouchableOpacity>
+
+            <TouchableOpacity style={{ marginLeft: 5 }}>
+              <Text style={{ color: brandPrimary }}>{comments.like_count}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -442,25 +450,6 @@ function PostDetails(): React.JSX.Element {
                     elevation: 5,
                   }}
                 >
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      commentForm.submit();
-                      console.log(
-                        "comment form: ",
-                        commentForm.getFieldValue("comment")
-                      );
-
-                      const comment = commentForm.getFieldValue("comment");
-                      if (!comment) {
-                        return; // Nếu không có bình luận thì không làm gì
-                      }
-                      handleAddComment(comment).then(() => {
-                        commentForm.resetFields(); // Đặt lại trường bình luận
-                      });
-                    }}
-                  >
-                    <FontAwesome name="send-o" size={30} color={brandPrimary} />
-                  </TouchableOpacity> */}
                   <TouchableOpacity
                     onPress={() => {
                       const comment = commentForm.getFieldValue("comment");

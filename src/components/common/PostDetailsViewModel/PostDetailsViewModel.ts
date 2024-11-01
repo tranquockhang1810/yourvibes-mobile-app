@@ -8,8 +8,6 @@ import { CreateCommentsRequestModel } from "@/src/api/features/comment/models/Cr
 import { UpdateCommentsRequestModel } from "@/src/api/features/comment/models/UpdateCommentsModel";
 import Toast from "react-native-toast-message";
 //LikeComments
-import { PostLikeCommentRequestModel } from "@/src/api/features/likeComment/models/PostLikeComment";
-import { GetLikeCommentModel } from "@/src/api/features/likeComment/models/GetLikeCommentRequestModel";
 import { defaultLikeCommentRepo } from "@/src/api/features/likeComment/LikeCommentRepo";
 
 const usePostDetailsViewModel = (
@@ -18,15 +16,17 @@ const usePostDetailsViewModel = (
 ) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
-  const [replyMap, setReplyMap] = useState<{ [key: string]: CommentsResponseModel[] }>({});
+  const [replyMap, setReplyMap] = useState<{
+    [key: string]: CommentsResponseModel[];
+  }>({});
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
   const [newComment, setNewComment] = useState("");
   const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
   const [setReplyToCommentId] = useState<string | null>(null);
-
+  const [likeIcon, setLikeIcon] = useState("heart-outline");
   const textInputRef = useRef<TextInput>(null);
-
+  const [renderLikeIconState, setRenderLikeIcon] = useState(false);
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -48,12 +48,12 @@ const usePostDetailsViewModel = (
             ...prevReplyMap,
             [parentId]: replies.data,
           });
-          
+
           return {
             ...prevReplyMap,
             [parentId]: replies.data,
-          }
-        })
+          };
+        });
       }
     } catch (error) {
       Toast.show({
@@ -66,23 +66,39 @@ const usePostDetailsViewModel = (
 
   useEffect(() => {
     fetchComments();
-    handleLike(postId);
-  }, [postId]);
+  }, []);
 
+  const handleLike = async (commentOrReplyId: string) => {
+    const isLike =
+      userLikes[commentOrReplyId] === undefined
+        ? true
+        : !userLikes[commentOrReplyId];
+    try {
+      await defaultLikeCommentRepo.postLikeComment({
+        commentId: commentOrReplyId,
+        isLike,
+      });
 
-  const handleLike = (commentOrReplyId: string) => {
-    setUserLikes((prevUserLikes) => {
-      const currentlyLiked = prevUserLikes[commentOrReplyId];
-      const newLikeCount = currentlyLiked ? -1 : 1;
+      setUserLikes((prevUserLikes) => ({
+        ...prevUserLikes,
+        [commentOrReplyId]: isLike,
+      }));
 
       setLikeCount((prevLikes) => ({
         ...prevLikes,
-        [commentOrReplyId]: (prevLikes[commentOrReplyId] || 0) + newLikeCount,
-      }));
+        [commentOrReplyId]: isLike
+          ? (prevLikes[commentOrReplyId] || 0) + 1
+          : (prevLikes[commentOrReplyId] || 0) - 1,
+      })); 
+      fetchComments();
 
-      return { ...prevUserLikes, [commentOrReplyId]: !currentlyLiked };
-    });
+      // Cập nhật trạng thái like của người dùng và gọi renderLikeIcon lại
+      setRenderLikeIcon(!renderLikeIconState);
+    } catch (error) {
+      console.error("Error liking comment:", error);
+    }
   };
+  
 
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
@@ -125,7 +141,10 @@ const usePostDetailsViewModel = (
             );
             if (commentToEdit) {
               console.log("Comment Được Chọn để Sửa:", commentToEdit);
-              setEditCommentContent(comments.find((comment) => comment.id === commentId)?.content || "");
+              setEditCommentContent(
+                comments.find((comment) => comment.id === commentId)?.content ||
+                  ""
+              );
               setCurrentCommentId(commentId);
               console.log(
                 "Setting edit modal to visible for comment ID:",
@@ -152,14 +171,14 @@ const usePostDetailsViewModel = (
       console.error("Invalid comment ID or content");
       return;
     }
-  
+
     await handleUpdate(currentCommentId, editCommentContent);
     setEditModalVisible(false); // Close modal
     setEditCommentContent("");
     setCurrentCommentId("");
     console.log("Edit comment saved and modal closed.");
   };
-  
+
   const handleUpdate = async (commentId: string, updatedContent: string) => {
     if (!defaultCommentRepo) {
       console.error("Default comment repo is not defined");
@@ -170,11 +189,14 @@ const usePostDetailsViewModel = (
         comments_id: commentId,
         content: updatedContent,
       };
-  
+
       // Removed unnecessary check for defaultCommentRepo here
-  
-      const response = await defaultCommentRepo.updateComment(commentId, updateCommentData);
-  
+
+      const response = await defaultCommentRepo.updateComment(
+        commentId,
+        updateCommentData
+      );
+
       if (response && response.data) {
         const updatedComments = comments.map((comment) => {
           if (comment.id === commentId) {
@@ -203,7 +225,6 @@ const usePostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
 
-
   const handleDelete = async (commentId: string) => {
     try {
       await defaultCommentRepo.deleteComment(commentId);
@@ -228,7 +249,7 @@ const usePostDetailsViewModel = (
         post_id: postId,
         content: comment,
       };
-  
+
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
@@ -236,7 +257,7 @@ const usePostDetailsViewModel = (
             type: "success",
             text1: "Comment thành công",
           });
-  
+
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
@@ -258,17 +279,17 @@ const usePostDetailsViewModel = (
       }
     }
   };
-  
+
   const handleAddReply = async (comment: string) => {
     if (comment.trim()) {
       const parentId = replyToReplyId || replyToCommentId;
-  
+
       const commentData: CreateCommentsRequestModel = {
         post_id: postId,
         content: comment,
         parent_id: parentId,
       };
-  
+
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
@@ -276,10 +297,12 @@ const usePostDetailsViewModel = (
             type: "success",
             text1: "Comment thành công",
           });
-  
+
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => {
-            const parentComment = prev.find((comment) => comment.id === parentId);
+            const parentComment = prev.find(
+              (comment) => comment.id === parentId
+            );
             return [...prev];
           });
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
@@ -302,7 +325,6 @@ const usePostDetailsViewModel = (
       }
     }
   };
-
 
   return {
     comments,
@@ -328,7 +350,8 @@ const usePostDetailsViewModel = (
     setEditCommentContent,
     handleEditComment,
     currentCommentId,
-    replyMap
+    replyMap,
+    likeIcon, 
   };
 };
 

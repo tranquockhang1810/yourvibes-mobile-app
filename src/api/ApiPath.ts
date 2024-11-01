@@ -32,7 +32,7 @@ export const ApiPath = {
   GET_COMMENT_REPLIES: getApiPath("comments/"),
   //Like Comment
   GET_LIKE_COMMENT: getApiPath("comments/like_comment/"),
-  POST_LIKE_COMMENT: getApiPath("comments/like_comment/"),
+  POST_LIKE_COMMENT: getApiPath("comments/like_comment/"), 
 
   // Notification
   GET_WS_PATH: getWSPath("users/notifications/ws/"),
