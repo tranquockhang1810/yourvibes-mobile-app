@@ -1,18 +1,23 @@
-import { View, Text } from 'react-native';
 import React from 'react';
-import { useAuth } from '@/src/context/auth/useAuth';
-import { Button } from '@ant-design/react-native';
 import ProfileFeatures from '@/src/components/screens/profile/view/ProfileFeature';
+import { useLocalSearchParams } from 'expo-router';
 
 const Profile = () => {
-  const { onLogout, changeLanguage, localStrings } = useAuth();
+  const { tabNum } = useLocalSearchParams();
 
-  const handleLogout = () => {
-    onLogout();
-  };
-
+  const getTabNum = () => {
+    if (!tabNum) {
+      return 0;
+    }
+    if (Array.isArray(tabNum)) {
+      return Number(tabNum[0]);
+    } else {
+      return Number(tabNum);
+    }
+  }
+  
   return (
-    <ProfileFeatures />
+    <ProfileFeatures tab={getTabNum()} />
   );
 };
 

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { NotificationResponseModel } from '@/src/api/features/notification/models/NotifiCationModel';
-import { defaultNotificationRepo, NotifiCationRepo } from '@/src/api/features/notification/NotifiCationRepo';
+import {NotifiCationRepo } from '@/src/api/features/notification/NotifiCationRepo';
 import Toast from 'react-native-toast-message';
-import { use } from 'i18next';
+
 
 const NotifiCationViewModel = (repo: NotifiCationRepo) => {
     const [notifications, setNotifications] = useState<NotificationResponseModel[]>([]);
@@ -10,7 +10,6 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [isFetched, setIsFetched] = useState(false);
     const limit = 10;
 
     const fetchNotifications = async (newPage: number = 1) => {
@@ -22,20 +21,19 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
                 page: newPage,
                 limit: limit,
             });
-
+    
             if (!response?.error) {
                 if (newPage === 1) {
-                    setNotifications(response?.data);
+                    setNotifications(response?.data||[]);
                 } else {
-                    setNotifications((prevNotifications) => [...prevNotifications, ...response?.data]);
+                    setNotifications((prevNotifications) => [...prevNotifications, ...response?.data||[]]);
                 }
                 const { page: currentPage, limit: currentLimit, total: totalRecords } = response?.paging;
+    
                 setTotal(totalRecords);
                 setPage(currentPage);
                 setHasMore(currentPage * currentLimit < totalRecords);
             } else {
-                console.error("Get Notifications Failed", response?.error?.message);
-                
                 Toast.show({
                     type: 'error',
                     text1: "Get Notifications Failed",
@@ -53,12 +51,7 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             setLoading(false);
         }
     };
-    const loadMoreNotifi =() => {
-        if(!loading && hasMore){
-            setPage((prevPage) => prevPage + 1);
-            fetchNotifications(page + 1);
-        }
-    };
+    
     const updateNotification = async (data : NotificationResponseModel) => {
         console.log(data.id);
         
@@ -74,10 +67,6 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             setLoading(true);
             const response = await repo.updateNotification(data);
             if(!response?.error){
-                Toast.show({
-                    type: 'success',
-                    text1: "Update Notification Success",
-                });
                 fetchNotifications();
             }else{
                 Toast.show({
@@ -102,10 +91,6 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             setLoading(true);
             const response = await repo.updateAllNotification();
             if(!response?.error){
-                Toast.show({
-                    type: 'success',
-                    text1: "Update All Notification Success",
-                });
                 fetchNotifications();
             }else{
                 Toast.show({
@@ -127,6 +112,12 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
     }
 
 
+    const loadMoreNotifi = () => {
+        if (!loading && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+          fetchNotifications(page + 1);
+        }
+      };
   return{
     notifications,
     loading,

@@ -7,6 +7,7 @@ import { CreatePostRequestModel } from "./models/CreatePostRequestModel";
 import { GetUsersPostsRequestModel } from "./models/GetUsersPostsModel";
 import { UpdatePostRequestModel } from "./models/UpdatePostRequestModel";
 import { LikeUsersModel, LikeUsersResponseModel } from "./models/LikeUsersModel";
+import { SharePostRequestModel } from "./models/SharePostRequestModel";
 
 interface IPostRepo {
 	createPost: (data: CreatePostRequestModel) => Promise<BaseApiResponseModel<PostResponseModel>>;
@@ -15,7 +16,7 @@ interface IPostRepo {
 	updatePost: (data: UpdatePostRequestModel) => Promise<BaseApiResponseModel<PostResponseModel>>;
 	deletePost: (id: string) => Promise<BaseApiResponseModel<any>>;
 	likePost: (id: string) => Promise<BaseApiResponseModel<any>>;
-	sharePost: (id: string) => Promise<BaseApiResponseModel<any>>;
+	sharePost: (id: string, data: SharePostRequestModel) => Promise<BaseApiResponseModel<any>>;
 	getPostLikes: (params: LikeUsersResponseModel) => Promise<BaseApiResponseModel<LikeUsersModel[]>>;
 }
 export class PostRepo implements IPostRepo {
@@ -45,8 +46,9 @@ export class PostRepo implements IPostRepo {
 		return client.post(ApiPath.LIKE_POST + id, { post_id: id });
 	}
 
-	async sharePost(id: string): Promise<BaseApiResponseModel<any>> {
-		return client.post(ApiPath.SHARE_POST + id, { post_id: id });
+	async sharePost(id: string, data: SharePostRequestModel): Promise<BaseApiResponseModel<any>> {
+		const formData = TransferToFormData(data);
+		return client.post(ApiPath.SHARE_POST + id, formData, { headers: { "Content-Type": "multipart/form-data" } });
 	}
 
 	async getPostLikes(params: LikeUsersResponseModel): Promise<BaseApiResponseModel<LikeUsersModel[]>> {

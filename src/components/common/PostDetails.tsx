@@ -10,6 +10,8 @@ import {
   Platform,
   Modal,
   Button,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import useColor from "@/src/hooks/useColor";
@@ -18,7 +20,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { ActivityIndicator } from "@ant-design/react-native";
+import { ActivityIndicator, Form } from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
@@ -32,15 +34,16 @@ function PostDetails(): React.JSX.Element {
     lightGray,
     grayBackground,
   } = useColor();
+
   const router = useRouter();
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
   const postId = useLocalSearchParams().postId as string;
   const { user, localStrings } = useAuth();
+  const [commentForm] = Form.useForm();
   const {
     comments,
     likeCount,
     userLikes,
-    newComment,
     textInputRef,
     handleLike,
     handleAction,
@@ -48,133 +51,152 @@ function PostDetails(): React.JSX.Element {
     setNewComment,
     setReplyToReplyId,
     handleEditComment,
-  } = usePostDetailsViewModel(postId);
+    fetchReplies,
+    currentCommentId,
+    isEditModalVisible,
+    setEditModalVisible,
+    replyMap
+  } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
-  const fetchPostDetails = async () => {
-    const fetchedPost = await defaultPostRepo.getPostById(postId); 
-    setPost(fetchedPost.data);
-  };
-  useEffect(() => {
-    fetchPostDetails();
-  }, [postId]);
-
-  const renderPost = () => {
-    if (!post) {
-      return (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ActivityIndicator size="large" color="#0000ff" />
-          <Text>Loading...</Text>
-        </View>
-      );
-    }
-    return <Post post={post} />;
-  };
-
+  const [editCommentContent, setEditCommentContent] = useState("");
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
-  const [isEditModalVisible, setEditModalVisible] = useState(false);
-  const [editCommentContent, setEditCommentContent] = useState("");
 
-  const renderReplies = (replies: CommentsResponseModel[]) => {
-    if (!replies || !Array.isArray(replies)) {
-      return null; // Nếu replies không phải là mảng, không render gì cả
-    }
-    return replies.map((reply) => (
-      <View
-        key={reply.id}
-        style={{
-          marginTop: 10,
-          paddingLeft: 20,
-          backgroundColor: "#f9f9f9",
-          borderRadius: 5,
-        }}
-      >
-        {renderCommentItem(reply)}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image
-            source={{
-              uri: user?.avatar_url || "https://i.pravatar.cc/150?img=1",
-            }}
-            style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}
-          />
-          <View>
-            <Text style={{ fontWeight: "bold" }}>
-              {user?.family_name} {user?.name}
-            </Text>
-            <Text style={{ fontSize: 12, color: "#888" }}>
-              {reply.created_at}
-            </Text>
-            <Text>{reply.content}</Text>
-          </View>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
-            onPress={() => handleLike(parseInt(reply.id))}
-            style={{ flexDirection: "row", alignItems: "center" }}
-          >
-            <AntDesign
-              name={
-                userLikes[parseInt(reply.id) as number] ? "hearto" : "heart"
-              }
-              size={16}
-              color={brandPrimary}
-            />
-            <Text style={{ marginLeft: 5 }}>
-              {likeCount[parseInt(reply.id) as number] || reply.likeCount}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={() => {
-                  setReplyToCommentId(reply.parent_id ?? null);
-                  textInputRef.current?.focus();
-              }}
-          >
-
-            <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
-            <Text style={{ marginLeft: 5 }}>{localStrings.Public.Reply}</Text>
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity
-            onPress={(event) => {
-              setReplyToCommentId(reply.parent_id ?? null);
-              setReplyToReplyId(parseInt(reply.id));
-              setNewComment("");
-              textInputRef.current?.focus();
-            }}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginLeft: 20,
-            }}
-          >
-            <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
-            <Text style={{ marginLeft: 5 }}>{localStrings.Public.Reply}</Text>
-          </TouchableOpacity> */}
-        </View>
-        {reply.replies.length > 1 && !showMoreReplies[reply.id] && (
-          <TouchableOpacity
-            onPress={() =>
-              setShowMoreReplies((prev) => ({ ...prev, [reply.id]: true }))
-            }
-            style={{ marginTop: 10 }}
-          >
-            <Text style={{ color: brandPrimaryTap }}>
-              Xem thêm {reply.replies.length - 1} bình luận
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        {showMoreReplies[reply.id as string]
-          ? renderReplies(reply.replies)
-          : renderReplies(reply.replies.slice(0, 1))}
-      </View>
-    ));
+  const fetchPostDetails = async () => {
+    const fetchedPost = await defaultPostRepo.getPostById(postId);
+    setPost(fetchedPost.data);
   };
 
-  const renderCommentItem = (comments: CommentsResponseModel) => {
+  const renderReplies = useCallback((replies: CommentsResponseModel[]) => {
+    return (
+      <FlatList
+        data={replies}
+        keyExtractor={(reply) => reply.id.toString()}
+        renderItem={({ item: reply }) => (
+          <View
+            style={{
+              padding: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: "#eee",
+              backgroundColor: "#f9f9f9",
+              borderRadius: 5,
+              marginBottom: 10,
+              paddingLeft: 20, // Thụt lề cho các phản hồi lồng nhau
+            }}
+          >
+            {/* Thông tin người dùng và nội dung phản hồi */}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Image
+                source={{
+                  uri: user?.avatar_url || "https://i.pravatar.cc/150?img=1",
+                }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 15,
+                  marginRight: 10,
+                }}
+              />
+              <View>
+                <Text style={{ fontWeight: "bold" }}>
+                  {user?.family_name} {user?.name}
+                </Text>
+                <Text style={{ fontSize: 12, color: "#888" }}>
+                  {dayjs(reply.created_at).format("DD/MM/YYYY")} {/*Sài test đỡ*/}
+                </Text>
+                <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
+              </View>
+            </View>
+            {/* Nút Thích, Trả lời và Hành động */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 5,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => handleLike(reply.id)}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginRight: 20,
+                }}
+              >
+                <AntDesign
+                  name={userLikes[reply.id] ? "heart" : "hearto"}
+                  size={16}
+                  color={userLikes[reply.id] ? "red" : brandPrimary}
+                />
+                <Text style={{ marginLeft: 5 }}>
+                  {likeCount[reply.id] || reply.like_count}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setReplyToCommentId(reply.parent_id ?? null);
+                  setReplyToReplyId(reply.id);
+                  textInputRef.current?.focus();
+                  fetchReplies(postId, reply.id);//
+                }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginRight: 20,
+                }}
+              >
+                <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
+                <Text style={{ marginLeft: 5 }}>
+                  {localStrings.Public.Reply}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+                onPress={() => handleAction(reply.id)}
+              >
+                <AntDesign name="bars" size={20} color={brandPrimaryTap} />
+                <Text style={{ marginLeft: 5 }}>
+                  {localStrings.Public.Action}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {/* Nút để xem phản hồi lồng nhau */}
+            {reply.rep_comment_count > 0 && (
+              <TouchableOpacity
+                onPress={() => {
+                  fetchReplies(postId, reply.id);
+                  setShowMoreReplies((prev) => ({
+                    ...prev,
+                    [reply.id]: !prev[reply.id],
+                  }));
+                }}
+                style={{ marginTop: 10 }}
+              >
+                <View style={{ alignItems: "center" }}>
+                  <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                  <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                    {showMoreReplies[reply.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+
+            {/* Hiển thị các phản hồi lồng nhau */}
+            {showMoreReplies[reply.id] && replyMap[reply.id] && (
+              <View style={{ marginTop: 10, paddingLeft: 20 }}>
+                {renderReplies(replyMap[reply.id])}
+              </View>
+            )}
+          </View>
+        )}
+      />
+    );
+  }, [replyMap, comments]);
+
+  const renderCommentItem = useCallback((comments: CommentsResponseModel) => {
     return (
       <View
         style={{
@@ -218,8 +240,7 @@ function PostDetails(): React.JSX.Element {
               color={userLikes[comments.id] ? "red" : brandPrimary} // Đổi màu đỏ nếu đã like
             />
             <Text style={{ marginLeft: 5 }}>
-              {likeCount[comments.id.likeCount] || 0}{" "}
-              {/* Hiển thị số lượt like */}
+              {likeCount[comments.id] || 0} {/* Hiển thị số lượt like */}
             </Text>
           </TouchableOpacity>
 
@@ -230,10 +251,12 @@ function PostDetails(): React.JSX.Element {
               marginRight: 20,
             }}
             onPress={() => {
+              console.log("Comment được trả lời:", comments.id);
               setReplyToCommentId(comments.id); // Trả lời bình luận cha
               setReplyToReplyId(null); // Không trả lời bình luận con
               setNewComment("");
               textInputRef.current?.focus(); // Hiển thị bàn phím
+              console.log("replyToCommentId sau khi thiết lập:", comments.id);
             }}
           >
             <FontAwesome name="reply" size={20} color={brandPrimaryTap} />
@@ -241,26 +264,52 @@ function PostDetails(): React.JSX.Element {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
-            onPress={() => handleAction(comments.id)} // Giả sử comment.id là ID của bình luận
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginRight: 20,
+            }}
+            onPress={() => handleAction(comments.id)}
           >
             <AntDesign name="bars" size={20} color={brandPrimaryTap} />
             <Text style={{ marginLeft: 5 }}>{localStrings.Public.Action}</Text>
           </TouchableOpacity>
         </View>
-        {comments.replies && comments.replies.length > 0 && (
-                <View style={{ paddingLeft: 20 }}>
-                    {renderReplies(comments.replies)}
-                </View>
-            )}
+
+        {/* Nút để xem phản hồi */}
+        {comments.rep_comment_count > 0 && (
+          <TouchableOpacity
+            onPress={() => fetchReplies(comments.id, comments.id)} // Gọi fetchReplies khi nhấn
+          >
+            <View style={{ alignItems: "center" }}>
+              <AntDesign name="down" size={16} color={brandPrimaryTap} />
+              <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                {showMoreReplies[comments.id] ? "Ẩn phản hồi" : "Xem phản hồi"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        {/* Hiển thị các phản hồi */}
+        {replyMap[comments.id] && replyMap[comments.id].length > 0 && (
+          <View style={{ paddingLeft: 20 }}>
+            {renderReplies(replyMap[comments.id])}
+          </View>
+        )}
       </View>
     );
-  };
+  }, [comments, replyMap]);
 
   const renderFlatList = useCallback(
-    (comments: CommentsResponseModel[]) => { 
+    (comments: CommentsResponseModel[]) => {
       return (
         <FlatList
+          ListHeaderComponent={
+            <>
+              <View style={{ height: 1, backgroundColor: "#000" }} />
+              <Post post={post as PostResponseModel} />
+              <View style={{ height: 1, backgroundColor: "#000" }} />
+            </>
+          }
           style={{ flex: 1 }}
           data={comments}
           renderItem={({ item }) => renderCommentItem(item)}
@@ -268,8 +317,12 @@ function PostDetails(): React.JSX.Element {
         />
       );
     },
-    [comments]
+    [comments, post, replyMap]
   );
+
+  useEffect(() => {
+    fetchPostDetails();
+  }, [postId]);
 
   return (
     <KeyboardAvoidingView
@@ -277,6 +330,7 @@ function PostDetails(): React.JSX.Element {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={{ flex: 1 }}>
+        {/* Header */}
         <View
           style={{
             flexDirection: "row",
@@ -293,73 +347,188 @@ function PostDetails(): React.JSX.Element {
           </Text>
         </View>
 
-        <View style={{ height: 1, backgroundColor: "#000" }} />
-        {renderPost()}
-        <View style={{ height: 1, backgroundColor: "#000" }} />
+        {/* FlatList */}
+        {!post ? (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Loading...</Text>
+          </View>
+        ) : (
+          <>
+            {renderFlatList(comments)}
+            <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 10,
+                }}
+              >
+                <Image
+                  source={{ uri: user?.avatar_url }}
+                  style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 25,
+                    marginRight: 10,
+                  }}
+                />
 
-        {comments && comments.length > 0 && renderFlatList(comments)}
+                <Form.Item noStyle name="comment" layout="vertical">
+                  <TextInput
+                    ref={textInputRef}
+                    style={{
+                      flex: 1,
+                      borderColor: "#ccc",
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      padding: 10,
+                      backgroundColor: "#fff",
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+                      elevation: 5,
+                    }}
+                    placeholder={localStrings.Public.CommonActions}
+                    value={commentForm.getFieldValue("comment")}
+                    onChangeText={(value) =>
+                      commentForm.setFieldValue("comment", value)
+                    }
+                  />
+                </Form.Item>
 
-        <View
-          style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 50,
+                    marginLeft: 10,
+                    padding: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 1.5,
+                    elevation: 5,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      commentForm.submit();
+                      console.log(
+                        "comment form: ",
+                        commentForm.getFieldValue("comment")
+                      );
+
+                      const comment = commentForm.getFieldValue("comment");
+                      if (!comment) {
+                        return; // Nếu không có bình luận thì không làm gì
+                      }
+                      handleAddComment(comment).then(() => {
+                        commentForm.resetFields(); // Đặt lại trường bình luận
+                      });
+                    }}
+                  >
+                    <FontAwesome name="send-o" size={30} color={brandPrimary} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Form>
+          </>
+        )}
+
+        {/* Modal edit comment */}
+        <Modal
+          visible={isEditModalVisible}
+          transparent
+          animationType="slide"
         >
-          <Image
-            source={{ uri: user?.avatar_url }}
-            style={{ width: 45, height: 45, borderRadius: 25, marginRight: 10 }}
-          />
-          <TextInput
-            ref={textInputRef}
-            style={{
-              flex: 1,
-              borderColor: "#ccc",
-              borderWidth: 1,
-              borderRadius: 5,
-              padding: 10,
-              backgroundColor: "#fff",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-            }}
-            placeholder={localStrings.Public.CommonActions}
-            value={newComment}
-            onChangeText={setNewComment}
-          />
-
           <View
             style={{
-              backgroundColor: "white",
-              borderRadius: 50,
-              marginLeft: 10,
-              padding: 10,
+              flex: 1,
               justifyContent: "center",
               alignItems: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.2,
-              shadowRadius: 1.5,
-              elevation: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
           >
-            <TouchableOpacity onPress={handleAddComment}>
-              <FontAwesome name="send-o" size={30} color={brandPrimary} />
-            </TouchableOpacity>
-          </View>
-        </View>
+            <View
+              style={{
+                width: "80%",
+                backgroundColor: "#fff",
+                borderRadius: 10,
+                padding: 20,
+              }}
+            >
+              {/* Avatar và Input chỉnh sửa bình luận */}
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <View>
+                    <Image
+                      source={{
+                        uri:
+                          user?.avatar_url ||
+                          "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg",
+                      }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 30,
+                      }}
+                    />
+                  </View>
+                  <View style={{ marginLeft: 10, flex: 1 }}>
+                    <View style={{ flexDirection: "column" }}>
+                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                        {user?.family_name + " " + user?.name ||
+                          localStrings.Public.UnknownUser}
+                      </Text>
+                      <TextInput
+                        value={editCommentContent}
+                        onChangeText={setEditCommentContent}
+                        placeholder="Edit your comment"
+                        style={{
+                          borderWidth: 1,
+                          borderColor: lightGray,
+                          borderRadius: 5,
+                          padding: 10,
+                          backgroundColor: grayBackground,
+                          marginTop: 10,
+                        }}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
 
-        <Modal visible={isEditModalVisible} animationType="slide">
-          <View>
-            <TextInput
-              value={editCommentContent}
-              onChangeText={setEditCommentContent}
-            />
-            <Button title="Lưu" onPress={handleEditComment} />
-            <Button title="Hủy" onPress={() => setEditModalVisible(false)} />
+              {/* Nút lưu và hủy */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <Button title="Save" onPress={() => handleEditComment(currentCommentId)} />
+                <Button
+                  title="Cancel"
+                  onPress={() => setEditModalVisible(false)}
+                />
+              </View>
+            </View>
           </View>
         </Modal>
       </View>
     </KeyboardAvoidingView>
   );
 }
-
 export default PostDetails;

@@ -8,6 +8,11 @@ import { UpdateProfileRequestModel } from "./model/UpdateProfileModel";
 interface IProfileRepo {
   getProfile(userId: string): Promise<BaseApiResponseModel<UserModel>>;
   updateProfile(data: UpdateProfileRequestModel): Promise<BaseApiResponseModel<UserModel>>;
+  sendFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
+  cancelFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
+  acceptFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
+  refuseFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
+  unfriend(userId: string): Promise<BaseApiResponseModel<any>>;
 }
 
 export class ProfileRepo implements IProfileRepo {
@@ -17,6 +22,21 @@ export class ProfileRepo implements IProfileRepo {
   async updateProfile(data: UpdateProfileRequestModel): Promise<BaseApiResponseModel<UserModel>> {
     const formData = TransferToFormData(data);
     return client.patch(ApiPath.PROFILE, formData, { headers: { "Content-Type": "multipart/form-data" } });
+  }
+  async sendFriendRequest(userId: string): Promise<BaseApiResponseModel<any>> {
+    return client.post(ApiPath.FRIEND_REQUEST + userId);
+  }
+  async cancelFriendRequest(userId: string): Promise<BaseApiResponseModel<any>> {
+    return client.delete(ApiPath.FRIEND_REQUEST + userId);
+  }
+  async acceptFriendRequest(userId: string): Promise<BaseApiResponseModel<any>> {
+    return client.post(ApiPath.FRIEND_RESPONSE + userId);
+  }
+  async refuseFriendRequest(userId: string): Promise<BaseApiResponseModel<any>> {
+    return client.delete(ApiPath.FRIEND_RESPONSE + userId);
+  }
+  async unfriend(userId: string): Promise<BaseApiResponseModel<any>> {
+    return client.delete(ApiPath.UNFRIEND + userId);
   }
 }
 

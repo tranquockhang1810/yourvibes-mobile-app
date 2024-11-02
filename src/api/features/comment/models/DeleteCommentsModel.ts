@@ -1,3 +1,3 @@
-export interface CreateCommentsRequestModel {
+export interface DeleteCommentsRequestModel {
     comments_id: string
 }

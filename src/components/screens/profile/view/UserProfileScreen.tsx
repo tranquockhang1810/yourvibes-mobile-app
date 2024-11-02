@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
@@ -6,20 +6,29 @@ import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { useRouter } from 'expo-router';
-import ProfileViewModel from '../viewModel/ProfileViewModel';
+import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 
-const ProfileFeatures = ({ tab }: { tab: number }) => {
+const UserProfileScreen = ({ id }: { id: string }) => {
   const { backgroundColor } = useColor();
-  const { user, localStrings } = useAuth();
+  const { localStrings } = useAuth();
+  const [tab, setTab] = useState(0);
   const router = useRouter();
-  const { loading, posts, fetchUserPosts, loadMorePosts, total } = ProfileViewModel();
+  const {
+    loading,
+    posts,
+    loadMorePosts,
+    total,
+    fetchUserProfile,
+    profileLoading,
+    userInfo
+  } = UserProfileViewModel();
 
   useEffect(() => {
-    if (tab === 0 || tab === 1) {
-      fetchUserPosts();
-    }
-  }, [tab]);
+    if (!id) return;
+    fetchUserProfile(id);
+    setTab(0);
+  }, [id])
 
   return (
     <KeyboardAvoidingView
@@ -43,11 +52,11 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
             borderBottomWidth: 1,
           }}
         >
-          <TouchableOpacity onPress={() => router.push('/home')}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Feather name="arrow-left" size={24} color="black" />
           </TouchableOpacity>
           <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', flex: 1 }}>
-            {user?.family_name} {user?.name || localStrings.Public.Username}
+            {userInfo?.family_name} {userInfo?.name || localStrings.Public.Username}
           </Text>
         </View>
 
@@ -56,14 +65,18 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader total={total} user={user as UserModel} loading={false} />
-              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={false} loadMorePosts={loadMorePosts} userInfo={user as UserModel} />
+              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} />
+              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} />
             </>
           }
           renderItem={() => null}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-          onRefresh={() => (tab === 0 || tab === 1) && fetchUserPosts()}
+          onRefresh={() => {
+            if (tab === 0 || tab === 1) {
+              fetchUserProfile(id)
+            }
+          }}
           refreshing={loading}
         />
       </View>
@@ -71,4 +84,4 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
   );
 };
 
-export default ProfileFeatures;
+export default UserProfileScreen;

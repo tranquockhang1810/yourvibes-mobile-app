@@ -127,7 +127,7 @@ const AddPostScreen = () => {
               justifyContent: 'space-between',
             }}>
               <TouchableOpacity onPress={() => {
-                router.push("/(tabs)")
+                router.back();
               }}>
                 <Ionicons name="close" size={24} color={brandPrimary} />
               </TouchableOpacity>

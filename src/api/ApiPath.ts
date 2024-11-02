@@ -8,6 +8,12 @@ export const ApiPath = {
 
   // User
   PROFILE: getApiPath('users/'),
+  SEARCH: getApiPath('users/'),
+
+  //Friend
+  FRIEND_REQUEST: getApiPath('users/friends/friend_request/'),
+  FRIEND_RESPONSE: getApiPath('users/friends/friend_response/'),
+  UNFRIEND: getApiPath('users/friends/'),
   
   // Post
   CREATE_POST: getApiPath('posts/'),
@@ -23,17 +29,22 @@ export const ApiPath = {
    UPDATE_COMMENT: getApiPath('comments/'),
    GET_COMMENTS: getApiPath('comments/'),
    DELETE_COMMENT: getApiPath('comments/'),
+    GET_COMMENT_REPLIES: getApiPath('comments/'), 
 
    // Notification
-   GETWS_APIPATH : getWS_ApiPath('users/notifications/ws/'),
-   GET_NOTIFICATIONS: getApiPath('users/notifications/'),
+   GET_WS_PATH: getWSPath('users/notifications/ws/'),
+   GET_NOTIFICATIONS: getApiPath('users/notifications'),
    READ_NOTIFICATION: getApiPath('users/notifications/'),
    READ_ALL_NOTIFICATION: getApiPath('users/notifications/'),
+
+   //New Feeds
+    GET_NEW_FEEDS: getApiPath('users/new_feeds'),
 }
 
 function getApiPath(path: string) {
   return `${ENV.SERVER_ENDPOINT!}/v1/2024/${path}`
 }
-function getWS_ApiPath(path: string) {
-  return `${ENV.SERVER_ENDPOINT!.replace('http','ws')}/v1/2024/${path}`
+function getWSPath(path: string) {
+  return `${ENV.SERVER_ENDPOINT.replace('http', 'ws')!}/v1/2024/${path}`
 }
+

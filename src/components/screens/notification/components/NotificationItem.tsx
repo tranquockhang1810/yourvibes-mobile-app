@@ -1,17 +1,16 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NotificationResponseModel } from '@/src/api/features/notification/models/NotifiCationModel';
 import { Ionicons } from '@expo/vector-icons';
 import { getTimeDiff } from '@/src/utils/helper/DateTransfer';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
+import { router } from 'expo-router';
 
-const NotificationItem = ({ notification, onUpdate }: { notification: NotificationResponseModel, onUpdate: () => void }) => {
-  const { from, from_url, content, created_at, notification_type, status } = notification;
+const NotificationItem = ({ notification, onUpdate  }: { notification: NotificationResponseModel, onUpdate: () => void}) => {
+  const { from, from_url, content, created_at, notification_type, status, content_id } = notification;
   const { user, localStrings } = useAuth();
 
   const type = mapNotifiCationType(notification_type || '');
-
 
   function mapNotifiCationType(type: string) {
     switch (type) {
@@ -78,7 +77,14 @@ const NotificationItem = ({ notification, onUpdate }: { notification: Notificati
   };
 
   return (
-    <TouchableOpacity onPress={onUpdate} style={{ backgroundColor: status ? '#fff' : '#f0f0f0' }}>
+    <TouchableOpacity onPress={()=>{onUpdate();
+      if( notification_type === "friend_request" || notification_type === "accept_friend_request"){
+        router.push(`/(tabs)/user/${content_id}`);
+      }
+      if (notification_type === "like_post" || notification_type === "new_comment" || notification_type === "new_share"){
+        router.push(`/postDetails?postId=${content_id}`);
+      }
+    }} style={{ backgroundColor: status ? '#fff' : '#f0f0f0' }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5 }}>
         <View style={{ position: 'relative' }}>
           {/* Avatar */}

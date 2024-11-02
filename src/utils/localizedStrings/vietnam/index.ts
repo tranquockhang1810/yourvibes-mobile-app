@@ -28,7 +28,11 @@ export const VnLocalizedStrings = {
     Conform: "Xác nhận",
     LogoutConfirm: "Bạn có chắc chắn muốn đăng xuất",
     More: "Xem thêm",
-    AddFriend: "Kết Bạn",
+    AddFriend: "Kết bạn",
+    UnFriend: "Hủy kết bạn",
+    CancelFriendRequest: "Hủy lời mời",
+    RefuseFriendRequest: "Từ chối",
+    AcceptFriendRequest: "Chấp nhận",
     ReportFriend: "Báo Cáo",
     Block: "Chặn",
     Vietnamese: "Tiếng Việt",
@@ -47,7 +51,6 @@ export const VnLocalizedStrings = {
     Comment: "Bình luận",
     Reply: "Trả lời",  
     ReportComment: "Báo cáo bình luận",
-
   },
   Form: {
     Label: {
@@ -139,6 +142,20 @@ export const VnLocalizedStrings = {
     Posts: {
       GetPostsFailed: "Lấy danh sách bài viết thất bại!",
       GetOnePostFailed: "Lấy bài viết thất bại!"
+    },
+    Info: {
+      GetInfoFailed: "Lấy thống tin người dùng thất bại!"
+    },
+    Friend: {
+      SendRequestFailed: "Gửi lời mời kết bạn thất bại!",
+      SendRequestSuccess: "Gửi lời mời kết bạn thành công!",
+      FriendResponseFailed: "Phản hồi lời mời thất bại!",
+      FriendResponseSuccess: "Phản hồi lời mời thành công!",
+      CancelRequestFailed: "Hủy lời mời thất bại!",
+      CancelRequestSuccess: "Hủy lời mời thành công!",
+      UnfriendFailed: "Hủy kết bạn thất bại!",
+      UnfriendSuccess: "Hủy kết bạn thành công!",
+      UnfriendConfirm: "Bạn có muốn hủy kết bạn với người dùng này?",
     }
   },
   UpdatePost: {
@@ -154,6 +171,13 @@ export const VnLocalizedStrings = {
     UpdateProfile: "Cập nhật trang cá nhân",
     UpdateFailed: "Cập nhật trang cá nhân thất bại!",
     UpdateSuccess: "Cập nhật trang cá nhân thành công!",
+  },
+  Search: {
+    Search: "Tim kiếm",
+    SearchPlaceholder: "Bạn đang tìm gì...",
+    SearchFailed: "Tìm kiếm thất bại!",
+    NoUsers: "Không tìm thấy người dùng",
+    TrySearch: "Hãy nhập từ khóa cần tìm"
   },
 Notification: {
   Notification: "Thông báo",

@@ -1,23 +1,26 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'; // Thay ScrollView bằng FlatList
 import useColor from '@/src/hooks/useColor';
 import { useRouter } from 'expo-router';
 import Post from '@/src/components/common/Post';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
+import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 
-const PostList = ({
+const PostList = React.memo(({
   loading,
   posts,
-  loadMorePosts
+  loadMorePosts,
+  user
 }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
+  user: UserModel
 }) => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const router = useRouter();
-  const { user, localStrings } = useAuth();
+  const { localStrings } = useAuth();
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -27,6 +30,25 @@ const PostList = ({
       </View>
     );
   };
+
+  const renderFlatList = useCallback(() => {
+    return (
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => (
+          <Post key={item?.id} post={item}>
+            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+          </Post>
+        )}
+        keyExtractor={(item) => item?.id as string}
+        ListFooterComponent={renderFooter}
+        onEndReached={loadMorePosts}
+        onEndReachedThreshold={0.5}
+        removeClippedSubviews={true} 
+        showsVerticalScrollIndicator={false}
+      />
+    )
+  }, [posts]);
 
   return (
     <View style={{ flex: 1, backgroundColor: grayBackground }}>
@@ -64,22 +86,9 @@ const PostList = ({
         </View>
       </TouchableOpacity>
 
-      <FlatList
-        data={posts}
-        renderItem={({ item }) => (
-          <Post key={item?.id} post={item}>
-            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
-          </Post>
-        )}
-        keyExtractor={(item) => item?.id as string}
-        ListFooterComponent={renderFooter}
-        onEndReached={loadMorePosts}
-        onEndReachedThreshold={0.5}
-        removeClippedSubviews={true} 
-        showsVerticalScrollIndicator={false}
-      />
+      {renderFlatList()}
     </View>
   );
-};
+});
 
 export default PostList;

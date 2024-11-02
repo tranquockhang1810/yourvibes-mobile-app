@@ -1,18 +1,16 @@
-import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
-
 export interface CommentsResponseModel {
     id: string;
     postId: string;
-    userId: string;
     parent_id?: string;
     content: string;
-    likeCount: number;
-    repCommentCount: number;
+    like_count: number;
+    rep_comment_count: number;
     created_at: string;
     user: {
-        id: string;
+        id?: string;
+        avatar_url?: string;
+        family_name?: string;
+        name?: string;
     };
-    privacy?: Privacy;
-    replies: any[];
+    is_liked?: boolean;
 }
-

@@ -5,7 +5,11 @@ import { Video } from 'expo-av';
 import useColor from '@/src/hooks/useColor';
 import { PostMediaModel } from '@/src/api/features/post/models/PostResponseModel';
 
-const MediaView = ({ mediaItems }: { mediaItems: PostMediaModel[] }) => {
+interface MediaViewProps {
+  mediaItems: PostMediaModel[];
+}
+
+const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
   const { brandPrimary, lightGray } = useColor();
   return (
     <Carousel
@@ -46,6 +50,6 @@ const MediaView = ({ mediaItems }: { mediaItems: PostMediaModel[] }) => {
       })}
     </Carousel>
   )
-}
+})
 
 export default MediaView

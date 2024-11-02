@@ -1,5 +1,6 @@
 import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
+import { SharePostRequestModel } from "@/src/api/features/post/models/SharePostRequestModel";
 import { UpdatePostRequestModel } from "@/src/api/features/post/models/UpdatePostRequestModel";
 import { PostRepo } from "@/src/api/features/post/PostRepo"
 import { useAuth } from "@/src/context/auth/useAuth";
@@ -9,7 +10,7 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 const EditPostViewModel = (repo: PostRepo) => {
-  const { localStrings, user } = useAuth();
+  const { localStrings } = useAuth();
   const [updateLoading, setUpdateLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState('');
@@ -18,7 +19,6 @@ const EditPostViewModel = (repo: PostRepo) => {
   const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
   const [mediaIds, setMediaIds] = useState<string[]>([]);
   const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined);
-  const [liked, setLiked] = useState<boolean>(false);
   const [shareLoading, setShareLoading] = useState<boolean>(false);
 
   const updatePost = async (data: UpdatePostRequestModel) => {
@@ -34,7 +34,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         setOriginalImageFiles([]);
         setMediaIds([]);
         setPrivacy(Privacy.PUBLIC);
-        router.push('/(tabs)/profile');
+        router.push("/(tabs)/profile?tabNum=1");
       } else {
         Toast.show({
           type: "error",
@@ -116,7 +116,7 @@ const EditPostViewModel = (repo: PostRepo) => {
           type: "success",
           text1: localStrings.DeletePost.DeleteSuccess
         })
-        router.push('/(tabs)/home');
+        router.push('/(tabs)/profile?tabNum=1');
       } else {
         Toast.show({
           type: "error",
@@ -140,12 +140,7 @@ const EditPostViewModel = (repo: PostRepo) => {
     try {
       const res = await repo.likePost(id);
       if (!res?.error) {
-        setLikedPost({ 
-          ...likedPost,
-          like_count: !liked ? likedPost?.like_count as number + 1 : likedPost?.like_count as number - 1,
-          is_liked: !liked
-        })
-        setLiked(!liked)
+        setLikedPost(res?.data);
       } else {
         Toast.show({
           type: "error",
@@ -163,15 +158,16 @@ const EditPostViewModel = (repo: PostRepo) => {
     }
   }
 
-  const sharePost = async (id: string) => {
+  const sharePost = async (id: string, data: SharePostRequestModel) => {
     try {
       setShareLoading(true);
-      const res = await repo.sharePost(id);
+      const res = await repo.sharePost(id, data);
       if (!res?.error) {
         Toast.show({
           type: "success",
           text1: localStrings.Post.SharePostSuccess
         })
+        router.push('/(tabs)/profile?tabNum=1');
       } else {
         Toast.show({
           type: "error",
