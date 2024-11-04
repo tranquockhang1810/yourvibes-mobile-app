@@ -185,8 +185,20 @@ export const ENGLocalizedStrings = {
     LikePost: "liked your post: ",
     SharePost: "shared your post: ",
     CommentPost: "commented on your post: ",
-    Friend: "sent you a friend request."
+    Friend: "sent you a friend request.",
+    AcceptFriend:"accepted your friend request."
   }
   },
+  Ads: {
+    Ads: "Post Advertisement",
+    TimeAndBudget: "Duration and Budget",
+    Minimum: "Minimum: 30,000 VND/day",
+    DaysAds: "Number of advertisement days:",
+    TimeAds: "Select advertisement duration",
+    StartDate: "Start Date",
+    EndDate: "End Date",
+    BudgetAds: "Budget",
+  }
+  
 
 }

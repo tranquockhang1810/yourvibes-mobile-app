@@ -1,3 +1,5 @@
+import Ads from "@/src/components/screens/ads/views/AdsScreen";
+
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -184,6 +186,15 @@ Notification: {
     SharePost: "đã chia sẻ bài viết của bạn: ",
     CommentPost: "đã bình luận về bài viết của bạn: ",
     Friend: "đã gưi lời mời kết bạn.",
+    AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
   }
-}}
-  
+},
+Ads: {
+  Ads: "Quảng cáo bài viết",
+  TimeAndBudget: "Khoảng thời gian và Ngân sách",
+  Minimum: "Tối thiểu: 30.000VND/1 ngày",
+  DaysAds: "Số ngày quảng cáo:",
+  TimeAds: "Chọn thời gian quảng cáo",
+  BudgetAds: "Ngân sách",
+}
+};

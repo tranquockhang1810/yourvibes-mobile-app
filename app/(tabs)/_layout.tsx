@@ -3,7 +3,9 @@ import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 import { Badge } from '@ant-design/react-native';
 import { AntDesign, FontAwesome, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { Href, Tabs } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import { Href, Tabs, useFocusEffect } from 'expo-router';
+import React from 'react';
 import { ReactNode, useEffect, useState } from 'react';
 import { Image, View, Platform, StatusBar } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -13,21 +15,27 @@ const TabLayout = () => {
   const iconSize = 27;
   const addIconSize = 35;
   const { user, localStrings } = useAuth();
-  const [dotStatus, setDotStatus] = useState(false);
+  const [statusNotifi, setStatusNotifi] = useState(false)
   const mapNotifiCationContent = (type: string) => {
     switch (type) {
       case 'like_post':
-        return 'đã thích bài viết của bạn: '
-      case 'share_post':
-        return 'đã chia sẻ bài viết của bạn: '
-      case 'comment_post':
-        return 'đã bình luận về bài viết của bạn: '
-      case 'friend':
-        return 'đã gưi lời mời kết bạn.'
+        return `${localStrings.Notification.Items.LikePost}`;
+      case 'new_share':
+        return `${localStrings.Notification.Items.SharePost}`;
+      case 'new_comment':
+        return `${localStrings.Notification.Items.CommentPost}`;
+      case 'friend_request':
+        return `${localStrings.Notification.Items.Friend}`;
+      case 'accept_friend_request':
+        return `${localStrings.Notification.Items.AcceptFriend}`;
       default:
-        return 'notifications'
+        return 'notifications';
     }
-  }
+}
+
+   const checkStatus = (notificationStatus: boolean | ((prevState: boolean) => boolean)) => {
+    setStatusNotifi(notificationStatus);}
+
   const connectWebSocket = async () => {
     const ws = new WebSocket(`${ApiPath.GET_WS_PATH}${user?.id}`);
 
@@ -44,10 +52,8 @@ const TabLayout = () => {
 
       console.log('Message:', notification);
 
-      // Set the dot status directly
-      setDotStatus(status);
-      console.log('Dot status set to', status); // Log the updated status
-
+      // Set status based on the incoming notification status
+      checkStatus(status);
       const mapType = mapNotifiCationContent(type);
       Toast.show({
         type: 'info',
@@ -92,7 +98,7 @@ const TabLayout = () => {
     {
       name: "notification",
       icon: (
-        <Badge dot={dotStatus}>
+        <Badge dot={statusNotifi}>
           <FontAwesome size={iconSize} name={"bell-o"} />
         </Badge>
       ),
@@ -115,6 +121,11 @@ const TabLayout = () => {
   useEffect(() => {
     connectWebSocket();
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+        setStatusNotifi(false);
+    }, [])
+  );
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -147,7 +158,7 @@ const TabLayout = () => {
               tabBarShowLabel: false,
               tabBarInactiveTintColor: brandPrimaryTap,
               tabBarStyle: { height: Platform.OS === 'ios' ? 80 : 55 },
-              href: tab?.href
+              href: tab?.href,
             }}
           />
         ))}
