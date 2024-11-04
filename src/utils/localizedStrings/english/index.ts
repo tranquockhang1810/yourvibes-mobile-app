@@ -1,3 +1,6 @@
+import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
+import { List } from "@ant-design/react-native";
+
 export const ENGLocalizedStrings = {
   Public: {
     All: "All",
@@ -188,5 +191,10 @@ export const ENGLocalizedStrings = {
     Friend: "sent you a friend request."
   }
   },
-
+ListFriends: {
+  ListFriends: "List of friends",
+  Search: "Friend find",
+  Unfriend: "Unfriend with ",
+  ViewProfile: "View profile",
+},
 }

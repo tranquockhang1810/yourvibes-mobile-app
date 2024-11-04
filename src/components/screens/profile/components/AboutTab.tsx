@@ -58,7 +58,7 @@ const AboutTab = ({ user, loading }: { user: UserModel, loading: boolean }) => {
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 <View>
                   <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{localStrings.Public.Friend}</Text>
-                  <Text>435 {localStrings.Public.Friend}</Text>
+                  <Text> {user?.friend_count} {localStrings.Public.Friend}</Text>
                 </View>
                 <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
                   <Text style={{ alignSelf: 'flex-end', color: brandPrimaryTap }}>{localStrings.Public.FriendFind}</Text>

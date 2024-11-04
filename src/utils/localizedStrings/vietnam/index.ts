@@ -1,3 +1,7 @@
+import Search from "@/app/(tabs)/search";
+import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
+import { List } from "@ant-design/react-native";
+
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -185,5 +189,11 @@ Notification: {
     CommentPost: "đã bình luận về bài viết của bạn: ",
     Friend: "đã gưi lời mời kết bạn.",
   }
-}}
+},
+ListFriends: {
+  ListFriends: "Danh sách các bè",
+  Search: "Tìm kiếm bạn bè",
+  Unfriend: "Hủy kết bạn với",
+},
+}
   

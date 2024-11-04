@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import useListFriendsViewModel from "../viewModel/ListFriendsViewModel"; 
 import { router } from 'expo-router';
+import { useAuth } from "@/src/context/auth/useAuth";
 
 const ListFriends: React.FC = () => {
   const {
@@ -25,6 +26,7 @@ const ListFriends: React.FC = () => {
     handleMoreOptions // Nhận hàm từ ViewModel
   } = useListFriendsViewModel();
 
+  const { localStrings } = useAuth();
   const renderFriend = ({ item }: { item: { id: string; avatar: string; name: string; } }) => (
     <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderColor: "#e0e0e0" }}>
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
@@ -51,7 +53,7 @@ const ListFriends: React.FC = () => {
       <TouchableOpacity onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
-      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Danh sách bạn bè</Text>
+      <Text style={{ fontSize: 18, fontWeight: "bold" }}>{localStrings.ListFriends.ListFriends}</Text>
       <View />
     </View>
   );
@@ -65,7 +67,7 @@ const ListFriends: React.FC = () => {
             <Ionicons name="search" size={24} color="gray" style={{ marginRight: 5 }} />
             <TextInput
               style={{ flex: 1, fontSize: 16 }}
-              placeholder="Tìm kiếm"
+              placeholder={localStrings.ListFriends.Search}
               value={search}
               onChangeText={setSearch}
             />

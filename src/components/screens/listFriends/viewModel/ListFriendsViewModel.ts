@@ -2,6 +2,8 @@ import { useEffect, useState, } from "react";
 import { useActionSheet } from "@expo/react-native-action-sheet"; // Import useActionSheet
 import Toast from "react-native-toast-message"; 
 
+import { useAuth } from "@/src/context/auth/useAuth";
+
 type Friend = {
   id: string;
   name: string;
@@ -9,6 +11,8 @@ type Friend = {
 };
 
 const useListFriendsViewModel = () => {
+  
+  const { localStrings } = useAuth();
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -17,11 +21,11 @@ const useListFriendsViewModel = () => {
 
   const fetchFriends = async (pageNumber: number) => {
     setLoading(true);
-    const newFriends = Array(10)
+    const newFriends = Array(20)
       .fill(null)
       .map((_, i) => ({
         id: `friend-${pageNumber}-${i}-${Date.now()}`,
-        name: `Phạm Minh Thảo Vũ Trụ ${pageNumber * 10 + i + 1}`,
+        name: `Thảo ở Vũ Trụ ${pageNumber * 10 + i + 1}`,
         avatar: `https://picsum.photos/40/40?random=${Math.floor(
           Math.random() * 1000
         )}`,
@@ -50,7 +54,7 @@ const useListFriendsViewModel = () => {
 
   const handleMoreOptions = (friend: Friend) => {
     const options = [
-      `Hủy kết bạn với ${friend.name}`,
+      `${localStrings.ListFriends.Search}${friend.name}`,
       "Xem trang cá nhân",
       "Chặn",
       "Hủy",
@@ -72,7 +76,7 @@ const useListFriendsViewModel = () => {
             // Hiện thông báo tổng quan
             Toast.show({
               text1: `Bạn đã hủy kết bạn với ${friend.name}`,
-              text2: "Bạn có thể tìm kiếm lại bạn bè trong danh sách.",
+              text2: "Bạn có thể tìm kiếm lại bạn bè ở YourVibes.",
             });
             break;
   
