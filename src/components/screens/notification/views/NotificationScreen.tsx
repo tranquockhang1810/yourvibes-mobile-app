@@ -1,5 +1,5 @@
-import { View, Text, StatusBar, TouchableOpacity, ScrollView, ToastAndroid, FlatList } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { View, Text, StatusBar, TouchableOpacity, FlatList } from 'react-native'
+import React from 'react'
 import useColor from '@/src/hooks/useColor';
 import { router, useFocusEffect } from 'expo-router';
 import { Entypo, Ionicons } from '@expo/vector-icons';
@@ -13,7 +13,7 @@ import { useAuth } from '@/src/context/auth/useAuth';
 
 
 const NotificationScreen = () => {
-  const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } = useColor();
+  const { brandPrimary, backgroundColor} = useColor();
   const { notifications, loading, fetchNotifications,  loadMoreNotifi, updateNotification,updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
   const { localStrings } = useAuth();
 

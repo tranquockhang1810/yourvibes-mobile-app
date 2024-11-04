@@ -1,13 +1,10 @@
 import {
   View,
-  ScrollView,
   StatusBar,
-  SafeAreaView,
   Image,
-  RefreshControl,
   FlatList
 } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import useColor from '@/src/hooks/useColor'
 import Post from '@/src/components/common/Post'
 import { ActivityIndicator } from '@ant-design/react-native'
@@ -15,10 +12,9 @@ import HomeViewModel from '../viewModel/HomeViewModel'
 import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo'
 
 const HomeScreen = () => {
-  const { brandPrimary, brandPrimaryTap, backgroundColor, lightGray } = useColor();
-  const {loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds}=HomeViewModel(defaultNewFeedRepo)
-  const [refreshing, setRefreshing] = useState(false);
- 
+  const { brandPrimary, backgroundColor} = useColor();
+  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds } = HomeViewModel(defaultNewFeedRepo)
+
   const renderFooter = () => {
     if (!loading) return null;
     return (
@@ -63,6 +59,8 @@ const HomeScreen = () => {
         onEndReachedThreshold={0.5}
         removeClippedSubviews={true} 
         showsVerticalScrollIndicator={false}
+        onRefresh={fetchNewFeeds}
+        refreshing={loading}
       />
     </View>
   )

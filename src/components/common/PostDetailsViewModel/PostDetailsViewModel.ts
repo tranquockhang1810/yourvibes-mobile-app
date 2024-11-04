@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Modal, LogBox } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { useAuth } from "@/src/context/auth/useAuth";
+//Comments
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/src/api/features/comment/CommentRepo";
 import { CreateCommentsRequestModel } from "@/src/api/features/comment/models/CreateCommentsModel";
 import { UpdateCommentsRequestModel } from "@/src/api/features/comment/models/UpdateCommentsModel";
 import Toast from "react-native-toast-message";
+//LikeComments
+import { defaultLikeCommentRepo } from "@/src/api/features/likeComment/LikeCommentRepo";
 
 const usePostDetailsViewModel = (
   postId: string,
@@ -13,14 +17,22 @@ const usePostDetailsViewModel = (
 ) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
-  const [replyMap, setReplyMap] = useState<{ [key: string]: CommentsResponseModel[] }>({});
+  const [replyMap, setReplyMap] = useState<{
+    [key: string]: CommentsResponseModel[];
+  }>({});
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
-  const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
+  const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({}); 
   const [newComment, setNewComment] = useState("");
   const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
   const [setReplyToCommentId] = useState<string | null>(null);
-
-  const textInputRef = useRef<TextInput>(null);
+  const [likeIcon, setLikeIcon] = useState("heart-outline");
+  const textInputRef = useRef<TextInput>(null); 
+  const [renderLikeIconState, setRenderLikeIconState] = useState(false);
+  
+  const { user } = useAuth();
+  useEffect(() => {
+    fetchComments();
+  }, [userLikes]);
 
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
@@ -29,7 +41,7 @@ const usePostDetailsViewModel = (
       limit: 10,
     });
     if (response && response?.data) {
-      setComments(response?.data);
+      setComments(response?.data); 
     }
   };
 
@@ -43,12 +55,12 @@ const usePostDetailsViewModel = (
             ...prevReplyMap,
             [parentId]: replies.data,
           });
-          
+
           return {
             ...prevReplyMap,
             [parentId]: replies.data,
-          }
-        })
+          };
+        });
       }
     } catch (error) {
       Toast.show({
@@ -57,32 +69,47 @@ const usePostDetailsViewModel = (
       });
       console.error("Error fetching replies:", error);
     }
+    // fetchReplies(postId, parentId); 
   };
 
   useEffect(() => {
     fetchComments();
-    handleLike(postId);
-  }, [postId]);
-
-
-  const handleLike = (commentOrReplyId: string) => {
-    setUserLikes((prevUserLikes) => {
-      const currentlyLiked = prevUserLikes[commentOrReplyId];
-      const newLikeCount = currentlyLiked ? -1 : 1;
-
+  }, []);
+ 
+  const handleLike = async (commentOrReplyId: string) => {
+    const isLike = userLikes[commentOrReplyId] === undefined
+      ? true
+      : !userLikes[commentOrReplyId];
+  
+    try {
+      await defaultLikeCommentRepo.postLikeComment({
+        commentId: commentOrReplyId,
+        isLike,
+      });
+  
+      setUserLikes((prevUserLikes) => ({
+        ...prevUserLikes,
+        [commentOrReplyId]: isLike,
+      }));
+  
       setLikeCount((prevLikes) => ({
         ...prevLikes,
-        [commentOrReplyId]: (prevLikes[commentOrReplyId] || 0) + newLikeCount,
+        [commentOrReplyId]: isLike
+          ? (prevLikes[commentOrReplyId] || 0) + 1
+          : (prevLikes[commentOrReplyId] || 0) - 1,
       }));
-
-      return { ...prevUserLikes, [commentOrReplyId]: !currentlyLiked };
-    });
+  
+      // Cập nhật biến renderLikeIconState
+      setRenderLikeIconState(isLike);
+      await fetchComments();
+    } catch (error) {
+      console.error("Error liking comment:", error);
+    }
   };
-
+  
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
-
   const handleAction = (commentId: string) => {
     const options = [
       "Báo cáo bình luận",
@@ -90,6 +117,9 @@ const usePostDetailsViewModel = (
       "Xóa bình luận",
       "Hủy",
     ];
+    if (user?.id !== comments.find((comment) => comment.id === commentId)?.user?.id) {
+      options.splice(1, 1); // Xóa tùy chọn "Chỉnh sửa bình luận" nếu comment là của người khác
+    }
     showActionSheetWithOptions(
       {
         title: "Chọn hành động",
@@ -120,7 +150,10 @@ const usePostDetailsViewModel = (
             );
             if (commentToEdit) {
               console.log("Comment Được Chọn để Sửa:", commentToEdit);
-              setEditCommentContent(comments.find((comment) => comment.id === commentId)?.content || "");
+              setEditCommentContent(
+                comments.find((comment) => comment.id === commentId)?.content ||
+                  ""
+              );
               setCurrentCommentId(commentId);
               console.log(
                 "Setting edit modal to visible for comment ID:",
@@ -142,13 +175,12 @@ const usePostDetailsViewModel = (
     );
   };
 
-  useEffect(() => {
-    if (isEditModalVisible) {
-      console.log("Edit modal is now visible.");
-    }
-  }, [isEditModalVisible]);
-
   const handleEditComment = async (commentId: string) => {
+    if (!currentCommentId || !editCommentContent) {
+      console.error("Invalid comment ID or content");
+      return;
+    }
+
     await handleUpdate(currentCommentId, editCommentContent);
     setEditModalVisible(false); // Close modal
     setEditCommentContent("");
@@ -157,29 +189,36 @@ const usePostDetailsViewModel = (
   };
 
   const handleUpdate = async (commentId: string, updatedContent: string) => {
+    if (!defaultCommentRepo) {
+      console.error("Default comment repo is not defined");
+      throw new Error("Default comment repo is not defined");
+    }
     try {
       const updateCommentData: UpdateCommentsRequestModel = {
-        post_id: postId,
         comments_id: commentId,
         content: updatedContent,
       };
 
+      // Removed unnecessary check for defaultCommentRepo here
+
       const response = await defaultCommentRepo.updateComment(
+        commentId,
         updateCommentData
       );
 
       if (response && response.data) {
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id === commentId
-              ? { ...comment, content: updatedContent }
-              : comment
-          )
-        );
+        const updatedComments = comments.map((comment) => {
+          if (comment.id === commentId) {
+            return { ...comment, content: updatedContent };
+          }
+          return comment;
+        });
+        setComments(updatedComments);
         Toast.show({
           type: "success",
           text1: "Cập nhật bình luận thành công",
         });
+        fetchComments();
       }
     } catch (error) {
       Toast.show({
@@ -188,6 +227,12 @@ const usePostDetailsViewModel = (
       });
     }
   };
+
+  useEffect(() => {
+    if (isEditModalVisible) {
+      console.log("Edit modal is now visible.");
+    }
+  }, [isEditModalVisible]);
 
   const handleDelete = async (commentId: string) => {
     try {
@@ -209,25 +254,10 @@ const usePostDetailsViewModel = (
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
-      // Xác định parentId
-      const parentId = replyToReplyId
-        ? String(replyToReplyId)
-        : replyToCommentId
-          ? String(replyToCommentId)
-          : null;
-
-      console.log("replyToReplyId:", replyToReplyId);
-      console.log("replyToCommentId:", replyToCommentId);
-      console.log("parentId:", parentId); // Kiểm tra giá trị parentId
-
       const commentData: CreateCommentsRequestModel = {
         post_id: postId,
         content: comment,
-        parent_id: parentId, // Sử dụng parentId ở đây
       };
-      console.log("parentId trước khi gửi:", parentId);
-
-      console.log("Comment Data:", commentData);
 
       try {
         const response = await defaultCommentRepo.createComment(commentData);
@@ -238,22 +268,8 @@ const usePostDetailsViewModel = (
           });
 
           const newComment = { ...response.data, replies: [] };
-          if (commentData.parent_id) {
-            // Nếu có parent_id, thêm bình luận vào replies của bình luận cha
-            setComments((prev) =>
-              prev.map((comment) =>
-                comment.id === commentData.parent_id
-                  ? {
-                    ...comment,
-                    //replies: [...(comment.replies || []), newComment],
-                  }
-                  : comment
-              )
-            );
-          } else {
-            // Nếu là bình luận cấp 1
-            setComments((prev) => [...prev, newComment]);
-          }
+          setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
+          fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
         } else {
           Toast.show({
             type: "error",
@@ -268,7 +284,51 @@ const usePostDetailsViewModel = (
         });
       } finally {
         setNewComment("");
-        replyToCommentId = null;
+        textInputRef.current?.blur();
+      }
+    }
+  };
+
+  const handleAddReply = async (comment: string) => {
+    if (comment.trim()) {
+      const parentId = replyToReplyId || replyToCommentId;
+
+      const commentData: CreateCommentsRequestModel = {
+        post_id: postId,
+        content: comment,
+        parent_id: parentId,
+      };
+
+      try {
+        const response = await defaultCommentRepo.createComment(commentData);
+        if (!response.error) {
+          Toast.show({
+            type: "success",
+            text1: "Comment thành công",
+          });
+
+          const newComment = { ...response.data, replies: [] };
+          setComments((prev) => {
+            const parentComment = prev.find(
+              (comment) => comment.id === parentId
+            );
+            return [...prev];
+          });
+          fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Comment thất bại",
+          });
+        }
+      } catch (error) {
+        console.error("Error adding comment:", error);
+        Toast.show({
+          type: "error",
+          text1: "Comment thất bại",
+        });
+      } finally {
+        setNewComment("");
         setReplyToReplyId(null);
         textInputRef.current?.blur();
       }
@@ -285,6 +345,7 @@ const usePostDetailsViewModel = (
     textInputRef,
     handleLike,
     handleAddComment,
+    handleAddReply,
     setNewComment,
     setReplyToCommentId,
     setReplyToReplyId,
@@ -298,7 +359,8 @@ const usePostDetailsViewModel = (
     setEditCommentContent,
     handleEditComment,
     currentCommentId,
-    replyMap
+    replyMap,
+    likeIcon, 
   };
 };
 
