@@ -134,7 +134,8 @@ const Post: React.FC<IPost> = ({
     <Card style={{
       margin: 10,
       borderColor: isParentPost ? brandPrimary : "white",
-    }}>
+    }}
+    >
       {/* Header */}
       <Card.Header
         style={{

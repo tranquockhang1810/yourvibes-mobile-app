@@ -187,6 +187,8 @@ Notification: {
     CommentPost: "đã bình luận về bài viết của bạn: ",
     Friend: "đã gưi lời mời kết bạn.",
     AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
+    NewPost: "đã đăng một bài viết mới.",
+    LikeComment: "đã thích bình luận của bạn: ",
   }
 },
 Ads: {

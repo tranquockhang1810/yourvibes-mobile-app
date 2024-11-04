@@ -1,8 +1,7 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import { NotificationResponseModel } from '@/src/api/features/notification/models/NotifiCationModel';
-import {NotifiCationRepo } from '@/src/api/features/notification/NotifiCationRepo';
+import { NotifiCationRepo } from '@/src/api/features/notification/NotifiCationRepo';
 import Toast from 'react-native-toast-message';
-
 
 const NotifiCationViewModel = (repo: NotifiCationRepo) => {
     const [notifications, setNotifications] = useState<NotificationResponseModel[]>([]);
@@ -21,18 +20,19 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
                 page: newPage,
                 limit: limit,
             });
-    
+
             if (!response?.error) {
                 if (newPage === 1) {
-                    setNotifications(response?.data||[]);
+                    setNotifications(response?.data || []);
                 } else {
-                    setNotifications((prevNotifications) => [...prevNotifications, ...response?.data||[]]);
+                    setNotifications((prevNotifications) => [...prevNotifications, ...(response?.data || [])]);
                 }
                 const { page: currentPage, limit: currentLimit, total: totalRecords } = response?.paging;
-    
+
                 setTotal(totalRecords);
                 setPage(currentPage);
                 setHasMore(currentPage * currentLimit < totalRecords);
+
             } else {
                 Toast.show({
                     type: 'error',
@@ -51,11 +51,9 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             setLoading(false);
         }
     };
-    
-    const updateNotification = async (data : NotificationResponseModel) => {
-        console.log(data.id);
-        
-        if(!data.id){
+
+    const updateNotification = async (data: NotificationResponseModel) => {
+        if (!data.id) {
             Toast.show({
                 type: 'error',
                 text1: "Update Notification Failed",
@@ -63,73 +61,73 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             });
             return;
         }
+
         try {
             setLoading(true);
             const response = await repo.updateNotification(data);
-            if(!response?.error){
+            if (!response?.error) {
                 fetchNotifications();
-            }else{
+            } else {
                 Toast.show({
                     type: 'error',
                     text1: "Update Notification Failed",
                     text2: response?.error?.message,
                 });
             }
-        }catch(error: any){
+        } catch (error: any) {
             console.error(error);
             Toast.show({
                 type: 'error',
                 text1: "Update Notification Failed catch",
                 text2: error?.message,
             });
-        }finally{
+        } finally {
             setLoading(false);
         }
-    }
+    };
+
     const updateAllNotification = async () => {
         try {
             setLoading(true);
             const response = await repo.updateAllNotification();
-            if(!response?.error){
+            if (!response?.error) {
                 fetchNotifications();
-            }else{
+            } else {
                 Toast.show({
                     type: 'error',
                     text1: "Update All Notification Failed",
                     text2: response?.error?.message,
                 });
             }
-        }catch(error: any){
+        } catch (error: any) {
             console.error(error);
             Toast.show({
                 type: 'error',
                 text1: "Update All Notification Failed catch",
                 text2: error?.message,
             });
-        }finally{
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
+    const loadMoreNotifi = async () => {
+        if (!hasMore || loading) return;
 
-    const loadMoreNotifi = () => {
-        if (!loading && hasMore) {
-          setPage((prevPage) => prevPage + 1);
-          fetchNotifications(page + 1);
-        }
-      };
-  return{
-    notifications,
-    loading,
-    page,
-    total,
-    hasMore,
-    limit,
-    fetchNotifications,
-    loadMoreNotifi,
-    updateNotification,
-    updateAllNotification
-  }
-}
+        const nextPage = page + 1;
+        await fetchNotifications(nextPage);
+    };
 
-export default NotifiCationViewModel
+    return {
+        notifications,
+        loading,
+        total,
+        hasMore,
+        fetchNotifications,
+        updateNotification,
+        updateAllNotification,
+        loadMoreNotifi,
+    };
+};
+
+export default NotifiCationViewModel;
