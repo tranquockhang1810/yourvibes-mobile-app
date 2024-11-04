@@ -63,6 +63,8 @@ const HomeScreen = () => {
         onEndReachedThreshold={0.5}
         removeClippedSubviews={true} 
         showsVerticalScrollIndicator={false}
+        onRefresh={fetchNewFeeds}
+        refreshing={loading}
       />
     </View>
   )
