@@ -13,6 +13,8 @@ import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
+import HomeViewModel from '../screens/home/viewModel/HomeViewModel';
+import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo';
 
 interface IPost {
   post?: PostResponseModel,
@@ -42,6 +44,7 @@ const Post: React.FC<IPost> = ({
     sharePost,
     shareLoading
   } = EditPostViewModel(defaultPostRepo);
+  const {deleteNewFeed} = HomeViewModel(defaultNewFeedRepo);
 
   const showAction = () => {
     const options = user?.id === post?.user?.id ? [
@@ -51,6 +54,7 @@ const Post: React.FC<IPost> = ({
       localStrings.Public.Cancel
     ] : [
       localStrings.Post.ReportPost,
+      localStrings.Post.DeleteNewFeed,
       localStrings.Public.Cancel
     ];
 
@@ -84,9 +88,23 @@ const Post: React.FC<IPost> = ({
               break;
           }
         } else {
-          if (buttonIndex === 0) {
-            console.log('báo cáo action selected');
-            router.push('/reportPost');
+          switch (buttonIndex) {
+            case 0:
+              console.log('báo cáo action selected');
+              router.push('/reportPost');
+              break;
+            case 1:
+              Modal.alert(
+                localStrings.Public.Confirm,
+                localStrings.DeletePost.DeleteConfirm,
+                [
+                  { text: localStrings.Public.Cancel, style: 'cancel' },
+                  { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed(post?.id as string) },
+                ]
+              );
+              break;
+            default:
+              break;
           }
         }
       }

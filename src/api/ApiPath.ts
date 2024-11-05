@@ -42,6 +42,7 @@ export const ApiPath = {
 
    //New Feeds
     GET_NEW_FEEDS: getApiPath('users/new_feeds/'),
+    DELETE_NEW_FEED: getApiPath('users/new_feeds/'),
 };
 
 function getApiPath(path: string) {

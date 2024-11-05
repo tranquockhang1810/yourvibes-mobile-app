@@ -1,5 +1,7 @@
 import { NewFeedResponseModel } from "@/src/api/features/newFeed/Model/NewFeedModel";
 import { NewFeedRepo } from "@/src/api/features/newFeed/NewFeedRepo"
+import { useAuth } from "@/src/context/auth/useAuth";
+import { router } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 
@@ -9,6 +11,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const { localStrings } = useAuth();
   const limit = 10;
 
   const fetchNewFeeds = async (newPage: number = 1) => {
@@ -49,6 +52,36 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     }
   };
 
+  const deleteNewFeed = async (id: string) => {
+    try {
+      setLoading(true);
+      const res = await repo.deleteNewFeed(id);
+       // Cập nhật danh sách bài viết
+    setNewFeeds(prevFeeds => prevFeeds.filter(post => post.id !== id));
+      if (!res?.error) {
+        Toast.show({
+          type: "success",
+          text1: localStrings.DeletePost.DeleteSuccess
+        })
+      } else {
+        Toast.show({
+          type: "error",
+          text1: localStrings.DeletePost.DeleteFailed,
+          text2: res?.error?.message
+        })
+      }
+    } catch (err: any) {
+      console.error(err);
+      Toast.show({
+        type: "error",
+        text1: localStrings.DeletePost.DeleteFailed,
+        text2: err.message
+      })
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const loadMoreNewFeeds = () => {
     if (!loading && hasMore) {
       setPage((prevPage) => prevPage + 1);
@@ -61,6 +94,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     loading,
     fetchNewFeeds,
     loadMoreNewFeeds,
+    deleteNewFeed,
   }
 }
 

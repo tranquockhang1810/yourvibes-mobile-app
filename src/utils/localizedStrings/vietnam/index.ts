@@ -137,6 +137,7 @@ export const VnLocalizedStrings = {
     SharePostSuccess: "Chia sẻ bài viết thành công!",
     SharePostFailed: "Chia sẻ bài viết thất bại!",
     SharePost: "Chia sẻ",
+    DeleteNewFeed: "Ẩn bài viết",
   },
   Profile: {
     Posts: {

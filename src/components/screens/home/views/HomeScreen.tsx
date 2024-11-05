@@ -13,7 +13,7 @@ import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo'
 
 const HomeScreen = () => {
   const { brandPrimary, backgroundColor} = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds } = HomeViewModel(defaultNewFeedRepo)
+  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
 
   const renderFooter = () => {
     if (!loading) return null;

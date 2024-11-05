@@ -137,6 +137,7 @@ export const ENGLocalizedStrings = {
     SharePostSuccess: "Share post successful!",
     SharePostFailed: "Share post failed!",
     SharePost: "Share",
+    DeleteNewFeed: "Delete (hide) new feed",
   },
   Profile: {
     Posts: {

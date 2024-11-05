@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, Image, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -92,7 +92,7 @@ const Ads = ({ postId }: { postId: string }) => {
 	}, [postId]);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<ScrollView style={{ flex: 1 }}>
 			{/* Header */}
 			<View style={{ backgroundColor: backgroundColor, paddingTop: 40 }}>
 				<StatusBar barStyle="dark-content" />
@@ -215,7 +215,7 @@ const Ads = ({ postId }: { postId: string }) => {
 					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Ads.Ads}</Text>
 				</TouchableOpacity>
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 

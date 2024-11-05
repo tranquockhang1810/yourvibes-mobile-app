@@ -11,5 +11,8 @@ export class NewFeedRepo implements INewFeedRepo {
         Promise<BaseApiResponseModel<NewFeedResponseModel[]>> {
           return client.get(ApiPath.GET_NEW_FEEDS, data);
     }
+    async deleteNewFeed(id: string): Promise<BaseApiResponseModel<any>> {
+        return client.delete(ApiPath.DELETE_NEW_FEED + id);
+    }
 }
 export const defaultNewFeedRepo = new NewFeedRepo();
