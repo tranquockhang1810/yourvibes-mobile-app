@@ -18,9 +18,10 @@ export interface NotificationResponseModel {
     id?: string
     from?: string
     from_url?: string
-    user?: NotificationUserModel
+    users?: NotificationUserModel
     notification_type?: string
     content?: string
     created_at?: string
     status?: boolean
+    content_id?: string
 }

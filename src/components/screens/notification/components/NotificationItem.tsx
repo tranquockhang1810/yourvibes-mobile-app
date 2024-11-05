@@ -1,43 +1,29 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NotificationResponseModel } from '@/src/api/features/notification/models/NotifiCationModel';
 import { Ionicons } from '@expo/vector-icons';
 import { getTimeDiff } from '@/src/utils/helper/DateTransfer';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
+import { router } from 'expo-router';
 
-const NotificationItem = ({ notification, onUpdate }: { notification: NotificationResponseModel, onUpdate: () => void }) => {
-  const { from, from_url, content, created_at, notification_type, status } = notification;
+const NotificationItem = ({ notification, onUpdate  }: { notification: NotificationResponseModel, onUpdate: () => void}) => {
+  const { from, from_url, content, created_at, notification_type, status, content_id } = notification;
   const { user, localStrings } = useAuth();
-  const [postContent, setPostContent] = useState('');
 
   const type = mapNotifiCationType(notification_type || '');
-
-  useEffect(() => {
-    fetchPostContent();
-  }, []);
-
-  const fetchPostContent = async () => {
-    if (content) {
-      try {
-        const post = await defaultPostRepo.getPostById(content); // content là postId
-        setPostContent(post?.data?.content || ''); // Lưu content vào state
-      } catch (error) {
-        console.error('Lỗi khi lấy content của bài post:', error);
-      }
-    }
-  };
 
   function mapNotifiCationType(type: string) {
     switch (type) {
       case 'like_post':
         return 'like';
-      case 'share_post':
+      case 'new_share':
         return 'share';
-      case 'comment_post':
+      case 'new_comment':
         return 'comment';
-      case 'friend':
+      case 'friend_request':
         return 'friend';
+      case 'accept_friend_request':
+        return 'friend';  
       default:
         return 'notifications';
     }
@@ -72,24 +58,33 @@ const NotificationItem = ({ notification, onUpdate }: { notification: Notificati
         return '#000';
     }
   };
-
+   
   const mapNotifiCationContent = (type: string) => {
     switch (type) {
       case 'like_post':
         return `${localStrings.Notification.Items.LikePost}`;
-      case 'share_post':
+      case 'new_share':
         return `${localStrings.Notification.Items.SharePost}`;
-      case 'comment_post':
+      case 'new_comment':
         return `${localStrings.Notification.Items.CommentPost}`;
-      case 'friend':
+      case 'friend_request':
         return `${localStrings.Notification.Items.Friend}`;
+      case 'accept_friend_request':
+        return `${localStrings.Notification.Items.AcceptFriend}`;
       default:
         return 'notifications';
     }
   };
 
   return (
-    <TouchableOpacity onPress={onUpdate} style={{ backgroundColor: status ? '#fff' : '#f0f0f0' }}>
+    <TouchableOpacity onPress={()=>{onUpdate();
+      if( notification_type === "friend_request" || notification_type === "accept_friend_request"){
+        router.push(`/(tabs)/user/${content_id}`);
+      }
+      if (notification_type === "like_post" || notification_type === "new_comment" || notification_type === "new_share"){
+        router.push(`/postDetails?postId=${content_id}`);
+      }
+    }} style={{ backgroundColor: status ? '#fff' : '#f0f0f0' }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5 }}>
         <View style={{ position: 'relative' }}>
           {/* Avatar */}
@@ -111,13 +106,13 @@ const NotificationItem = ({ notification, onUpdate }: { notification: Notificati
           <Text style={{ fontSize: 14, color: '#333' }}>
             <Text style={{ fontWeight: 'bold' }}>{from}</Text> {mapNotifiCationContent(notification_type || '')}
           </Text>
-          {postContent ? (
+          {content ? (
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{ fontSize: 14, color: '#333' }}
             >
-              {postContent}
+              {content}
             </Text>
           ) : null}
           <Text style={{ fontSize: 12, color: '#888', marginTop: 4 }}>

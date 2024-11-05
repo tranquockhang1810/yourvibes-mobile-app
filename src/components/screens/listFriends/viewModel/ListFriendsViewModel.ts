@@ -1,4 +1,4 @@
-import { useEffect, useState, } from "react";
+import { useEffect, useState,useCallback } from "react";
 import { useActionSheet } from "@expo/react-native-action-sheet"; // Import useActionSheet
 import Toast from "react-native-toast-message"; 
 
@@ -11,7 +11,7 @@ type Friend = {
 };
 
 const useListFriendsViewModel = () => {
-  
+  const [selectedFriendName, setSelectedFriendName] = useState<string>("");
   const { localStrings } = useAuth();
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,19 +52,20 @@ const useListFriendsViewModel = () => {
 
   const { showActionSheetWithOptions } = useActionSheet(); // Khai báo showActionSheetWithOptions
 
-  const handleMoreOptions = (friend: Friend) => {
+  const handleMoreOptions = useCallback((friend: Friend) => { 
+    setSelectedFriendName(friend.name); // Cập nhật tên người bạn được chọn
     const options = [
-      `${localStrings.ListFriends.Search}${friend.name}`,
-      "Xem trang cá nhân",
-      "Chặn",
-      "Hủy",
+      `${localStrings.ListFriends.Unfriend}`,
+      `${localStrings.ListFriends.ViewProfile}`,
+      `${localStrings.ListFriends.Block}`,
+      `${localStrings.ListFriends.Cancel}`,
     ];
   
     const cancelButtonIndex = options.length - 1;
   
     showActionSheetWithOptions(
-      {
-        title: "Chọn hành động",
+      { 
+         title : `Chọn hành động với ${friend.name}`,
         options,
         cancelButtonIndex,
         cancelButtonTintColor: "#F95454",
@@ -99,7 +100,7 @@ const useListFriendsViewModel = () => {
         }
       }
     );
-  };
+  }, [localStrings, showActionSheetWithOptions]);
   
   
   return {

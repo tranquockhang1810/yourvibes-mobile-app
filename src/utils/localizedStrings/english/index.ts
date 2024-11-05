@@ -1,5 +1,5 @@
 import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
-import { List } from "@ant-design/react-native";
+import { List, View } from "@ant-design/react-native";
 
 export const ENGLocalizedStrings = {
   Public: {
@@ -51,9 +51,7 @@ export const ENGLocalizedStrings = {
     CommonActions: "Click your comment ...",
     Comment: "Comments",
     Reply: "Reply",
-    ReportComment: "Report Comment"
-
-
+    ReportComment: "Report Comment",
   },
   Form: {
     Label: {
@@ -86,7 +84,7 @@ export const ENGLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Confirm password is invalid!",
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
-    }
+    },
   },
   Login: {
     LoginButton: "Login",
@@ -94,7 +92,7 @@ export const ENGLocalizedStrings = {
     DontHaveAccout: "Don't have an account?",
     SignUpNow: "Sign up now!",
     Or: "Or",
-    LoginFailed: "Login failed!"
+    LoginFailed: "Login failed!",
   },
   SignUp: {
     SignUpButton: "Sign up",
@@ -118,17 +116,17 @@ export const ENGLocalizedStrings = {
     PickImgFailed: "Pick images failed!",
   },
   ObjectPostPrivacy: {
-    PublicDescription: 'Everyone on YourVibes',
-    FriendDescription: 'Only friends on YourVibes',
-    PrivateDescription: 'Only you can see the post',
+    PublicDescription: "Everyone on YourVibes",
+    FriendDescription: "Only friends on YourVibes",
+    PrivateDescription: "Only you can see the post",
     PostPrivacy: "Post's privacy",
     Contents: {
       WhoCanSee: "Who can see your post?",
       CanFind: "Your post may appear on your profile and in search results.",
       DefaultPrivacy1: "Although the default audience is ",
-      DefaultPrivacy2: ", you can change the audience for this specific post."
+      DefaultPrivacy2: ", you can change the audience for this specific post.",
     },
-    ChoosePrivacy: "Choose Privacy"
+    ChoosePrivacy: "Choose Privacy",
   },
   Post: {
     EditPost: "Edit post",
@@ -144,7 +142,7 @@ export const ENGLocalizedStrings = {
   Profile: {
     Posts: {
       GetPostsFailed: "Failed to get posts!",
-      GetOnePostFailed: "Failed to get post!"
+      GetOnePostFailed: "Failed to get post!",
     },
     Info: {
       GetInfoFailed: "Failed to get user's infomation!",
@@ -159,7 +157,7 @@ export const ENGLocalizedStrings = {
       UnfriendFailed: "Failed to unfriend!",
       UnfriendSuccess: "Unfriend successful!",
       UnfriendConfirm: "Are you sure you want to unfriend this user?",
-    }
+    },
   },
   UpdatePost: {
     UpdatePostSuccess: "Update post successful!",
@@ -180,21 +178,24 @@ export const ENGLocalizedStrings = {
     SearchPlaceholder: "Searching...",
     SearchFailed: "Search failed!",
     NoUsers: "No user found",
-    TrySearch: "Try searching some keyword"
+    TrySearch: "Try searching some keyword",
   },
   Notification: {
-   Notification: "Notification",
-   Items: {
-    LikePost: "liked your post: ",
-    SharePost: "shared your post: ",
-    CommentPost: "commented on your post: ",
-    Friend: "sent you a friend request."
-  }
+    Notification: "Notification",
+    Items: {
+      LikePost: "liked your post: ",
+      SharePost: "shared your post: ",
+      CommentPost: "commented on your post: ",
+      Friend: "sent you a friend request.",
+      AcceptFriend: "accepted your friend request.",
+    },
   },
-ListFriends: {
-  ListFriends: "List of friends",
-  Search: "Friend find",
-  Unfriend: "Unfriend with ",
-  ViewProfile: "View profile",
-},
-}
+  ListFriends: {
+    ListFriends: "List friends",
+    Search: "Search . . .",
+    ViewProfile: "View profile",
+    Unfriend: "Unfriend ",
+    Block: "Block ",
+    Cancel: "Cancel",
+  },
+};

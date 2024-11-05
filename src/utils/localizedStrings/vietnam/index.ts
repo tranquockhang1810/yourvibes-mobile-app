@@ -1,6 +1,4 @@
-import Search from "@/app/(tabs)/search";
-import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
-import { List } from "@ant-design/react-native";
+import { View } from "@ant-design/react-native";
 
 export const VnLocalizedStrings = {
   Public: {
@@ -11,7 +9,7 @@ export const VnLocalizedStrings = {
     Save: "Lưu",
     Close: "Đóng",
     Language: "Ngôn ngữ: Tiếng Việt",
-    Post:"Bài Viết",
+    Post: "Bài Viết",
     Friend: "Bạn Bè",
     Username: "Tên người dùng",
     About: "Giới Thiệu",
@@ -49,9 +47,9 @@ export const VnLocalizedStrings = {
     HourAgo: "giờ trước",
     DayAgo: "ngày trước",
     Action: "Hành động",
-    CommonActions:"Nhập bình luận của bạn ...",
+    CommonActions: "Nhập bình luận của bạn ...",
     Comment: "Bình luận",
-    Reply: "Trả lời",  
+    Reply: "Trả lời",
     ReportComment: "Báo cáo bình luận",
   },
   Form: {
@@ -65,7 +63,7 @@ export const VnLocalizedStrings = {
       GetOTP: "Nhập OTP",
       OTP: "Mã OTP",
       ConfirmPassword: "Xác nhận mật khẩu",
-      Biography: "Tiểu sử"
+      Biography: "Tiểu sử",
     },
     RequiredMessages: {
       FamilyNameRequiredMessage: "Vui lòng nhập họ!",
@@ -85,7 +83,7 @@ export const VnLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Xác nhận mật khẩu không hợp lệ!",
       OTPTypeMessage: "Mã OTP phải là chuỗi 6 số!",
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
-    }
+    },
   },
   Login: {
     LoginButton: "Đăng nhập",
@@ -93,7 +91,7 @@ export const VnLocalizedStrings = {
     DontHaveAccout: "Bạn chưa có tài khoản?",
     SignUpNow: "Đăng ký ngay!",
     Or: "Hoặc",
-    LoginFailed: "Đăng nhập thất bại!"
+    LoginFailed: "Đăng nhập thất bại!",
   },
   SignUp: {
     SignUpButton: "Đăng ký",
@@ -114,20 +112,22 @@ export const VnLocalizedStrings = {
     CreatePostSuccess: "Đăng bài thành công!",
     CreatePostFailed: "Đăng bài thất bại!",
     EmptyContent: "Thiếu nội dung hoặc file media",
-    PickImgFailed: "Tải file thất bại!"
+    PickImgFailed: "Tải file thất bại!",
   },
   ObjectPostPrivacy: {
-    PublicDescription: 'Bất kỳ ai ở trên YourVibes',
-    FriendDescription: 'Chỉ bạn bè của bạn ở trên YourVibes',
-    PrivateDescription: 'Chỉ bạn có thể nhìn thấy',
+    PublicDescription: "Bất kỳ ai ở trên YourVibes",
+    FriendDescription: "Chỉ bạn bè của bạn ở trên YourVibes",
+    PrivateDescription: "Chỉ bạn có thể nhìn thấy",
     PostPrivacy: "Đối tượng của bài viết",
     Contents: {
       WhoCanSee: "Ai có thể nhìn thấy bài viết của bạn?",
-      CanFind: "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
+      CanFind:
+        "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
       DefaultPrivacy1: "Tuy đối tượng mặc định là ",
-      DefaultPrivacy2: ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này."
+      DefaultPrivacy2:
+        ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này.",
     },
-    ChoosePrivacy: "Chọn Đối tượng"
+    ChoosePrivacy: "Chọn Đối tượng",
   },
   Post: {
     EditPost: "Chỉnh sửa bài đăng",
@@ -143,10 +143,10 @@ export const VnLocalizedStrings = {
   Profile: {
     Posts: {
       GetPostsFailed: "Lấy danh sách bài viết thất bại!",
-      GetOnePostFailed: "Lấy bài viết thất bại!"
+      GetOnePostFailed: "Lấy bài viết thất bại!",
     },
     Info: {
-      GetInfoFailed: "Lấy thống tin người dùng thất bại!"
+      GetInfoFailed: "Lấy thống tin người dùng thất bại!",
     },
     Friend: {
       SendRequestFailed: "Gửi lời mời kết bạn thất bại!",
@@ -158,7 +158,7 @@ export const VnLocalizedStrings = {
       UnfriendFailed: "Hủy kết bạn thất bại!",
       UnfriendSuccess: "Hủy kết bạn thành công!",
       UnfriendConfirm: "Bạn có muốn hủy kết bạn với người dùng này?",
-    }
+    },
   },
   UpdatePost: {
     UpdatePostSuccess: "Cập nhật bài đăng thành công!",
@@ -167,7 +167,7 @@ export const VnLocalizedStrings = {
   DeletePost: {
     DeleteConfirm: "Bạn chắc chắn muốn xóa bài viết này?",
     DeleteSuccess: "Xóa bài viết thành công!",
-    DeleteFailed: "Xóa bài viết thát bại!"
+    DeleteFailed: "Xóa bài viết thát bại!",
   },
   UpdateProfile: {
     UpdateProfile: "Cập nhật trang cá nhân",
@@ -179,21 +179,24 @@ export const VnLocalizedStrings = {
     SearchPlaceholder: "Bạn đang tìm gì...",
     SearchFailed: "Tìm kiếm thất bại!",
     NoUsers: "Không tìm thấy người dùng",
-    TrySearch: "Hãy nhập từ khóa cần tìm"
+    TrySearch: "Hãy nhập từ khóa cần tìm",
   },
-Notification: {
-  Notification: "Thông báo",
-  Items:{
-    LikePost: "đã thích bài viết của bạn: ",
-    SharePost: "đã chia sẻ bài viết của bạn: ",
-    CommentPost: "đã bình luận về bài viết của bạn: ",
-    Friend: "đã gưi lời mời kết bạn.",
-  }
-},
-ListFriends: {
-  ListFriends: "Danh sách các bè",
-  Search: "Tìm kiếm bạn bè",
-  Unfriend: "Hủy kết bạn với",
-},
-}
-  
+  Notification: {
+    Notification: "Thông báo",
+    Items: {
+      LikePost: "đã thích bài viết của bạn: ",
+      SharePost: "đã chia sẻ bài viết của bạn: ",
+      CommentPost: "đã bình luận về bài viết của bạn: ",
+      Friend: "đã gưi lời mời kết bạn.",
+      AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
+    },
+  },
+  ListFriends: {
+    ListFriends: "Danh sách bạn bè",
+    Search: "Tim kiếm . . .",
+    ViewProfile: "Xem trang cá nhân",
+    Unfriend: "Hủy kết bạn ",
+    Block: "Chặn ",
+    Cancel: "Hủy",
+  },
+};

@@ -1,7 +1,7 @@
 import { View, Text, StatusBar, TouchableOpacity, ScrollView, ToastAndroid, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import useColor from '@/src/hooks/useColor';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import NotificationItem from '../components/NotificationItem';
 
@@ -14,13 +14,14 @@ import { useAuth } from '@/src/context/auth/useAuth';
 
 const NotificationScreen = () => {
   const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } = useColor();
-  const { notifications, loading, fetchNotifications, hasMore, loadMoreNotifi, updateNotification, updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
+  const { notifications, loading, fetchNotifications,  loadMoreNotifi, updateNotification,updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
   const { localStrings } = useAuth();
 
-  useEffect(() => {
-    fetchNotifications();
-
-  }, []);
+  useFocusEffect(
+    React.useCallback(()=>{
+        fetchNotifications();
+    }, [])
+  )
   // Render footer (Hiển thị loading ở cuối danh sách nếu đang tải)
   const renderFooter = () => {
     if (!loading) return null;
@@ -58,14 +59,15 @@ const NotificationScreen = () => {
       <FlatList
         data={notifications}
         renderItem={({ item }) => <NotificationItem notification={item}
-          onUpdate={() => updateNotification(item)} />}
-        keyExtractor={(item, index) => index.toString()}
+        onUpdate={() => updateNotification(item)}
+        />}
+        keyExtractor={(item) => item?.id as string}
         ListFooterComponent={renderFooter}
-        // onEndReached={loadMoreNotifi}
+        onEndReached={loadMoreNotifi}
         onEndReachedThreshold={0.5}
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => fetchNotifications()}
+        onRefresh={() => fetchNotifications(1)}
         refreshing={loading}
       />
 

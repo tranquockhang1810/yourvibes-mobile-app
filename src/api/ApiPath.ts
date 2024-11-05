@@ -39,12 +39,15 @@ export const ApiPath = {
   GET_NOTIFICATIONS: getApiPath("users/notifications"),
   READ_NOTIFICATION: getApiPath("users/notifications/"),
   READ_ALL_NOTIFICATION: getApiPath("users/notifications/"),
+
+   //New Feeds
+    GET_NEW_FEEDS: getApiPath('users/new_feeds/'),
 };
 
 function getApiPath(path: string) {
   return `${ENV.SERVER_ENDPOINT!}/v1/2024/${path}`;
 }
-
 function getWSPath(path: string) {
   return `${ENV.SERVER_ENDPOINT.replace("http", "ws")!}/v1/2024/${path}`;
 }
+

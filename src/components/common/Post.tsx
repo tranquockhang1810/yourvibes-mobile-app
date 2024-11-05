@@ -17,12 +17,14 @@ import MyInput from '../foundation/MyInput';
 interface IPost {
   post?: PostResponseModel,
   isParentPost?: boolean,
+  noFooter?: boolean,
   children?: React.ReactNode
 }
 
 const Post: React.FC<IPost> = ({
   post,
   isParentPost = false,
+  noFooter = false,
   children
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
@@ -76,7 +78,7 @@ const Post: React.FC<IPost> = ({
               );
               break;
             case 2:
-              console.log('Quảng cáo bài viết action selected');
+              router.push(`/ads?postId=${post?.id}`);
               break;
             default:
               break;
@@ -84,7 +86,7 @@ const Post: React.FC<IPost> = ({
         } else {
           if (buttonIndex === 0) {
             console.log('báo cáo action selected');
-            //router.push('/updatePost');
+            router.push('/reportPost');
           }
         }
       }
@@ -193,7 +195,9 @@ const Post: React.FC<IPost> = ({
       )}
 
       {/* Footer */}
-      {!isParentPost ? (
+      {isParentPost || noFooter ? (
+        <></>
+      ) : (
         <Card.Footer
           style={{ borderTopWidth: 1, borderColor: lightGray }}
           content={
@@ -244,7 +248,7 @@ const Post: React.FC<IPost> = ({
             </View>
           }
         />
-      ) : <></>}
+      )}
 
       {/* Loading */}
       <ActivityIndicator

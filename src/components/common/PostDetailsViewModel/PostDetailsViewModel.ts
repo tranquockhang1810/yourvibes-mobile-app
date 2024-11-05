@@ -110,6 +110,7 @@ const usePostDetailsViewModel = (
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
+  
   const handleAction = (commentId: string) => {
     const options = [
       "Báo cáo bình luận",
@@ -128,6 +129,7 @@ const usePostDetailsViewModel = (
         cancelButtonTintColor: "#F95454",
       },
       (buttonIndex) => {
+        
         switch (buttonIndex) {
           case 0:
             const commentToReport = comments.find(
@@ -224,6 +226,46 @@ const usePostDetailsViewModel = (
       Toast.show({
         type: "error",
         text1: "Cập nhật bình luận thất bại",
+      });
+    }
+  };
+
+  const handleEditReply = (replyId: string, updatedContent: string) => {
+    handleUpdateReply(replyId, updatedContent);
+  };
+
+  const handleUpdateReply = async (replyId: string, updatedContent: string) => {
+    try {
+      const updateReplyData: UpdateCommentsRequestModel = {
+        comments_id: replyId,
+        content: updatedContent,
+      };
+  
+      const response = await defaultCommentRepo.updateComment(
+        replyId,
+        updateReplyData
+      );
+  
+      if (response && response.data) {
+        const updatedReplies = replyMap[replyId].map((reply) => {
+          if (reply.id === replyId) {
+            return { ...reply, content: updatedContent };
+          }
+          return reply;
+        });
+        setReplyMap((prevReplyMap) => ({
+          ...prevReplyMap,
+          [replyId]: updatedReplies,
+        }));
+        Toast.show({
+          type: "success",
+          text1: "Cập nhật reply thành công",
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Cập nhật reply thất bại",
       });
     }
   };
@@ -346,6 +388,7 @@ const usePostDetailsViewModel = (
     handleLike,
     handleAddComment,
     handleAddReply,
+    handleEditReply,
     setNewComment,
     setReplyToCommentId,
     setReplyToReplyId,
