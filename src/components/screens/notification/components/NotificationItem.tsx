@@ -25,6 +25,10 @@ const NotificationItem = ({ notification, onUpdate  }: { notification: Notificat
         return 'friend';
       case 'accept_friend_request':
         return 'friend';  
+      case 'new_post':
+        return 'post';
+      case 'like_comment':
+        return 'like_comment';
       default:
         return 'notifications';
     }
@@ -40,6 +44,10 @@ const NotificationItem = ({ notification, onUpdate  }: { notification: Notificat
         return 'chatbubble-ellipses';
       case 'friend':
         return 'person-circle';
+      case 'post':
+        return 'notifications';
+      case 'like_comment':
+        return 'heart-circle';
       default:
         return 'notifications';
     }
@@ -55,6 +63,10 @@ const NotificationItem = ({ notification, onUpdate  }: { notification: Notificat
         return '#008800';
       case 'friend':
         return '#54473F';
+      case 'post':
+        return '#000';
+      case 'like_comment':
+        return '#CC0033';
       default:
         return '#000';
     }
@@ -72,6 +84,10 @@ const NotificationItem = ({ notification, onUpdate  }: { notification: Notificat
         return `${localStrings.Notification.Items.Friend}`;
       case 'accept_friend_request':
         return `${localStrings.Notification.Items.AcceptFriend}`;
+      case 'new_post':
+        return `${localStrings.Notification.Items.NewPost}`;
+      case 'like_comment':
+        return `${localStrings.Notification.Items.LikeComment}`;
       default:
         return 'notifications';
     }
@@ -82,7 +98,7 @@ const NotificationItem = ({ notification, onUpdate  }: { notification: Notificat
       if( notification_type === "friend_request" || notification_type === "accept_friend_request"){
         router.push(`/(tabs)/user/${content_id}`);
       }
-      if (notification_type === "like_post" || notification_type === "new_comment" || notification_type === "new_share"){
+      if (notification_type === "like_post" || notification_type === "new_comment" || notification_type === "new_share" || notification_type === "new_post") {
         router.push(`/postDetails?postId=${content_id}`);
       }
     }} style={{ backgroundColor: status ? '#fff' : '#f0f0f0' }}>

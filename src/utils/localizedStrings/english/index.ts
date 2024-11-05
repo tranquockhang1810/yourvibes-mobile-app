@@ -187,7 +187,9 @@ export const ENGLocalizedStrings = {
     SharePost: "shared your post: ",
     CommentPost: "commented on your post: ",
     Friend: "sent you a friend request.",
-    AcceptFriend:"accepted your friend request."
+    AcceptFriend:"accepted your friend request.",
+    NewPost: "posted a new post.",
+    LikeComment: "liked your comment: ",
   }
   },
   Ads: {

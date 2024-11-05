@@ -51,12 +51,16 @@ const HomeScreen = () => {
       {/* Content */}
       <FlatList
         data={newFeeds}
-        renderItem={({ item }) => <Post post={item} />}
+        renderItem={({ item }) => (
+          <Post key={item?.id} post={item}>
+            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+          </Post>
+        )}
         keyExtractor={(item) => item?.id as string}
         ListFooterComponent={renderFooter}
         onEndReached={loadMoreNewFeeds}
         onEndReachedThreshold={0.5}
-        removeClippedSubviews={true}
+        removeClippedSubviews={true} 
         showsVerticalScrollIndicator={false}
         onRefresh={fetchNewFeeds}
         refreshing={loading}
