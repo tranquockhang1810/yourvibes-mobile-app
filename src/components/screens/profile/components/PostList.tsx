@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'; // Thay ScrollView bằng FlatList
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'; // Thay ScrollView bằng FlatList
+import { Image } from 'expo-image';
 import useColor from '@/src/hooks/useColor';
 import { useRouter } from 'expo-router';
 import Post from '@/src/components/common/Post';

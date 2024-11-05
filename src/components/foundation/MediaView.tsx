@@ -1,4 +1,4 @@
-import { Image } from 'react-native'
+import { Image } from 'expo-image';
 import React from 'react'
 import { Carousel } from '@ant-design/react-native';
 import { Video } from 'expo-av';

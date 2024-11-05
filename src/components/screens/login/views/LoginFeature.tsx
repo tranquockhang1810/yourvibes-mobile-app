@@ -7,9 +7,9 @@ import {
   Platform,
   Keyboard,
   TouchableOpacity,
-  Image,
   ScrollView
 } from 'react-native';
+import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
 import { Button, WingBlank, WhiteSpace, Form, ActivityIndicator } from '@ant-design/react-native';
 import MyInput from '@/src/components/foundation/MyInput';

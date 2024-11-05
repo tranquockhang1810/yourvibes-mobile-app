@@ -1,14 +1,13 @@
 import {
   View,
-  ScrollView,
   StatusBar,
   Text,
-  Image,
   TouchableOpacity,
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import MyInput from '@/src/components/foundation/MyInput';

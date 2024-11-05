@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-export const DateTransfer = (date?: string) => {
+export const DateTransfer = (date?: string | Date) => {
   return dayjs(date).format("DD/MM/YYYY");
 }
 
@@ -20,3 +20,7 @@ export const getTimeDiff = (date?: string, localString?: any) => {
     return `${daysDiff} ${localString?.Public?.DayAgo}`;
   }
 };
+
+export const getDayDiff = (date: Date) => {
+  return Math.round(dayjs(date).diff(dayjs(), 'day', true));
+}

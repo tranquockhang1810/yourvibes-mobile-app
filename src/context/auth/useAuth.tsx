@@ -63,6 +63,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     router.push('/login');
   }
 
+  const isLoginUser = (userId: string) => {
+    return user?.id === userId;
+  }
+
   useEffect(() => {
     checkLanguage();
   }, [language]);
@@ -93,7 +97,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLanguage,
       isAuthenticated,
       user,
-      onUpdateProfile
+      onUpdateProfile,
+      isLoginUser
     }}
     >
       {children}

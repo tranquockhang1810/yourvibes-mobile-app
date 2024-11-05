@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button, Modal } from '@ant-design/react-native';
@@ -9,11 +9,15 @@ const MyDateTimePicker = ({
   onCancel,
   show,
   onSubmit,
+  maxDate,
+  minDate,
 }: {
   value: Date;
   onCancel: () => void;
   onSubmit: (date: Date) => void;
   show: boolean;
+  maxDate?: Date;
+  minDate?: Date;
 }) => {
   const [date, setDate] = useState(value);
   const { localStrings } = useAuth();
@@ -51,9 +55,10 @@ const MyDateTimePicker = ({
               <DateTimePicker
                 value={date}
                 mode="date"
-                maximumDate={new Date()} // Disable future dates
+                maximumDate={maxDate}
                 display={'spinner'}
                 onChange={handleChange}
+                minimumDate={minDate}
               />
 
               {/* Close Button */}
@@ -73,7 +78,8 @@ const MyDateTimePicker = ({
             <DateTimePicker
               value={date}
               mode="date"
-              maximumDate={new Date()} // Disable future dates
+              maximumDate={maxDate}
+              minimumDate={minDate}
               display={'spinner'}
               onChange={handleChange}
             />

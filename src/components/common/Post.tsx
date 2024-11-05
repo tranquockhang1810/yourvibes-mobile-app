@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Form, Modal } from '@ant-design/react-native';
 import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -85,7 +86,6 @@ const Post: React.FC<IPost> = ({
           }
         } else {
           if (buttonIndex === 0) {
-            console.log('báo cáo action selected');
             router.push('/reportPost');
           }
         }
@@ -151,7 +151,7 @@ const Post: React.FC<IPost> = ({
                 {renderPrivacyIcon()}
               </View>
             </View>
-            {!isParentPost && (
+            {isParentPost || noFooter ? null : (
               <TouchableOpacity
                 style={{ width: '8%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
                 onPress={showAction}
