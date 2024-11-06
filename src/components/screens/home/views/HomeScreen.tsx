@@ -49,7 +49,7 @@ const HomeScreen = () => {
       <FlatList
         data={newFeeds}
         renderItem={({ item }) => (
-          <Post key={item?.id} post={item}>
+          <Post key={item?.id} post={item} deleteNewFeed={deleteNewFeed}>
             {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
           </Post>
         )}

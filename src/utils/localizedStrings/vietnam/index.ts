@@ -1,5 +1,3 @@
-import Ads from "@/src/components/screens/ads/views/AdsScreen";
-
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -9,7 +7,7 @@ export const VnLocalizedStrings = {
     Save: "Lưu",
     Close: "Đóng",
     Language: "Ngôn ngữ: Tiếng Việt",
-    Post:"Bài Viết",
+    Post: "Bài Viết",
     Friend: "Bạn Bè",
     Username: "Tên người dùng",
     About: "Giới Thiệu",
@@ -47,10 +45,11 @@ export const VnLocalizedStrings = {
     HourAgo: "giờ trước",
     DayAgo: "ngày trước",
     Action: "Hành động",
-    CommonActions:"Nhập bình luận của bạn ...",
+    CommonActions: "Nhập bình luận của bạn ...",
     Comment: "Bình luận",
-    Reply: "Trả lời",  
+    Reply: "Trả lời",
     ReportComment: "Báo cáo bình luận",
+    Day: "Ngày",
   },
   Form: {
     Label: {
@@ -148,6 +147,8 @@ export const VnLocalizedStrings = {
       GetInfoFailed: "Lấy thống tin người dùng thất bại!"
     },
     Friend: {
+      SendYouARequest: "Đã gửi cho bạn một lời mời kết bạn!",
+      SendARequest: "Đã gửi lời mời kết bạn!",
       SendRequestFailed: "Gửi lời mời kết bạn thất bại!",
       SendRequestSuccess: "Gửi lời mời kết bạn thành công!",
       FriendResponseFailed: "Phản hồi lời mời thất bại!",
@@ -190,14 +191,17 @@ Notification: {
     AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
     NewPost: "đã đăng một bài viết mới.",
     LikeComment: "đã thích bình luận của bạn: ",
+    }
+  },
+  Ads: {
+    Ads: "Quảng cáo bài viết",
+    TimeAndBudget: "Khoảng thời gian và Ngân sách",
+    Minimum: "Tối thiểu: {{price}}/1 ngày",
+    DaysAds: "Số ngày quảng cáo:",
+    TimeAds: "Thời gian quảng cáo: ",
+    BudgetAds: "Ngân sách: ",
+    PaymentMethod: "Phương thức thanh toán",
+    AdvertisePostFailed: "Quảng cáo bài viết thất bại!",
+    AdvertisePostSuccess: "Quảng cáo bài viết thành công!",
   }
-},
-Ads: {
-  Ads: "Quảng cáo bài viết",
-  TimeAndBudget: "Khoảng thời gian và Ngân sách",
-  Minimum: "Tối thiểu: 30.000VND/1 ngày",
-  DaysAds: "Số ngày quảng cáo:",
-  TimeAds: "Chọn thời gian quảng cáo",
-  BudgetAds: "Ngân sách",
-}
 };

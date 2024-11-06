@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
-  Image,
   KeyboardAvoidingView,
   Platform,
   Modal,
@@ -13,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { Image } from 'expo-image';
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import useColor from "@/src/hooks/useColor";
 import usePostDetailsViewModel from "./PostDetailsViewModel/PostDetailsViewModel";

@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Form, Modal } from '@ant-design/react-native';
 import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -13,21 +14,24 @@ import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
-import HomeViewModel from '../screens/home/viewModel/HomeViewModel';
-import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo';
+
 
 interface IPost {
   post?: PostResponseModel,
   isParentPost?: boolean,
   noFooter?: boolean,
-  children?: React.ReactNode
+  children?: React.ReactNode,
+  deleteNewFeed?: (id: string) => void
+  deletePost?: (id: string) => void
 }
 
 const Post: React.FC<IPost> = ({
   post,
   isParentPost = false,
   noFooter = false,
-  children
+  children,
+  deleteNewFeed,
+  deletePost
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
@@ -36,7 +40,6 @@ const Post: React.FC<IPost> = ({
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
   const {
-    deletePost,
     deleteLoading,
     likePost,
     likedPost,
@@ -44,7 +47,6 @@ const Post: React.FC<IPost> = ({
     sharePost,
     shareLoading
   } = EditPostViewModel(defaultPostRepo);
-  const {deleteNewFeed} = HomeViewModel(defaultNewFeedRepo);
 
   const showAction = () => {
     const options = user?.id === post?.user?.id ? [
@@ -77,7 +79,7 @@ const Post: React.FC<IPost> = ({
                 localStrings.DeletePost.DeleteConfirm,
                 [
                   { text: localStrings.Public.Cancel, style: 'cancel' },
-                  { text: localStrings.Public.Confirm, onPress: () => deletePost(post?.id as string) },
+                  { text: localStrings.Public.Confirm, onPress: () => deletePost &&deletePost(post?.id as string) },
                 ]
               );
               break;
@@ -99,8 +101,10 @@ const Post: React.FC<IPost> = ({
                 localStrings.DeletePost.DeleteConfirm,
                 [
                   { text: localStrings.Public.Cancel, style: 'cancel' },
-                  { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed(post?.id as string) },
+                  { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed &&deleteNewFeed(post?.id as string) },
+                  
                 ]
+                
               );
               break;
             default:
@@ -170,7 +174,7 @@ const Post: React.FC<IPost> = ({
                 {renderPrivacyIcon()}
               </View>
             </View>
-            {!isParentPost && (
+            {isParentPost || noFooter ? null : (
               <TouchableOpacity
                 style={{ width: '8%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
                 onPress={showAction}

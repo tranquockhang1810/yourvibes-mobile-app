@@ -1,4 +1,5 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import React from 'react';
 import { NotificationResponseModel } from '@/src/api/features/notification/models/NotifiCationModel';
 import { Ionicons } from '@expo/vector-icons';

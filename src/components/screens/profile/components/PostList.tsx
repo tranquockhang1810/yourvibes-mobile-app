@@ -1,11 +1,14 @@
 import React, { useCallback } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'; // Thay ScrollView bằng FlatList
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'; // Thay ScrollView bằng FlatList
+import { Image } from 'expo-image';
 import useColor from '@/src/hooks/useColor';
 import { useRouter } from 'expo-router';
 import Post from '@/src/components/common/Post';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
+import EditPostViewModel from '../../editPost/viewModel/EditPostViewModel';
+import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 
 const PostList = React.memo(({
   loading,
@@ -21,6 +24,7 @@ const PostList = React.memo(({
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const router = useRouter();
   const { localStrings } = useAuth();
+  const {deletePost} = EditPostViewModel(defaultPostRepo);
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -36,7 +40,7 @@ const PostList = React.memo(({
       <FlatList
         data={posts}
         renderItem={({ item }) => (
-          <Post key={item?.id} post={item}>
+          <Post key={item?.id} post={item} deletePost={deletePost}>
             {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
           </Post>
         )}

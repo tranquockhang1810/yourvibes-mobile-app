@@ -21,7 +21,7 @@ export const ENGLocalizedStrings = {
     Phone: "Phone Number",
     Birthday: "Birth Date",
     Active: "Created Date",
-    FriendFind: "Friend Find",
+    FriendFind: "Find Friend",
     FriendView: "View All Friend",
     Conform: "Confirm",
     LogoutConfirm: "Are you sure you want to log out?",
@@ -48,9 +48,8 @@ export const ENGLocalizedStrings = {
     CommonActions: "Click your comment ...",
     Comment: "Comments",
     Reply: "Reply",
-    ReportComment: "Report Comment"
-
-
+    ReportComment: "Report Comment",
+    Day: "Day",
   },
   Form: {
     Label: {
@@ -148,6 +147,8 @@ export const ENGLocalizedStrings = {
       GetInfoFailed: "Failed to get user's infomation!",
     },
     Friend: {
+      SendYouARequest: "Sent you a friend request!",
+      SendARequest: "Sent friend request!",
       SendRequestFailed: "Failed to send friend request!",
       SendRequestSuccess: "Friend request sent successfully!",
       FriendResponseFailed: "Failed to respond to friend request!",
@@ -195,13 +196,14 @@ export const ENGLocalizedStrings = {
   Ads: {
     Ads: "Post Advertisement",
     TimeAndBudget: "Duration and Budget",
-    Minimum: "Minimum: 30,000 VND/day",
+    Minimum: "Minimum: {{price}}/day",
     DaysAds: "Number of advertisement days:",
-    TimeAds: "Select advertisement duration",
+    TimeAds: "Advertisement duration: ",
     StartDate: "Start Date",
     EndDate: "End Date",
-    BudgetAds: "Budget",
+    BudgetAds: "Budget: ",
+    PaymentMethod: "Payment method",
+    AdvertisePostFailed: "Advertise post failed!",
+    AdvertisePostSuccess: "Advertise post successful!",
   }
-  
-
 }

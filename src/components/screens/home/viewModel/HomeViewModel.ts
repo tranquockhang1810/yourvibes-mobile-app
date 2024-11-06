@@ -56,8 +56,8 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     try {
       setLoading(true);
       const res = await repo.deleteNewFeed(id);
-       // Cập nhật danh sách bài viết
-    setNewFeeds(prevFeeds => prevFeeds.filter(post => post.id !== id));
+       // Cập nhậtlại danh sách
+      setNewFeeds(newFeeds => newFeeds.filter(post => post.id !== id));
       if (!res?.error) {
         Toast.show({
           type: "success",

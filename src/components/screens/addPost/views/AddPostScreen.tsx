@@ -2,17 +2,17 @@ import {
   View,
   StatusBar,
   Text,
-  Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import MyInput from '@/src/components/foundation/MyInput';
 import { ActivityIndicator, Button } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useGlobalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Video } from 'expo-av';
 

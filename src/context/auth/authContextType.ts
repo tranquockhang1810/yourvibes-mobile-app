@@ -12,4 +12,5 @@ export interface AuthContextType {
   setLanguage: (lng: "vi" | "en") => void;
   user: UserModel | null;
   isAuthenticated: boolean;
+  isLoginUser: (userId: string) => boolean;
 }

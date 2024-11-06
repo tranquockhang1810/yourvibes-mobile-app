@@ -1,25 +1,32 @@
-import { ActivityIndicator, Alert, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
-import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import Post from '@/src/components/common/Post';
 import MyDateTimePicker from '@/src/components/foundation/MyDateTimePicker';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { DateTransfer } from '@/src/utils/helper/DateTransfer';
 import AdsViewModel from '../viewModel/AdsViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
+import { Button } from '@ant-design/react-native';
+import { DateTransfer, getDayDiff } from '@/src/utils/helper/DateTransfer';
+import { CurrencyFormat } from '@/src/utils/helper/CurrencyFormat';
+import dayjs from 'dayjs';
 
 const Ads = ({ postId }: { postId: string }) => {
+	const price = 30000;
 	const { brandPrimary, backgroundColor } = useColor();
-	const [days, setDays] = useState(1);
 	const [method, setMethod] = useState('momo');
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const { user, localStrings } = useAuth();
+	const { language, localStrings } = useAuth();
+	const [diffDay, setDiffDay] = useState(1);
 	const {
 		getPostDetail,
 		post,
-		loading
+		loading,
+		advertisePost,
+		adsLoading
 	} = AdsViewModel(defaultPostRepo);
 
 	const getTomorrow = () => {
@@ -27,31 +34,9 @@ const Ads = ({ postId }: { postId: string }) => {
 		tomorrow.setDate(tomorrow.getDate() + 1);
 		return tomorrow;
 	}
-	const [date, setDate] = useState(getTomorrow());
 
-	const increaseDays = () => {
-		const newDays = days + 1;
-		setDays(newDays);
-		updateDateFromDays(newDays);
-	};
-	const decreaseDays = () => {
-		if (days > 1) {
-			const newDays = days - 1;
-			setDays(newDays);
-			updateDateFromDays(newDays);
-		}
-	};
-	const updateDateFromDays = (days: number) => {
-		const newDate = new Date();
-		newDate.setDate(newDate.getDate() + days);
-		setDate(newDate);
-	};
-	const updateDaysFromDate = (selectedDate: Date) => {
-		const today = new Date();
-		const timeDiff = selectedDate.getTime() - today.getTime();
-		const newDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Số ngày chênh lệch
-		setDays(newDays > 0 ? newDays : 1);
-	};
+	const [date, setDate] = useState<Date>(getTomorrow());
+
 	const paymentMethods = [
 		{
 			id: 'momo',
@@ -64,10 +49,6 @@ const Ads = ({ postId }: { postId: string }) => {
 			image: 'https://th.bing.com/th/id/OIP.wBKSzdf1HTUgx1Ax_EecKwHaHa?rs=1&pid=ImgDetMain',
 		},
 	];
-	const selectMethod = (method: string) => {
-		setMethod(method);
-		// Alert.alert('Chọn phương thức thanh toán', `Bạn đã chọn ${method}`);
-	}
 
 	const renderPost = useCallback(() => {
 		if (loading) {
@@ -101,68 +82,35 @@ const Ads = ({ postId }: { postId: string }) => {
 						<TouchableOpacity onPress={() => { router.back(); }}>
 							<Ionicons name="arrow-back-outline" size={24} color={brandPrimary} />
 						</TouchableOpacity>
-
 						<Text style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 10 }}>
 							{localStrings.Ads.Ads}
 						</Text>
 					</View>
 				</View>
 			</View>
-			<View style={{ borderBottomWidth: 1, borderColor: '#ccc' }} />
 
 			{/* Content */}
-			<View style={{ flex: 1 }}>
+			<ScrollView style={{ flex: 1 }}>
 				{/* bài viết được chọn */}
 				{renderPost()}
-				<View style={{ borderBottomWidth: 1, borderColor: '#ccc' }} />
 				{/* Thông tin quảng cáo */}
-				<View style={{ flex: 1, paddingHorizontal: 10, paddingVertical: 20 }}>
+				<View style={{ flex: 1, paddingHorizontal: 10 }}>
 					<View>
 						<Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>
 							{localStrings.Ads.TimeAndBudget}
 						</Text>
-						<Text style={{ color: 'gray', fontSize: 14 }}>{localStrings.Ads.Minimum}</Text>
-					</View>
-
-					{/* Nhập số ngày bạn muốn quảng cáo */}
-					<View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', marginVertical: 10, paddingHorizontal: 10, justifyContent: 'space-between' }}>
-						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<Text style={{ paddingRight: 5 }}>{localStrings.Ads.DaysAds}</Text>
-							<TextInput
-								style={{
-									textAlign: 'center',
-									paddingVertical: 5,
-									borderWidth: 0, // Bỏ viền
-
-								}}
-								value={days.toString()}
-								onChangeText={(text) => {
-									const newDays = parseInt(text) || 1;
-									setDays(newDays);
-									updateDateFromDays(newDays);
-								}}
-								keyboardType="numeric"
-							/>
-						</View>
-						<View style={{ flexDirection: 'row' }}>
-							<TouchableOpacity onPress={decreaseDays} style={{ paddingRight: 10 }}>
-								<AntDesign name="minuscircleo" size={24} color={brandPrimary} />
-							</TouchableOpacity>
-
-							<TouchableOpacity onPress={increaseDays}>
-								<AntDesign name="pluscircleo" size={24} color={brandPrimary} />
-							</TouchableOpacity>
-						</View>
+						<Text style={{ color: 'gray', fontSize: 14 }}>{localStrings.Ads.Minimum.replace('{{price}}', `${CurrencyFormat(price)}`)}</Text>
 					</View>
 
 					{/* Chọn thời gian quảng cáo */}
-
-					<TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }}
+					<TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10, borderRadius: 10 }}
 						onPress={() => {
 							setShowDatePicker(true);
 						}}>
 						<FontAwesome name="calendar" size={24} color={brandPrimary} />
-						<Text style={{ paddingLeft: 20 }}>{localStrings.Ads.TimeAds} {DateTransfer(date.toLocaleDateString())}</Text>
+						<Text style={{ paddingLeft: 20 }}>
+							{`${localStrings.Ads.TimeAds} ${DateTransfer(date)} (${diffDay} ${localStrings.Public.Day.toLowerCase()}${language === 'en' && diffDay > 1 ? 's' : ''})`}
+						</Text>
 					</TouchableOpacity>
 					<MyDateTimePicker
 						value={date}
@@ -170,50 +118,49 @@ const Ads = ({ postId }: { postId: string }) => {
 						onCancel={() => setShowDatePicker(false)}
 						onSubmit={(selectedDate) => {
 							setDate(selectedDate);
-							updateDaysFromDate(selectedDate);
-							setShowDatePicker(false);
+							setDiffDay(getDayDiff(selectedDate));
 						}}
+						minDate={getTomorrow()}
 					/>
 					{/* Ngân sách */}
-					<View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10, borderRadius: 10 }}>
 						<Ionicons name="cash" size={24} color={brandPrimary} />
-						<Text style={{ paddingLeft: 20 }}>{localStrings.Ads.BudgetAds} {days * 30000} VND</Text>
+						<Text style={{ paddingLeft: 20 }}>{localStrings.Ads.BudgetAds} {CurrencyFormat(diffDay * price)}</Text>
 					</View>
 
 					{/* Phương thức thanh toán */}
 					<View style={{ flexDirection: 'row', marginTop: 10 }}>
-
-						<Text style={{ fontWeight: 'bold', marginRight: 10, }}>Phương thức thanh toán</Text>
+						<Text style={{ fontWeight: 'bold', marginRight: 10, }}>{localStrings.Ads.PaymentMethod}</Text>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
 							{paymentMethods.map((item) => (
-								<TouchableOpacity key={item.id} onPress={() => selectMethod(item.id)} style={[
+								<TouchableOpacity key={item.id} onPress={() => setMethod(item.id)} style={[
 									styles.option,
-									method === item.id && styles.selectedOption, // Kiểm tra xem phương thức này có được chọn không
+									method === item.id && styles.selectedOption,
 								]}>
 									<Image source={{ uri: item.image }} style={{ width: 50, height: 50 }} />
-									<Text style={{ textAlign: 'center' }}>{item.name}</Text>
 								</TouchableOpacity>
 							))}
 						</View>
 					</View>
 				</View>
-			</View>
+			</ScrollView>
 
 			{/* Footer */}
 			<View style={{ paddingHorizontal: 10, paddingBottom: 20 }}>
-				<TouchableOpacity
-					style={{
-						backgroundColor: brandPrimary,
-						borderColor: brandPrimary,
-						height: 45,
-						borderRadius: 30,
-						justifyContent: 'center',
-						alignItems: 'center',
+				<Button
+					type='primary'
+					onPress={() => {
+						advertisePost({
+							post_id: postId,
+							payment_method: method,
+							amount: diffDay * price,
+							duration: (dayjs(date).format('YYYY-MM-DDT00:00:00') + "Z").toString(),
+						})
 					}}
-					onPress={() => Alert.alert('Quảng cáo', 'Quảng cáo thành công!')}
+					loading={adsLoading}
 				>
 					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Ads.Ads}</Text>
-				</TouchableOpacity>
+				</Button>
 			</View>
 		</ScrollView>
 	);
