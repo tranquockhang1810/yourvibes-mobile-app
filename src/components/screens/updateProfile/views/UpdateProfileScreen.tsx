@@ -1,5 +1,6 @@
-import { View, Text, KeyboardAvoidingView, Platform, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
+import { View, Text, KeyboardAvoidingView, Platform, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { Image } from 'expo-image';
 import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';

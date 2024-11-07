@@ -68,7 +68,7 @@ const UserProfileViewModel = () => {
       const response = await defaultProfileRepo.getProfile(id);
       if (!response?.error) {
         setUserInfo(response?.data);
-        setNewFriendStatus(response?.data?.friend_status);
+        setNewFriendStatus(response?.data?.friend_status || FriendStatus.NotFriend);
       } else {
         Toast.show({
           type: 'error',

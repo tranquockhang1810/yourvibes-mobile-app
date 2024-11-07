@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   WingBlank,
@@ -380,6 +380,8 @@ const SignUpFeature = () => {
         }}
         show={showPicker}
         onCancel={() => setShowPicker(false)}
+        maxDate={new Date()}
+        minDate={new Date(1900, 0, 1)}
       />
     </KeyboardAvoidingView>
   );

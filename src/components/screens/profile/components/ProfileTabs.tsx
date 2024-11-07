@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
@@ -8,7 +8,6 @@ import SettingsTab from './SettingsTab';
 import PostList from './PostList';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
-import MoreTab from './MoreTab';
 
 const ProfileTabs = ({
   tabNum,
@@ -29,6 +28,21 @@ const ProfileTabs = ({
   const { localStrings, user } = useAuth();
   const [tab, setTab] = React.useState(tabNum);
 
+  const tabs = useMemo(() => {
+    if (userInfo?.id === user?.id) {
+      return [
+        { title: localStrings.Public.About },
+        { title: localStrings.Public.Post },
+        { title: localStrings.Public.SetingProfile },
+      ]
+    } else {
+      return [
+        { title: localStrings.Public.About },
+        { title: localStrings.Public.Post },
+      ]
+    }
+  }, [tabNum, localStrings, user, userInfo]);
+
   const renderBody = useCallback(() => {
     switch (tab) {
       case 0:
@@ -36,7 +50,7 @@ const ProfileTabs = ({
       case 1:
         return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={userInfo} />;
       case 2:
-        return userInfo?.id === user?.id ? <SettingsTab /> : <MoreTab userInfoProps={userInfo}/>;
+        return userInfo?.id === user?.id ? <SettingsTab /> : null;
       default:
         return <AboutTab user={userInfo} loading={profileLoading} />;
     }
@@ -45,11 +59,7 @@ const ProfileTabs = ({
   return (
     <View style={{ flex: 1, marginTop: 20 }}>
       <Tabs
-        tabs={[
-          { title: localStrings.Public.About },
-          { title: localStrings.Public.Post },
-          { title: userInfo?.id === user?.id ? localStrings.Public.SetingProfile : localStrings.Public.More },
-        ]}
+        tabs={tabs}
         initialPage={tab}
         tabBarPosition="top"
         tabBarActiveTextColor={brandPrimary}

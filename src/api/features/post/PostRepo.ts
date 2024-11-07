@@ -8,6 +8,7 @@ import { GetUsersPostsRequestModel } from "./models/GetUsersPostsModel";
 import { UpdatePostRequestModel } from "./models/UpdatePostRequestModel";
 import { LikeUsersModel, LikeUsersResponseModel } from "./models/LikeUsersModel";
 import { SharePostRequestModel } from "./models/SharePostRequestModel";
+import { AdvertisePostRequestModel } from "./models/AdvertisePostModel";
 
 interface IPostRepo {
 	createPost: (data: CreatePostRequestModel) => Promise<BaseApiResponseModel<PostResponseModel>>;
@@ -18,6 +19,7 @@ interface IPostRepo {
 	likePost: (id: string) => Promise<BaseApiResponseModel<any>>;
 	sharePost: (id: string, data: SharePostRequestModel) => Promise<BaseApiResponseModel<any>>;
 	getPostLikes: (params: LikeUsersResponseModel) => Promise<BaseApiResponseModel<LikeUsersModel[]>>;
+	advertisePost: (params: AdvertisePostRequestModel) => Promise<BaseApiResponseModel<any>>;
 }
 export class PostRepo implements IPostRepo {
 	async createPost(data: CreatePostRequestModel): Promise<BaseApiResponseModel<PostResponseModel>> {
@@ -53,6 +55,10 @@ export class PostRepo implements IPostRepo {
 
 	async getPostLikes(params: LikeUsersResponseModel): Promise<BaseApiResponseModel<LikeUsersModel[]>> {
 		return client.get(ApiPath.GET_USER_LIKES + params.postId, params);
+	}
+
+	async advertisePost(params: AdvertisePostRequestModel): Promise<BaseApiResponseModel<any>> {
+		return client.post(ApiPath.ADVERTISE_POST, params);
 	}
 }
 export const defaultPostRepo = new PostRepo();

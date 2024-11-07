@@ -1,5 +1,3 @@
-import { View } from "@ant-design/react-native";
-
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -51,6 +49,7 @@ export const VnLocalizedStrings = {
     Comment: "Bình luận",
     Reply: "Trả lời",
     ReportComment: "Báo cáo bình luận",
+    Day: "Ngày",
   },
   Form: {
     Label: {
@@ -140,6 +139,32 @@ export const VnLocalizedStrings = {
     SharePostFailed: "Chia sẻ bài viết thất bại!",
     SharePost: "Chia sẻ",
   },
+  PostDetails:{
+    ViewReplies: "Xem phản hồi",
+    HideReplies:"Ẩn phản hồi",
+    Save:"Lưu",
+    Cancel:"Hủy",
+    Error: "Lỗi",
+    ErrorReplies: "Lỗi phản hồi",
+    ReportComment: "Báo cáo bình luận",
+    EditComment: "Chỉnh sửa bình luận",
+    DeleteComment: "Xóa bình luận",
+    ActionOptions:"Chọn hành động",
+    ReportSusesfully:"Báo cáo bình luận thành cônng!",
+    Success  :"Thành công",
+    EditCommentSuccess: "Cập nhật bình luận thành công!",
+    EditCommentFailed: "Cập nhật bình luận thát bị!",
+    EditReplySuccess: "Cập nhật phân hồi thành công!",
+    EditReplyFailed: "Cập nhật phân hồi thát bại!",
+    DeteleReplyFailed: "Xóa phân hồi thát bại!",
+    DeteleReplySuccess: "Xóa phân hồi này này!",
+    CommentSuccess: "Bình luận thành công!",
+    CommentFailed: "Bình luận thát bại!",
+    ReplySuccess: "Phân hồi thành công!",
+    ReplyFailed: "Phân hồi thát bại!",
+    Yes:"Xác nhận",
+    No:"Không",
+  },
   Profile: {
     Posts: {
       GetPostsFailed: "Lấy danh sách bài viết thất bại!",
@@ -149,6 +174,8 @@ export const VnLocalizedStrings = {
       GetInfoFailed: "Lấy thống tin người dùng thất bại!",
     },
     Friend: {
+      SendYouARequest: "Đã gửi cho bạn một lời mời kết bạn!",
+      SendARequest: "Đã gửi lời mời kết bạn!",
       SendRequestFailed: "Gửi lời mời kết bạn thất bại!",
       SendRequestSuccess: "Gửi lời mời kết bạn thành công!",
       FriendResponseFailed: "Phản hồi lời mời thất bại!",
@@ -189,14 +216,26 @@ export const VnLocalizedStrings = {
       CommentPost: "đã bình luận về bài viết của bạn: ",
       Friend: "đã gưi lời mời kết bạn.",
       AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
-    },
-  },
-  ListFriends: {
-    ListFriends: "Danh sách bạn bè",
-    Search: "Tim kiếm . . .",
-    ViewProfile: "Xem trang cá nhân",
-    Unfriend: "Hủy kết bạn ",
-    Block: "Chặn ",
-    Cancel: "Hủy",
-  },
+    }
+  }, 
+ListFriends: {
+  ListFriends: "Danh sách bạn bè",
+  Search: "Tim kiếm . . .",
+  ViewProfile: "Xem trang cá nhân",
+  Unfriend: "Hủy kết bạn ",
+  Block: "Chặn ",
+  Cancel: "Hủy",
+},
+
+  Ads: {
+    Ads: "Quảng cáo bài viết",
+    TimeAndBudget: "Khoảng thời gian và Ngân sách",
+    Minimum: "Tối thiểu: {{price}}/1 ngày",
+    DaysAds: "Số ngày quảng cáo:",
+    TimeAds: "Thời gian quảng cáo: ",
+    BudgetAds: "Ngân sách: ",
+    PaymentMethod: "Phương thức thanh toán",
+    AdvertisePostFailed: "Quảng cáo bài viết thất bại!",
+    AdvertisePostSuccess: "Quảng cáo bài viết thành công!",
+  }
 };

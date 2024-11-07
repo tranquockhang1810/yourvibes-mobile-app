@@ -1,3 +1,4 @@
+import PostDetails from "@/src/components/common/PostDetails";
 import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
 import { List, View } from "@ant-design/react-native";
 
@@ -24,7 +25,7 @@ export const ENGLocalizedStrings = {
     Phone: "Phone Number",
     Birthday: "Birth Date",
     Active: "Created Date",
-    FriendFind: "Friend Find",
+    FriendFind: "Find Friend",
     FriendView: "View All Friend",
     Conform: "Confirm",
     LogoutConfirm: "Are you sure you want to log out?",
@@ -52,6 +53,7 @@ export const ENGLocalizedStrings = {
     Comment: "Comments",
     Reply: "Reply",
     ReportComment: "Report Comment",
+    Day: "Day",
   },
   Form: {
     Label: {
@@ -139,6 +141,32 @@ export const ENGLocalizedStrings = {
     SharePostFailed: "Share post failed!",
     SharePost: "Share",
   },
+  PostDetails:{
+    ViewReplies: "View replies",
+    HideReplies:"Hide replies",
+    Save: "Save",
+    Cancel: "Cancel",
+    Error: "Error",
+    ErrorReplies: "Failed to get replies!",
+    ReportComment: "Report comment",
+    EditComment: "Edit comment",
+    DeleteComment: "Delete comment",
+    ActionOptions:"Action options",
+    ReportSusesfully: "Reported succeeded!",
+    Success: "Success",
+    EditCommentSuccess: "Edit comment successful!",
+    EditCommentFailed: "Edit comment failed!",
+    EditReplySuccess: "Edit reply successful!",
+    EditReplyFailed: "Edit reply failed!",
+    DeteleReplyFailed: "Delete reply failed!",
+    DeteleReplySuccess: "Delete reply successful!",
+    CommentSuccess: "Comment successful!",
+    CommentFailed: "Comment failed!",
+    ReplySuccess: "Reply successful!",
+    ReplyFailed: "Reply failed!",
+    Yes: "Yes",
+    No: "No",
+  },
   Profile: {
     Posts: {
       GetPostsFailed: "Failed to get posts!",
@@ -148,6 +176,8 @@ export const ENGLocalizedStrings = {
       GetInfoFailed: "Failed to get user's infomation!",
     },
     Friend: {
+      SendYouARequest: "Sent you a friend request!",
+      SendARequest: "Sent friend request!",
       SendRequestFailed: "Failed to send friend request!",
       SendRequestSuccess: "Friend request sent successfully!",
       FriendResponseFailed: "Failed to respond to friend request!",
@@ -198,4 +228,18 @@ export const ENGLocalizedStrings = {
     Block: "Block ",
     Cancel: "Cancel",
   },
-};
+
+  Ads: {
+    Ads: "Post Advertisement",
+    TimeAndBudget: "Duration and Budget",
+    Minimum: "Minimum: {{price}}/day",
+    DaysAds: "Number of advertisement days:",
+    TimeAds: "Advertisement duration: ",
+    StartDate: "Start Date",
+    EndDate: "End Date",
+    BudgetAds: "Budget: ",
+    PaymentMethod: "Payment method",
+    AdvertisePostFailed: "Advertise post failed!",
+    AdvertisePostSuccess: "Advertise post successful!",
+  }
+}

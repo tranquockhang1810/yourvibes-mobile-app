@@ -3,10 +3,10 @@ import {
   ScrollView,
   StatusBar,
   SafeAreaView,
-  Image,
   RefreshControl,
   FlatList
 } from 'react-native'
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react'
 import useColor from '@/src/hooks/useColor'
 import Post from '@/src/components/common/Post'
@@ -41,11 +41,10 @@ const HomeScreen = () => {
           <Image
             source={require('@/assets/images/yourvibes_black.png')}
             style={{
-              width: "40%",
+              width: "50%",
               height: 60,
-              objectFit: 'contain',
-              marginLeft: 10,
             }}
+            contentFit="contain"
           />
         </View>
       </View>
