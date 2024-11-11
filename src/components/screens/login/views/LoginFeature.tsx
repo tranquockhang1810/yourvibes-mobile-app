@@ -71,8 +71,8 @@ const LoginFeature = () => {
                 style={{
                   width: '100%',
                   height: 80,
-                  objectFit: 'contain'
                 }}
+                contentFit='contain'
               />
             </View>
             <WhiteSpace size="xl" />
@@ -181,8 +181,8 @@ const LoginFeature = () => {
                 style={{
                   width: '100%',
                   height: 50,
-                  objectFit: 'contain'
                 }}
+                contentFit='contain'
               />
             </TouchableOpacity>
             <ActivityIndicator
