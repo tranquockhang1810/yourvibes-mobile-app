@@ -80,7 +80,7 @@ const usePostDetailsViewModel = (
     fetchComments();
   }, []);
 
-  const handleAction = (commentId: string) => {
+  const handleAction = (comment: CommentsResponseModel) => {
     const options = [
       `${localStrings.PostDetails.ReportComment}`,
       `${localStrings.PostDetails.EditComment}`,
@@ -88,8 +88,8 @@ const usePostDetailsViewModel = (
       `${localStrings.PostDetails.Cancel}`,
     ];
 
-    const comment = comments.find((comment) => comment.id === commentId);
-    const reply = replyMap[commentId];
+    //const comment = comments.find((comment) => comment.id === commentId);
+    const reply = replyMap[comment?.id];
 
     if (comment && comment.user?.id !== user?.id) {
       options.splice(1, 1);  
@@ -108,7 +108,7 @@ const usePostDetailsViewModel = (
         switch (buttonIndex) {
           case 0:
             const commentToReport = comments.find(
-              (comment) => comment.id === commentId
+              (cmt) => cmt.id === comment.id
             );
             if (commentToReport) {
               Toast.show({
@@ -116,25 +116,19 @@ const usePostDetailsViewModel = (
                 text2: commentToReport.content,
               });
               console.log(
-                `Báo cáo bình luận với nội dung: "${commentToReport.content}" có id: ${commentId} "tại bài viết ${postId}"`
+                `Báo cáo bình luận với nội dung: "${commentToReport.content}" có id: ${comment.id} "tại bài viết ${postId}"`
               );
             }
             break;
 
             case 1:
-              // Xử lý chỉnh sửa bình luận
-              // if (comment) {
-              //   setEditCommentContent(comment.content);
-              //   setCurrentCommentId(commentId);
-              //   setEditModalVisible(true);
-              // }
-              setEditCommentContent("");
-              setCurrentCommentId(commentId);
+              setEditCommentContent(comment.content);
+              setCurrentCommentId(comment.id);
               setEditModalVisible(true);
               break;
 
           case 2:
-            handleDelete(commentId);
+            handleDelete(comment.id);
             break;
 
           default:

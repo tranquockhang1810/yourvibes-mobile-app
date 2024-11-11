@@ -57,7 +57,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           ListHeaderComponent={
             <>
               <ProfileHeader total={total} user={user as UserModel} loading={false} />
-              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={false} loadMorePosts={loadMorePosts} userInfo={user as UserModel} />
+              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={false} loadMorePosts={loadMorePosts} userInfo={user as UserModel} friendCount={0}/>
             </>
           }
           renderItem={() => null}

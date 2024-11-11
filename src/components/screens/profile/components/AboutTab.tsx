@@ -7,7 +7,7 @@ import { DateTransfer } from '../../../../utils/helper/DateTransfer';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 import { router } from 'expo-router'; 
 
-const AboutTab = ({ user, loading }: { user: UserModel, loading: boolean }) => {
+const AboutTab = ({ user, loading, friendCount }: { user: UserModel, loading: boolean, friendCount: number }) => {
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
   const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
@@ -58,7 +58,7 @@ const AboutTab = ({ user, loading }: { user: UserModel, loading: boolean }) => {
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 <View>
                   <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{localStrings.Public.Friend}</Text>
-                  <Text> {user?.friend_count} {localStrings.Public.Friend}</Text>
+                  <Text> {friendCount} {localStrings.Public.Friend}</Text>
                 </View>
                 <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
                   <Text style={{ alignSelf: 'flex-end', color: brandPrimaryTap }}>{localStrings.Public.FriendFind}</Text>
