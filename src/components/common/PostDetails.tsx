@@ -11,7 +11,6 @@ import {
   Button,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
 } from "react-native";
 import { Image } from "expo-image";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -59,9 +58,14 @@ function PostDetails(): React.JSX.Element {
     replyMap,
     likeCount,
     fetchComments,
+    replyToReplyId,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [editCommentContent, setEditCommentContent] = useState("");
+
+  const parentId = replyToCommentId || replyToReplyId;
+  
+
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
@@ -124,8 +128,7 @@ function PostDetails(): React.JSX.Element {
                     {reply?.user?.family_name} {reply?.user?.name}
                   </Text>
                   <Text style={{ fontSize: 12, color: "#888" }}>
-                    {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
-                    {/*Sài test đỡ*/}
+                    {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "} 
                   </Text>
                   <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
                 </View>
@@ -310,33 +313,52 @@ function PostDetails(): React.JSX.Element {
 
           {/* Nút để xem phản hồi */}
           {comments.rep_comment_count > 0 && (
-            <TouchableOpacity
-              onPress={() => {
-                if (!replyMap[comments.id]) {
-                  fetchReplies(postId, comments.id);
-                  setShowMoreReplies((prev) => ({
-                    ...prev,
-                    [comments.id]: !prev[comments.id],
-                  }));
-                } else {
-                  console.log("đóng");
+            // <TouchableOpacity
+            //   onPress={() => {
+            //     if (!replyMap[comments.id]) {
+            //       fetchReplies(postId, comments.id);
+            //       setShowMoreReplies((prev) => ({
+            //         ...prev,
+            //         [comments.id]: !prev[comments.id],
+            //       }));
+            //     } else {
+            //       console.log("đóng");
 
-                  setShowMoreReplies((prev) => ({
-                    ...prev,
-                    [comments.id]: false,
-                  }));
-                }
-              }}
-            >
-              <View style={{ alignItems: "center" }}>
-                <AntDesign name="down" size={16} color={brandPrimaryTap} />
-                <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-                  {showMoreReplies[comments.id]
-                    ? `${localStrings.PostDetails.HideReplies}`
-                    : `${localStrings.PostDetails.ViewReplies}`}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            //       setShowMoreReplies((prev) => ({
+            //         ...prev,
+            //         [comments.id]: false,
+            //       }));
+            //     }
+            //   }}
+            // >
+            //   <View style={{ alignItems: "center" }}>
+            //     <AntDesign name="down" size={16} color={brandPrimaryTap} />
+            //     <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+            //       {showMoreReplies[comments.id]
+            //         ? `${localStrings.PostDetails.HideReplies}`
+            //         : `${localStrings.PostDetails.ViewReplies}`}
+            //     </Text>
+            //   </View>
+            // </TouchableOpacity> 
+            <TouchableOpacity
+                  onPress={() => {
+                    fetchReplies(postId, comments.id);
+                    setShowMoreReplies((prev) => ({
+                      ...prev,
+                      [comments.id]: !prev[comments.id],
+                    }));
+                  }}
+                  style={{ marginTop: 10 }}
+                >
+                  <View style={{ alignItems: "center" }}>
+                    <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                    <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                      {showMoreReplies[comments.id]
+                        ? `${localStrings.PostDetails.HideReplies}`
+                        : `${localStrings.PostDetails.ViewReplies}`}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
           )}
           {/* Hiển thị các phản hồi */}
           {replyMap[comments.id] &&
@@ -456,6 +478,10 @@ function PostDetails(): React.JSX.Element {
                     onChangeText={(value) =>
                       commentForm.setFieldValue("comment", value)
                     }
+                    onBlur={() => {
+                      setReplyToCommentId(null);
+                      console.log("Tạm biệt replyToCommentId: ", replyToCommentId);
+                    }}
                   />
                 </Form.Item>
 
@@ -474,34 +500,6 @@ function PostDetails(): React.JSX.Element {
                     elevation: 5,
                   }}
                 >
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      const comment = commentForm.getFieldValue("comment");
-                      if (!comment) {
-                        return;
-                      }
-                      const parentId = setReplyToReplyId
-                        ? String(setReplyToReplyId)
-                        : replyToCommentId
-                        ? String(replyToCommentId)
-                        : null;
-
-                      if (parentId) {
-                        handleAddReply(comment).then(() => {
-                          setNewComment("");
-                          setReplyToReplyId(null);
-                          textInputRef.current?.blur();
-                          commentForm.resetFields();
-                        });
-                      } else {
-                        handleAddComment(comment).then(() => {
-                          commentForm.resetFields();
-                        });
-                      }
-                    }}
-                  >
-                    <FontAwesome name="send-o" size={30} color={brandPrimary} />
-                  </TouchableOpacity> */}
                   <TouchableOpacity
                     onPress={() => {
                       const comment = commentForm.getFieldValue("comment");
@@ -630,7 +628,7 @@ function PostDetails(): React.JSX.Element {
                   title={localStrings.Public.Save}
                   onPress={() => {
                     if (currentCommentId && editCommentContent) {
-                      handleUpdate(currentCommentId, editCommentContent).then(
+                      handleUpdate(currentCommentId, editCommentContent, parentId || "").then(
                         () => {
                           setEditModalVisible(false);
                           setEditCommentContent(""); // Clear TextInput
