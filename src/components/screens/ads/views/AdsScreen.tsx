@@ -73,7 +73,7 @@ const Ads = ({ postId }: { postId: string }) => {
 	}, [postId]);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<ScrollView style={{ flex: 1 }}>
 			{/* Header */}
 			<View style={{ backgroundColor: backgroundColor, paddingTop: 40 }}>
 				<StatusBar barStyle="dark-content" />
@@ -162,7 +162,7 @@ const Ads = ({ postId }: { postId: string }) => {
 					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Ads.Ads}</Text>
 				</Button>
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 

@@ -15,18 +15,23 @@ import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
 
+
 interface IPost {
   post?: PostResponseModel,
   isParentPost?: boolean,
   noFooter?: boolean,
-  children?: React.ReactNode
+  children?: React.ReactNode,
+  deleteNewFeed?: (id: string) => void
+  deletePost?: (id: string) => void
 }
 
 const Post: React.FC<IPost> = ({
   post,
   isParentPost = false,
   noFooter = false,
-  children
+  children,
+  deleteNewFeed,
+  deletePost
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
@@ -35,7 +40,6 @@ const Post: React.FC<IPost> = ({
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
   const {
-    deletePost,
     deleteLoading,
     likePost,
     likedPost,
@@ -52,6 +56,7 @@ const Post: React.FC<IPost> = ({
       localStrings.Public.Cancel
     ] : [
       localStrings.Post.ReportPost,
+      localStrings.Post.DeleteNewFeed,
       localStrings.Public.Cancel
     ];
 
@@ -74,7 +79,7 @@ const Post: React.FC<IPost> = ({
                 localStrings.DeletePost.DeleteConfirm,
                 [
                   { text: localStrings.Public.Cancel, style: 'cancel' },
-                  { text: localStrings.Public.Confirm, onPress: () => deletePost(post?.id as string) },
+                  { text: localStrings.Public.Confirm, onPress: () => deletePost &&deletePost(post?.id as string) },
                 ]
               );
               break;
@@ -85,8 +90,25 @@ const Post: React.FC<IPost> = ({
               break;
           }
         } else {
-          if (buttonIndex === 0) {
-            router.push('/reportPost');
+          switch (buttonIndex) {
+            case 0:
+              console.log('báo cáo action selected');
+              router.push('/reportPost');
+              break;
+            case 1:
+              Modal.alert(
+                localStrings.Public.Confirm,
+                localStrings.DeletePost.DeleteConfirm,
+                [
+                  { text: localStrings.Public.Cancel, style: 'cancel' },
+                  { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed &&deleteNewFeed(post?.id as string) },
+                  
+                ]
+                
+              );
+              break;
+            default:
+              break;
           }
         }
       }
