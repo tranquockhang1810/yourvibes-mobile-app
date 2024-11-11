@@ -70,9 +70,9 @@ const LoginFeature = () => {
                 source={require('@/assets/images/yourvibes_black.png')}
                 style={{
                   width: '100%',
-                  height: 80,
-                  objectFit: 'contain'
+                  height: 80
                 }}
+                contentFit='contain'
               />
             </View>
             <WhiteSpace size="xl" />
@@ -181,8 +181,8 @@ const LoginFeature = () => {
                 style={{
                   width: '100%',
                   height: 50,
-                  objectFit: 'contain'
                 }}
+                contentFit='contain'
               />
             </TouchableOpacity>
             <ActivityIndicator

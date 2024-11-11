@@ -18,7 +18,6 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
           type: 'success',
           text1: localStrings.UpdatePost.UpdatePostSuccess
         })
-        console.log("data: ", res?.data);
       } else {
         Toast.show({
           type: 'error',

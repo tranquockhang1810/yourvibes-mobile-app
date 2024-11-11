@@ -220,7 +220,7 @@ export const ENGLocalizedStrings = {
       Friend: "sent you a friend request.",
       AcceptFriend: "accepted your friend request.",
     NewPost: "posted a new post.",
-    LikeComment: "liked your comment: ",,
+    LikeComment: "liked your comment: ",
     },
   },
   ListFriends: {

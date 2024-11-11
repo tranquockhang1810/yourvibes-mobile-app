@@ -25,6 +25,7 @@ import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -60,23 +61,31 @@ function PostDetails(): React.JSX.Element {
     fetchComments,
     replyToReplyId,
   } = usePostDetailsViewModel(postId, replyToCommentId);
+  const [likedComment, setLikedComment] = useState({ is_liked: false });
+  const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [editCommentContent, setEditCommentContent] = useState("");
 
   const parentId = replyToCommentId || replyToReplyId;
-  
+
 
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
+
   const fetchPostDetails = async () => {
-    setLoading(true);
-    const fetchedPost = await defaultPostRepo.getPostById(postId);
-    setPost(fetchedPost.data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const fetchedPost = await defaultPostRepo.getPostById(postId);
+      if (!fetchedPost.error) {
+        setPost(fetchedPost.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
-  const [likedComment, setLikedComment] = useState({ is_liked: false });
-  const [loading, setLoading] = useState(false);
 
   const renderLikeIcon = useCallback(
     (comment: CommentsResponseModel) => {
@@ -128,7 +137,7 @@ function PostDetails(): React.JSX.Element {
                     {reply?.user?.family_name} {reply?.user?.name}
                   </Text>
                   <Text style={{ fontSize: 12, color: "#888" }}>
-                    {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "} 
+                    {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
                   </Text>
                   <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
                 </View>
@@ -341,24 +350,24 @@ function PostDetails(): React.JSX.Element {
             //   </View>
             // </TouchableOpacity> 
             <TouchableOpacity
-                  onPress={() => {
-                    fetchReplies(postId, comments.id);
-                    setShowMoreReplies((prev) => ({
-                      ...prev,
-                      [comments.id]: !prev[comments.id],
-                    }));
-                  }}
-                  style={{ marginTop: 10 }}
-                >
-                  <View style={{ alignItems: "center" }}>
-                    <AntDesign name="down" size={16} color={brandPrimaryTap} />
-                    <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-                      {showMoreReplies[comments.id]
-                        ? `${localStrings.PostDetails.HideReplies}`
-                        : `${localStrings.PostDetails.ViewReplies}`}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+              onPress={() => {
+                fetchReplies(postId, comments.id);
+                setShowMoreReplies((prev) => ({
+                  ...prev,
+                  [comments.id]: !prev[comments.id],
+                }));
+              }}
+              style={{ marginTop: 10 }}
+            >
+              <View style={{ alignItems: "center" }}>
+                <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                  {showMoreReplies[comments.id]
+                    ? `${localStrings.PostDetails.HideReplies}`
+                    : `${localStrings.PostDetails.ViewReplies}`}
+                </Text>
+              </View>
+            </TouchableOpacity>
           )}
           {/* Hiển thị các phản hồi */}
           {replyMap[comments.id] &&
@@ -394,7 +403,7 @@ function PostDetails(): React.JSX.Element {
         />
       );
     },
-    [comments, post, replyMap]
+    [comments, post, replyMap, loading]
   );
 
   useEffect(() => {
@@ -509,8 +518,8 @@ function PostDetails(): React.JSX.Element {
                       const parentId = setReplyToReplyId
                         ? String(setReplyToReplyId)
                         : replyToCommentId
-                        ? String(replyToCommentId)
-                        : null;
+                          ? String(replyToCommentId)
+                          : null;
 
                       setLoading(true);
                       if (parentId) {
