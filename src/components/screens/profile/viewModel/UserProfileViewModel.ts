@@ -246,6 +246,20 @@ const UserProfileViewModel = () => {
     }
   }, [userInfo]);
 
+  const fetchUserFriends = async () => {
+    try {
+    }
+    catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error', 
+        text1: error?.message,
+      });
+    } finally {
+
+    }
+  };
+
   return {
     loading,
     profileLoading,

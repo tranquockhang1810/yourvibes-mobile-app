@@ -140,6 +140,7 @@ export const ENGLocalizedStrings = {
     SharePostSuccess: "Share post successful!",
     SharePostFailed: "Share post failed!",
     SharePost: "Share",
+    DeleteNewFeed: "Delete (hide) new feed",
   },
   PostDetails:{
     ViewReplies: "View replies",
@@ -219,6 +220,8 @@ export const ENGLocalizedStrings = {
       CommentPost: "commented on your post: ",
       Friend: "sent you a friend request.",
       AcceptFriend: "accepted your friend request.",
+    NewPost: "posted a new post.",
+    LikeComment: "liked your comment: ",
     },
   },
   ListFriends: {

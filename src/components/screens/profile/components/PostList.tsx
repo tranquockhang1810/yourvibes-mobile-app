@@ -23,14 +23,19 @@ const PostList = React.memo(({
   const router = useRouter();
   const { localStrings } = useAuth();
 
-  const renderFooter = () => {
-    if (!loading) return null;
+  const renderFooter = useCallback(() => {
     return (
-      <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size="large" color={brandPrimary} />
-      </View>
+      <>
+        {loading ? (
+          <View style={{ paddingVertical: 20 }}>
+            <ActivityIndicator size="large" color={brandPrimary} />
+          </View>
+        ) : (
+          <></>
+        )}
+      </>
     );
-  };
+  }, [loading]);
 
   const renderFlatList = useCallback(() => {
     return (
@@ -45,11 +50,11 @@ const PostList = React.memo(({
         ListFooterComponent={renderFooter}
         onEndReached={loadMorePosts}
         onEndReachedThreshold={0.5}
-        removeClippedSubviews={true} 
+        removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
     )
-  }, [posts]);
+  }, [posts, loading]);
 
   return (
     <View style={{ flex: 1, backgroundColor: grayBackground }}>

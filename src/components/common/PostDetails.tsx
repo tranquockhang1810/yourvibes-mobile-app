@@ -25,6 +25,7 @@ import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -59,9 +60,11 @@ function PostDetails(): React.JSX.Element {
     likeCount,
     fetchComments,
     replyToReplyId,
-    setEditCommentContent, 
-    editCommentContent
+    setEditCommentContent,
+    editCommentContent, 
   } = usePostDetailsViewModel(postId, replyToCommentId);
+  const [likedComment, setLikedComment] = useState({ is_liked: false });
+  const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
 
   const parentId = replyToCommentId || replyToReplyId;
@@ -69,14 +72,20 @@ function PostDetails(): React.JSX.Element {
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
+
   const fetchPostDetails = async () => {
-    setLoading(true);
-    const fetchedPost = await defaultPostRepo.getPostById(postId);
-    setPost(fetchedPost.data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const fetchedPost = await defaultPostRepo.getPostById(postId);
+      if (!fetchedPost.error) {
+        setPost(fetchedPost.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
-  const [likedComment, setLikedComment] = useState({ is_liked: false });
-  const [loading, setLoading] = useState(false);
 
   const renderLikeIcon = useCallback(
     (comment: CommentsResponseModel) => {
@@ -394,7 +403,7 @@ function PostDetails(): React.JSX.Element {
         />
       );
     },
-    [comments, post, replyMap]
+    [comments, post, replyMap, loading]
   );
 
   useEffect(() => {
@@ -589,6 +598,7 @@ function PostDetails(): React.JSX.Element {
                       }}
                     />
                   </View>
+
                   <View style={{ marginLeft: 10, flex: 1 }}>
                     <View style={{ flexDirection: "column" }}>
                       <Text style={{ fontWeight: "bold", fontSize: 16 }}>
@@ -596,18 +606,23 @@ function PostDetails(): React.JSX.Element {
                           localStrings.Public.UnknownUser}
                       </Text>
 
-                      <TextInput
-                        value={editCommentContent}
-                        onChangeText={setEditCommentContent}
-                        style={{
-                          borderWidth: 1,
-                          borderColor: lightGray,
-                          borderRadius: 5,
-                          padding: 10,
-                          backgroundColor: grayBackground,
-                          marginTop: 10,
-                        }}
-                      />
+                      <Form>
+                        <Form.Item noStyle
+                        >
+                          <TextInput
+                            value={editCommentContent}
+                            onChangeText={setEditCommentContent}
+                            style={{
+                              borderWidth: 1,
+                              borderColor: lightGray,
+                              borderRadius: 5,
+                              padding: 10,
+                              backgroundColor: grayBackground,
+                              marginTop: 10,
+                            }}
+                          />
+                        </Form.Item>
+                      </Form>
                     </View>
                   </View>
                 </View>
@@ -631,7 +646,7 @@ function PostDetails(): React.JSX.Element {
                   disabled={loading}
                   onPress={() => {
                     if (currentCommentId && editCommentContent) {
-                      setLoading(true);
+                      setLoading(true); 
                       handleUpdate(
                         currentCommentId,
                         editCommentContent,

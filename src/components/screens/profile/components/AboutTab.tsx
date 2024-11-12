@@ -1,17 +1,32 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
-import useColor from '@/src/hooks/useColor';
-import { useAuth } from '@/src/context/auth/useAuth';
-import { DateTransfer } from '../../../../utils/helper/DateTransfer';
-import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
-import { router } from 'expo-router'; 
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import useColor from "@/src/hooks/useColor";
+import { useAuth } from "@/src/context/auth/useAuth";
+import { DateTransfer } from "../../../../utils/helper/DateTransfer";
+import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
+import { router } from "expo-router";
 
-const AboutTab = ({ user, loading, friendCount }: { user: UserModel, loading: boolean, friendCount: number }) => {
+const AboutTab = ({
+  user,
+  loading,
+  friendCount,
+}: {
+  user: UserModel;
+  loading: boolean;
+  friendCount: number;
+}) => {
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
-  const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
-
+  // const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
+  const [friends, setFriends] = useState([]);
+ 
   return (
     <>
       {loading ? (
@@ -19,67 +34,150 @@ const AboutTab = ({ user, loading, friendCount }: { user: UserModel, loading: bo
       ) : (
         <View style={{ padding: 20, flex: 1 }}>
           <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{localStrings.Public.Detail}</Text>
+            <Text
+              style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+            >
+              {localStrings.Public.Detail}
+            </Text>
 
             {/* Email */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
               <MaterialIcons name="email" size={24} color="black" />
               <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Mail}: <Text style={{ fontWeight: 'bold' }}>{user?.email || 'N/A'}</Text>
+                {localStrings.Public.Mail}:{" "}
+                <Text style={{ fontWeight: "bold" }}>
+                  {user?.email || "N/A"}
+                </Text>
               </Text>
             </View>
 
             {/* Số điện thoại */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
               <Feather name="phone" size={24} color="black" />
               <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Phone}: <Text style={{ fontWeight: 'bold' }}>{user?.phone_number || 'N/A'}</Text>
+                {localStrings.Public.Phone}:{" "}
+                <Text style={{ fontWeight: "bold" }}>
+                  {user?.phone_number || "N/A"}
+                </Text>
               </Text>
             </View>
 
             {/* Ngày sinh */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
               <Feather name="calendar" size={24} color="black" />
               <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Birthday}: <Text style={{ fontWeight: 'bold' }}>{DateTransfer(user?.birthday) || 'N/A'}</Text>
+                {localStrings.Public.Birthday}:{" "}
+                <Text style={{ fontWeight: "bold" }}>
+                  {DateTransfer(user?.birthday) || "N/A"}
+                </Text>
               </Text>
             </View>
 
             {/* Ngày tham gia */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
               <MaterialIcons name="date-range" size={24} color="black" />
               <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Active}: <Text style={{ fontWeight: 'bold' }}>{DateTransfer(user?.created_at) || 'N/A'}</Text>
+                {localStrings.Public.Active}:{" "}
+                <Text style={{ fontWeight: "bold" }}>
+                  {DateTransfer(user?.created_at) || "N/A"}
+                </Text>
               </Text>
             </View>
 
             {/* Danh sách bạn bè */}
             <View style={{ paddingVertical: 20 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 20,
+                }}
+              >
                 <View>
-                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{localStrings.Public.Friend}</Text>
-                  <Text> {friendCount} {localStrings.Public.Friend}</Text>
+                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                    {localStrings.Public.Friend}
+                  </Text>
+                  <Text>
+                    {" "}
+                    {friendCount} {localStrings.Public.Friend}
+                  </Text>
                 </View>
                 <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
-                  <Text style={{ alignSelf: 'flex-end', color: brandPrimaryTap }}>{localStrings.Public.FriendFind}</Text>
+                  <Text
+                    style={{ alignSelf: "flex-end", color: brandPrimaryTap }}
+                  >
+                    {localStrings.Public.FriendFind}
+                  </Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
                 {friends.map((friend, index) => (
-                  <View key={index} style={{ width: '23%', alignItems: 'center', marginBottom: 10 }}>
-                    <View style={{
-                      width: 60, height: 60, borderRadius: 30, backgroundColor: lightGray,
-                      justifyContent: 'center', alignItems: 'center'
-                    }}>
-                    </View>
+                  <View
+                    key={index}
+                    style={{
+                      width: "23%",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 30,
+                        backgroundColor: lightGray,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    ></View>
                     <Text style={{ marginTop: 5 }}>{friend}</Text>
                   </View>
                 ))}
               </View>
 
-              <TouchableOpacity onPress={() => router.push({ pathname: '/listFriends' })}>
-                <Text style={{ textAlign: 'center', marginTop: 20, color: brandPrimaryTap }}>{localStrings.Public.FriendView}</Text>
+              <TouchableOpacity
+                onPress={() => router.push({ pathname: "/listFriends" })}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    marginTop: 20,
+                    color: brandPrimaryTap,
+                  }}
+                >
+                  {localStrings.Public.FriendView}
+                </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

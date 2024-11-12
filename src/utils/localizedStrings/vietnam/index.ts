@@ -138,6 +138,7 @@ export const VnLocalizedStrings = {
     SharePostSuccess: "Chia sẻ bài viết thành công!",
     SharePostFailed: "Chia sẻ bài viết thất bại!",
     SharePost: "Chia sẻ",
+    DeleteNewFeed: "Ẩn bài viết",
   },
   PostDetails:{
     ViewReplies: "Xem phản hồi",
@@ -209,14 +210,16 @@ export const VnLocalizedStrings = {
     NoUsers: "Không tìm thấy người dùng",
     TrySearch: "Hãy nhập từ khóa cần tìm",
   },
-  Notification: {
-    Notification: "Thông báo",
-    Items: {
-      LikePost: "đã thích bài viết của bạn: ",
-      SharePost: "đã chia sẻ bài viết của bạn: ",
-      CommentPost: "đã bình luận về bài viết của bạn: ",
-      Friend: "đã gưi lời mời kết bạn.",
-      AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
+Notification: {
+  Notification: "Thông báo",
+  Items:{
+    LikePost: "đã thích bài viết của bạn: ",
+    SharePost: "đã chia sẻ bài viết của bạn: ",
+    CommentPost: "đã bình luận về bài viết của bạn: ",
+    Friend: "đã gưi lời mời kết bạn.",
+    AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
+    NewPost: "đã đăng một bài viết mới.",
+    LikeComment: "đã thích bình luận của bạn: ",
     }
   }, 
 ListFriends: {

@@ -92,9 +92,9 @@ const usePostDetailsViewModel = (
     const reply = replyMap[comment?.id];
 
     if (comment && comment.user?.id !== user?.id) {
-      options.splice(1, 1);  
+      options.splice(1, 1);
     } else if (reply && reply.length > 0 && reply[0].user?.id !== user?.id) {
-      options.splice(1, 1); 
+      options.splice(1, 1);
     }
 
     showActionSheetWithOptions(
@@ -121,11 +121,11 @@ const usePostDetailsViewModel = (
             }
             break;
 
-            case 1:
-              setEditCommentContent(comment.content);
-              setCurrentCommentId(comment.id);
-              setEditModalVisible(true);
-              break;
+          case 1:
+            setEditCommentContent(comment.content);
+            setCurrentCommentId(comment.id);
+            setEditModalVisible(true);
+            break;
 
           case 2:
             handleDelete(comment.id);
@@ -182,23 +182,34 @@ const usePostDetailsViewModel = (
     setCurrentCommentId("");
   };
 
-
+  const [lastChange, setLastChange] = useState(false);
   useEffect(() => {
-    console.log("editCommentContent:", editCommentContent);
+    if (!lastChange) {
+      console.log("editCommentContent:", editCommentContent);
+      setLastChange(true);
+    }
   }, [editCommentContent]);
 
-  const handleUpdate = async (commentId: string, updatedContent:string, parentId: string, isReply = false) => {
+  const handleUpdate = async (
+    commentId: string,
+    updatedContent: string,
+    parentId: string,
+    isReply = false
+  ) => {
     try {
       const updateCommentData = {
         comments_id: commentId,
         content: updatedContent,
       };
-  
-      const response = await defaultCommentRepo.updateComment(commentId, updateCommentData);
-  
+
+      const response = await defaultCommentRepo.updateComment(
+        commentId,
+        updateCommentData
+      );
+
       if (response && response.data) {
         if (isReply) {
-          // Cập nhật reply trong replyMap
+          // Cập nhật reply mới
           setReplyMap((prevReplyMap) => {
             const updatedReplies = prevReplyMap[parentId].map((reply) => {
               if (reply.id === commentId) {
@@ -208,6 +219,8 @@ const usePostDetailsViewModel = (
             });
             return { ...prevReplyMap, [parentId]: updatedReplies };
           });
+          // Hiển thị reply mới
+          setComments((prev) => [...prev, { ...response.data, replies: [] }]);
         } else {
           // Cập nhật comment
           const updatedComments = comments.map((comment) => {
@@ -449,7 +462,7 @@ const usePostDetailsViewModel = (
     editCommentContent,
     setEditCommentContent,
     handleEditComment,
-    currentCommentId, 
+    currentCommentId,
     replyMap,
     likeIcon,
     fetchComments,

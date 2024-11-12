@@ -20,6 +20,7 @@ const EditPostViewModel = (repo: PostRepo) => {
   const [mediaIds, setMediaIds] = useState<string[]>([]);
   const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined);
   const [shareLoading, setShareLoading] = useState<boolean>(false);
+  const [hidePost, setHidePost] = useState<PostResponseModel[]>([]);
 
   const updatePost = async (data: UpdatePostRequestModel) => {
     try {
@@ -111,6 +112,8 @@ const EditPostViewModel = (repo: PostRepo) => {
     try {
       setDeleteLoading(true);
       const res = await repo.deletePost(id);
+      // cập nhật lại danh sách không cần reload lại trang
+      setHidePost(hidePost => hidePost.filter(post => post.id !== id));
       if (!res?.error) {
         Toast.show({
           type: "success",
