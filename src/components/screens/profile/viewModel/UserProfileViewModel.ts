@@ -7,6 +7,7 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
+import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
 
 const UserProfileViewModel = () => {
   const { localStrings } = useAuth();
@@ -20,6 +21,9 @@ const UserProfileViewModel = () => {
   const [userInfo, setUserInfo] = useState<UserModel | null>(null);
   const [sendRequestLoading, setSendRequestLoading] = useState(false);
   const [newFriendStatus, setNewFriendStatus] = useState<FriendStatus | undefined>(undefined);
+
+  const [friends, setFriends] = useState<FriendResponseModel[]>([]);
+  const [friendCount, setFriendCount] = useState(0);
 
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
@@ -246,19 +250,42 @@ const UserProfileViewModel = () => {
     }
   }, [userInfo]);
 
-  const fetchUserFriends = async () => {
+  const fetchUserFriends = async (newPage: number = 1) => {
     try {
-    }
-    catch (error: any) {
+      const response = await defaultProfileRepo.getListFriends({
+        limit: 10,
+        page: newPage,
+      });
+      if (response.data) {
+        const friends = response.data;
+        if (Array.isArray(friends)) {
+          setFriends((prevFriends) => [...prevFriends, ...friends]);
+          setFriendCount(friends.length); // Cập nhật số lượng bạn bè
+          console.log("đếm nè: ",setFriendCount);
+          
+        } else {
+          setFriends([friends]);
+          setFriendCount(1); // Cập nhật số lượng bạn bè
+          console.log("Đếm nè: ", setFriendCount);
+        }
+        console.log(friends);
+      } else {
+        Toast.show({
+          type: 'error',
+          text2: response.error.message,
+        });
+      }
+    } catch (error: any) {
       console.error(error);
       Toast.show({
-        type: 'error', 
-        text1: error?.message,
+        type: 'error',
+        text2: error.message,
       });
     } finally {
-
+      // Xử lý sau khi fetch dữ liệu
     }
   };
+
 
   return {
     loading,
@@ -277,7 +304,10 @@ const UserProfileViewModel = () => {
     newFriendStatus,
     setNewFriendStatus,
     acceptFriendRequest,
-    unFriend
+    unFriend,
+    fetchUserFriends,
+    friendCount,
+    friends,
   }
 }
 
