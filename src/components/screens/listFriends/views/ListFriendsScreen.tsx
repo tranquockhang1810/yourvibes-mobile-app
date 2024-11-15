@@ -63,20 +63,6 @@ const ListFriends: React.FC = () => {
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <Header />
         <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 20 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 10, borderColor: "gray", paddingHorizontal: 10, paddingVertical: 5, marginVertical: 10 }}>
-            <Ionicons name="search" size={24} color="gray" style={{ marginRight: 5 }} />
-            <TextInput
-              style={{ flex: 1, fontSize: 16 }}
-              placeholder={localStrings.ListFriends.Search}
-              value={search}
-              onChangeText={setSearch}
-            />
-            {search ? (
-              <TouchableOpacity onPress={() => setSearch("")}>
-                <Ionicons name="close" size={24} color="gray" style={{ marginLeft: 5 }} />
-              </TouchableOpacity>
-            ) : null}
-          </View>
           {loading && page === 1 ? (
             <ActivityIndicator size="large" color="blue" />
           ) : (

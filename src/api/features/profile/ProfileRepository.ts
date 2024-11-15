@@ -4,6 +4,8 @@ import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponse
 import client from "../../client";
 import { UserModel } from "../authenticate/model/LoginModel";
 import { UpdateProfileRequestModel } from "./model/UpdateProfileModel";
+import { GetFriendRequestModel } from "./model/GetFriendModel";
+import { FriendResponseModel, } from "./model/FriendReponseModel";
 
 interface IProfileRepo {
   getProfile(userId: string): Promise<BaseApiResponseModel<UserModel>>;
@@ -13,6 +15,7 @@ interface IProfileRepo {
   acceptFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
   refuseFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
   unfriend(userId: string): Promise<BaseApiResponseModel<any>>;
+  getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>>;
 }
 
 export class ProfileRepo implements IProfileRepo {
@@ -37,6 +40,9 @@ export class ProfileRepo implements IProfileRepo {
   }
   async unfriend(userId: string): Promise<BaseApiResponseModel<any>> {
     return client.delete(ApiPath.UNFRIEND + userId);
+  }
+  async getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>> {
+    return client.get(ApiPath.LIST_FRIENDS, data);
   }
 }
 

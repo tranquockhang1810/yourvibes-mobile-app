@@ -3,6 +3,8 @@ import { useActionSheet } from "@expo/react-native-action-sheet"; // Import useA
 import Toast from "react-native-toast-message"; 
 
 import { useAuth } from "@/src/context/auth/useAuth";
+import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
+import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
 
 type Friend = {
   id: string;
@@ -18,22 +20,39 @@ const useListFriendsViewModel = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
-
-  const fetchFriends = async (pageNumber: number) => {
-    setLoading(true);
-    const newFriends = Array(20)
-      .fill(null)
-      .map((_, i) => ({
-        id: `friend-${pageNumber}-${i}-${Date.now()}`,
-        name: `Thảo ở Vũ Trụ ${pageNumber * 10 + i + 1}`,
-        avatar: `https://picsum.photos/40/40?random=${Math.floor(
-          Math.random() * 1000
-        )}`,
-      }));
-
-    setHasMore(newFriends.length > 0);
-    setFriends((prevFriends) => [...prevFriends, ...newFriends]);
-    setLoading(false);
+  
+  const fetchFriends = async (page: number) => {
+    try {
+      const response = await defaultProfileRepo.getListFriends({
+        limit: 10,
+        page: 1,
+      });
+      if (response.data) {
+        if (Array.isArray(response.data)) {
+          const friends = response.data.map((friendResponse: FriendResponseModel) => ({
+            id: friendResponse.id,
+            family_name: friendResponse.family_name,
+            name: friendResponse.name,
+            avatar: friendResponse.avatar_url,
+          })) as Friend[];
+          setFriends(friends);
+        } else {
+          // Handle the case when response.data is not an array
+          console.error("response.data is not an array");
+        }
+      } else {
+        Toast.show({
+          type: 'error',
+          text2: response.error.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text2: error.message,
+      });
+    }
   };
 
   useEffect(() => {

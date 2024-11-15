@@ -3,6 +3,8 @@ import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
+import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
+import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
 
 const ProfileViewModel = () => {
   const { user, localStrings } = useAuth();
@@ -12,7 +14,7 @@ const ProfileViewModel = () => {
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
-
+  const [friends, setFriends] = useState<FriendResponseModel[]>([]);
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
       setLoading(true);
@@ -60,6 +62,44 @@ const ProfileViewModel = () => {
       fetchUserPosts(page + 1);
     }
   };
+  
+  const [friendCount, setFriendCount] = useState(0);
+
+  const fetchUserFriends = async (newPage: number = 1) => {
+    try {
+      const response = await defaultProfileRepo.getListFriends({
+        limit: 10,
+        page: newPage,
+      });
+      if (response.data) {
+        const friends = response.data;
+        if (Array.isArray(friends)) {
+          setFriends((prevFriends) => [...prevFriends, ...friends]);
+          setFriendCount(friends.length); // Cập nhật số lượng bạn bè
+          console.log("đếm nè: ",setFriendCount);
+          
+        } else {
+          setFriends([friends]);
+          setFriendCount(1); // Cập nhật số lượng bạn bè
+          console.log("Đếm nè: ", setFriendCount);
+        }
+        console.log(friends);
+      } else {
+        Toast.show({
+          type: 'error',
+          text2: response.error.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text2: error.message,
+      });
+    } finally {
+      // Xử lý sau khi fetch dữ liệu
+    }
+  };
 
   return {
     loading,
@@ -67,7 +107,10 @@ const ProfileViewModel = () => {
     hasMore,
     loadMorePosts,
     fetchUserPosts,
-    total
+    total,
+    friends,
+    fetchUserFriends,
+    friendCount,
   }
 };
 

@@ -167,6 +167,7 @@ export const ENGLocalizedStrings = {
     ReplyFailed: "Reply failed!",
     Yes: "Yes",
     No: "No",
+    CommentNotFound: "Comment not found!",
   },
   Profile: {
     Posts: {

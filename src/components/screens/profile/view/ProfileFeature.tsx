@@ -1,39 +1,77 @@
-import React, { useCallback, useEffect } from 'react';
-import { KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import useColor from '@/src/hooks/useColor';
-import ProfileHeader from '../components/ProfileHeader';
-import ProfileTabs from '../components/ProfileTabs';
-import { useAuth } from '@/src/context/auth/useAuth';
-import { useFocusEffect, useRouter } from 'expo-router';
-import ProfileViewModel from '../viewModel/ProfileViewModel';
-import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import useColor from "@/src/hooks/useColor";
+import ProfileHeader from "../components/ProfileHeader";
+import ProfileTabs from "../components/ProfileTabs";
+import { useAuth } from "@/src/context/auth/useAuth";
+import { useFocusEffect, useRouter } from "expo-router";
+import ProfileViewModel from "../viewModel/ProfileViewModel";
+import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 
 const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
   const router = useRouter();
-  const { loading, posts, fetchUserPosts, loadMorePosts, total } = ProfileViewModel();
+  const {
+    loading,
+    posts,
+    fetchUserPosts,
+    loadMorePosts,
+    total,
+    fetchUserFriends,
+    friends,
+  } = ProfileViewModel();
 
-  useFocusEffect(useCallback(() => {
-    if (tab === 0 || tab === 1) {
-      fetchUserPosts();
-    }
-  }, [tab]));
+  const [friendCount, setFriendCount] = useState(0);
+
+  useEffect(() => {
+    const fetchFriendCount = async () => {
+      const count = await fetchUserFriends();
+      if (count !== undefined) {
+        setFriendCount(count);
+      }
+    };
+
+    fetchFriendCount();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (tab === 0 || tab === 1) {
+        fetchUserPosts();
+      }
+    }, [tab])
+  );
 
   const renderHeaderItem = useCallback(() => {
     return (
       <>
         <ProfileHeader total={total} user={user as UserModel} loading={false} />
-        <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={false} loadMorePosts={loadMorePosts} userInfo={user as UserModel} />
+        <ProfileTabs
+          tabNum={tab}
+          posts={posts}
+          loading={loading}
+          profileLoading={false}
+          loadMorePosts={loadMorePosts}
+          userInfo={user as UserModel}
+          friendCount={friendCount}
+        />
       </>
-    )
-  }, [total, user, tab, posts, loading]);
+    );
+  }, [total, user, tab, posts, loading, friendCount]);
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: backgroundColor, width: '100%' }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, backgroundColor: backgroundColor, width: "100%" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={{ flex: 1 }}>
         {/* Header Cố Định */}
@@ -43,19 +81,26 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
             height: 50,
             paddingHorizontal: 16,
             paddingTop: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#fff',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#fff",
             zIndex: 10,
-            borderBottomColor: 'black',
+            borderBottomColor: "black",
             borderBottomWidth: 1,
           }}
         >
-          <TouchableOpacity onPress={() => router.push('/home')}>
+          <TouchableOpacity onPress={() => router.push("/home")}>
             <Feather name="arrow-left" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', flex: 1 }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              fontWeight: "bold",
+              flex: 1,
+            }}
+          >
             {user?.family_name} {user?.name || localStrings.Public.Username}
           </Text>
         </View>
@@ -63,7 +108,24 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
         {/* Content */}
         <FlatList
           data={null}
-          ListHeaderComponent={renderHeaderItem}
+          ListHeaderComponent={
+            <>
+              <ProfileHeader
+                total={total}
+                user={user as UserModel}
+                loading={false}
+              />
+              <ProfileTabs
+                tabNum={tab}
+                posts={posts}
+                loading={loading}
+                profileLoading={false}
+                loadMorePosts={loadMorePosts}
+                userInfo={user as UserModel}
+                friendCount={0}
+              />
+            </>
+          }
           renderItem={() => null}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}

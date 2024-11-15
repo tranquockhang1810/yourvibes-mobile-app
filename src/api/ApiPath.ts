@@ -14,6 +14,7 @@ export const ApiPath = {
   FRIEND_REQUEST: getApiPath("users/friends/friend_request/"),
   FRIEND_RESPONSE: getApiPath("users/friends/friend_response/"),
   UNFRIEND: getApiPath("users/friends/"),
+  LIST_FRIENDS: getApiPath("users/friends/"),
 
   // Post
   CREATE_POST: getApiPath("posts/"),
@@ -42,8 +43,8 @@ export const ApiPath = {
   READ_ALL_NOTIFICATION: getApiPath("users/notifications/"),
 
    //New Feeds
-    GET_NEW_FEEDS: getApiPath('post/new_feeds/'),
-    DELETE_NEW_FEED: getApiPath('post/new_feeds/'),
+    GET_NEW_FEEDS: getApiPath('users/new_feeds/'),
+    DELETE_NEW_FEED: getApiPath('users/new_feeds/'),
 };
 
 function getApiPath(path: string) {

@@ -165,6 +165,7 @@ export const VnLocalizedStrings = {
     ReplyFailed: "Phân hồi thát bại!",
     Yes:"Xác nhận",
     No:"Không",
+    CommentNotFound: "Không tìm thấy bình luận!",
   },
   Profile: {
     Posts: {
