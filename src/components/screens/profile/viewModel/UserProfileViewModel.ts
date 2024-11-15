@@ -103,6 +103,7 @@ const UserProfileViewModel = () => {
     try {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.sendFriendRequest(id);
+      
       if (!response?.error) {
         Toast.show({
           type: 'success',
@@ -218,18 +219,20 @@ const UserProfileViewModel = () => {
   const unFriend = async (id: string) => {
     try {
       setSendRequestLoading(true);
-      const response = await defaultProfileRepo.unfriend(id);
+      const response = await defaultProfileRepo.unfriend(id); 
       if (!response?.error) {
         Toast.show({
           type: 'success',
           text1: localStrings.Profile.Friend.UnfriendSuccess,
         });
+        
         setNewFriendStatus(FriendStatus.NotFriend);
       } else {
         Toast.show({
           type: 'error',
           text1: localStrings.Profile.Friend.UnfriendFailed,
           text2: response?.error?.message,
+          
         });
       }
     } catch (error: any) {

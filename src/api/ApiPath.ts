@@ -43,8 +43,8 @@ export const ApiPath = {
   READ_ALL_NOTIFICATION: getApiPath("users/notifications/"),
 
    //New Feeds
-    GET_NEW_FEEDS: getApiPath('users/new_feeds/'),
-    DELETE_NEW_FEED: getApiPath('users/new_feeds/'),
+    GET_NEW_FEEDS: getApiPath('posts/new_feeds/'),
+    DELETE_NEW_FEED: getApiPath('posts/new_feeds/'),
 };
 
 function getApiPath(path: string) {
