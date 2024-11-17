@@ -15,6 +15,9 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { useFocusEffect, useRouter } from "expo-router";
 import ProfileViewModel from "../viewModel/ProfileViewModel";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
+import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
+import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
+import useListFriendsViewModel from "../../listFriends/viewModel/ListFriendsViewModel";
 
 const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
@@ -25,23 +28,11 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     posts,
     fetchUserPosts,
     loadMorePosts,
-    total,
-    fetchUserFriends,
-    friends,
+    total, 
   } = ProfileViewModel();
 
-  const [friendCount, setFriendCount] = useState(0);
-
-  useEffect(() => {
-    const fetchFriendCount = async () => {
-      const count = await fetchUserFriends();
-      if (count !== undefined) {
-        setFriendCount(count);
-      }
-    };
-
-    fetchFriendCount();
-  }, []);
+  const { getFriendCount } = useListFriendsViewModel();
+  const friendCount = getFriendCount(); 
 
   useFocusEffect(
     useCallback(() => {
@@ -122,7 +113,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 profileLoading={false}
                 loadMorePosts={loadMorePosts}
                 userInfo={user as UserModel}
-                friendCount={0}
+                friendCount={friendCount}
               />
             </>
           }

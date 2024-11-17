@@ -15,7 +15,7 @@ interface IProfileRepo {
   acceptFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
   refuseFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
   unfriend(userId: string): Promise<BaseApiResponseModel<any>>;
-  getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>>;
+  getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>>; 
 }
 
 export class ProfileRepo implements IProfileRepo {
@@ -43,7 +43,7 @@ export class ProfileRepo implements IProfileRepo {
   }
   async getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>> {
     return client.get(ApiPath.LIST_FRIENDS, data);
-  }
+  } 
 }
 
 export const defaultProfileRepo = new ProfileRepo();

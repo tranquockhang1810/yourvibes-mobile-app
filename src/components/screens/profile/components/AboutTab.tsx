@@ -12,32 +12,41 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { DateTransfer } from "../../../../utils/helper/DateTransfer";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 import { router } from "expo-router";
-import { Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-
-import useListFriendsViewModel from "../../listFriends/viewModel/ListFriendsViewModel"; 
+import { Image } from "react-native";
+import useListFriendsViewModel from "../../listFriends/viewModel/ListFriendsViewModel";
+import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 
 const AboutTab = ({
   user,
   loading,
-  friendCount,
-  fetchFriends,
-  handleMoreOptions,
 }: {
   user: UserModel;
   loading: boolean;
   friendCount: number;
-  handleMoreOptions: (friend: any) => void;
   fetchFriends: () => void;
 }) => {
+  const { getFriendCount } = useListFriendsViewModel();
+  const friendCount = getFriendCount();
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
-  // const friends = Array.from({ length: 8 }, (_, index) => `${localStrings.Public.Friend} ${index + 1}`);
-  const [friends, setFriends] = useState([]);
+  const [friends, setFriends] = useState<
+    { id: string; avatar: string; family_name: string; name: string }[]
+  >([]);
 
-
-  const renderFriend = ({ item }: { item: { id: string; avatar: string; name: string; } }) => (
-    <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderColor: "#e0e0e0" }}>
+  const renderFriend = ({
+    item,
+  }: {
+    item: { id: string; avatar: string; family_name: string; name: string };
+  }) => (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: "#e0e0e0",
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <Image
           source={{ uri: item.avatar }}
@@ -49,14 +58,12 @@ const AboutTab = ({
             marginRight: 10,
           }}
         />
-        <Text style={{ fontSize: 16, color: "black" }}>{item.name}</Text>
+        <Text style={{ fontSize: 16, color: "black" }}>
+          {item.family_name} {item.name}
+        </Text>
       </View>
-      <TouchableOpacity style={{ paddingHorizontal: 10 }} onPress={() => handleMoreOptions(item)}>
-        <Ionicons name="ellipsis-vertical" size={24} color="black" />
-      </TouchableOpacity>
     </View>
   );
-
 
   return (
     <>
@@ -153,7 +160,6 @@ const AboutTab = ({
                     {localStrings.Public.Friend}
                   </Text>
                   <Text>
-                    {/* {renderFriend} */}
                     {friendCount} {localStrings.Public.Friend}
                   </Text>
                 </View>
@@ -182,6 +188,7 @@ const AboutTab = ({
                       marginBottom: 10,
                     }}
                   >
+                    {renderFriend({ item: friend })}
                     <View
                       style={{
                         width: 60,
@@ -191,8 +198,20 @@ const AboutTab = ({
                         justifyContent: "center",
                         alignItems: "center",
                       }}
-                    ></View>
-                    <Text style={{ marginTop: 5 }}>{friend}</Text>
+                    >
+                      <Image
+                        source={{ uri: friend.avatar }}
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 20,
+                          backgroundColor: "#e0e0e0",
+                        }}
+                      />
+                    </View>
+                    <Text style={{ marginTop: 5 }}>
+                      {friend.family_name} {friend.name}
+                    </Text>
                   </View>
                 ))}
               </View>

@@ -56,7 +56,7 @@ const ProfileTabs = ({
       default:
         return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} />;
     }
-  }, [tab, posts, loading, profileLoading, userInfo]);
+  }, [tab, posts, loading, profileLoading, userInfo, friendCount, user]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>

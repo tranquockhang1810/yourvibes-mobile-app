@@ -5,6 +5,7 @@ import { Button, Modal } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { router } from 'expo-router';
+import ChangePasswordScreen from '@/src/components/screens/changePassword/views/changePassword';
 
 const SettingsTab = () => {
   const { brandPrimary } = useColor();
@@ -59,7 +60,7 @@ const SettingsTab = () => {
         <Button
           type="ghost"
           onPress={() => {
-            // Handle Change Password action here
+            router.push('/change-password');
           }}
           style={{ marginTop: 10 }}
         >

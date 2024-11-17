@@ -9,26 +9,37 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import useListFriendsViewModel from "../viewModel/ListFriendsViewModel"; 
-import { router } from 'expo-router';
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import useListFriendsViewModel from "../viewModel/ListFriendsViewModel";
+import { router } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 
-const ListFriends: React.FC = () => {
+const ListFriends: React.FC = () => { 
   const {
-    search,
-    setSearch,
     loading,
     friends,
     handleEndReached,
     hasMore,
     page,
-    handleMoreOptions // Nhận hàm từ ViewModel
+    handleMoreOptions,
   } = useListFriendsViewModel();
 
   const { localStrings } = useAuth();
-  const renderFriend = ({ item }: { item: { id: string; avatar: string; name: string; } }) => (
-    <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderColor: "#e0e0e0" }}>
+
+  const renderFriend = ({
+    item,
+  }: {
+    item: { id: string; avatar: string; family_name: string; name: string };
+  }) => (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: "#e0e0e0",
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <Image
           source={{ uri: item.avatar }}
@@ -40,20 +51,39 @@ const ListFriends: React.FC = () => {
             marginRight: 10,
           }}
         />
-        <Text style={{ fontSize: 16, color: "black" }}>{item.name}</Text>
+        <Text style={{ fontSize: 16, color: "black" }}>
+          {item.family_name} {item.name}
+        </Text>
       </View>
-      <TouchableOpacity style={{ paddingHorizontal: 10 }} onPress={() => handleMoreOptions(item)}>
+      <TouchableOpacity
+        style={{ paddingHorizontal: 10 }}
+        onPress={() => handleMoreOptions(item)}
+      >
         <Ionicons name="ellipsis-vertical" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );
 
   const Header: React.FC = () => (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10, paddingHorizontal: 16, backgroundColor: "white", borderBottomWidth: 1, borderColor: "#e0e0e0", marginTop: 35 }}>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        backgroundColor: "white",
+        borderBottomWidth: 1,
+        borderColor: "#e0e0e0",
+        marginTop: 35,
+      }}
+    >
       <TouchableOpacity onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
-      <Text style={{ fontSize: 18, fontWeight: "bold" }}>{localStrings.ListFriends.ListFriends}</Text>
+      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+        {localStrings.ListFriends.ListFriends}
+      </Text>
       <View />
     </View>
   );
@@ -67,7 +97,7 @@ const ListFriends: React.FC = () => {
             <ActivityIndicator size="large" color="blue" />
           ) : (
             <SectionList
-              sections={[{ title: "", data: friends }]}
+              sections={[{ title: "", data: friends as any }]}
               renderItem={renderFriend}
               keyExtractor={(item) => item.id}
               onEndReached={handleEndReached}
