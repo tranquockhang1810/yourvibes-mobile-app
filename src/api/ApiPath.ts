@@ -16,6 +16,7 @@ export const ApiPath = {
   FRIEND_REQUEST: getApiPath("users/friends/friend_request/"),
   FRIEND_RESPONSE: getApiPath("users/friends/friend_response/"),
   UNFRIEND: getApiPath("users/friends/"),
+  LIST_FRIENDS: getApiPath("users/friends/"),
 
   // Post
   CREATE_POST: getApiPath("posts/"),

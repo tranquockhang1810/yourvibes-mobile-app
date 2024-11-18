@@ -60,14 +60,14 @@ function PostDetails(): React.JSX.Element {
     likeCount,
     fetchComments,
     replyToReplyId,
+    setEditCommentContent,
+    editCommentContent, 
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
-  const [editCommentContent, setEditCommentContent] = useState("");
 
   const parentId = replyToCommentId || replyToReplyId;
-
 
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
@@ -188,7 +188,7 @@ function PostDetails(): React.JSX.Element {
 
                 <TouchableOpacity
                   style={{ flexDirection: "row", alignItems: "center" }}
-                  onPress={() => handleAction(reply.id)}
+                  onPress={() => handleAction(reply)}
                 >
                   <AntDesign name="bars" size={20} color={brandPrimaryTap} />
                   <Text style={{ marginLeft: 5 }}>
@@ -294,10 +294,10 @@ function PostDetails(): React.JSX.Element {
               }}
               onPress={() => {
                 console.log("Comment được trả lời:", comments.id);
-                setReplyToCommentId(comments.id); // Trả lời bình luận cha
-                setReplyToReplyId(null); // Không trả lời bình luận con
+                setReplyToCommentId(comments.id);
+                setReplyToReplyId(null);
                 setNewComment("");
-                textInputRef.current?.focus(); // Hiển thị bàn phím
+                textInputRef.current?.focus();
                 console.log("replyToCommentId sau khi thiết lập:", comments.id);
               }}
             >
@@ -311,7 +311,7 @@ function PostDetails(): React.JSX.Element {
                 alignItems: "center",
                 marginRight: 20,
               }}
-              onPress={() => handleAction(comments.id)}
+              onPress={() => handleAction(comments)}
             >
               <AntDesign name="bars" size={20} color={brandPrimaryTap} />
               <Text style={{ marginLeft: 5 }}>
@@ -348,7 +348,7 @@ function PostDetails(): React.JSX.Element {
             //         : `${localStrings.PostDetails.ViewReplies}`}
             //     </Text>
             //   </View>
-            // </TouchableOpacity> 
+            // </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 fetchReplies(postId, comments.id);
@@ -489,7 +489,10 @@ function PostDetails(): React.JSX.Element {
                     }
                     onBlur={() => {
                       setReplyToCommentId(null);
-                      console.log("Tạm biệt replyToCommentId: ", replyToCommentId);
+                      console.log(
+                        "Tạm biệt replyToCommentId: ",
+                        replyToCommentId
+                      );
                     }}
                   />
                 </Form.Item>
@@ -518,8 +521,8 @@ function PostDetails(): React.JSX.Element {
                       const parentId = setReplyToReplyId
                         ? String(setReplyToReplyId)
                         : replyToCommentId
-                          ? String(replyToCommentId)
-                          : null;
+                        ? String(replyToCommentId)
+                        : null;
 
                       setLoading(true);
                       if (parentId) {
@@ -595,6 +598,7 @@ function PostDetails(): React.JSX.Element {
                       }}
                     />
                   </View>
+
                   <View style={{ marginLeft: 10, flex: 1 }}>
                     <View style={{ flexDirection: "column" }}>
                       <Text style={{ fontWeight: "bold", fontSize: 16 }}>
@@ -602,23 +606,23 @@ function PostDetails(): React.JSX.Element {
                           localStrings.Public.UnknownUser}
                       </Text>
 
-                      <TextInput
-                        value={editCommentContent}
-                        onChangeText={setEditCommentContent}
-                        placeholder={
-                          comments.find(
-                            (comment) => comment.id === currentCommentId
-                          )?.content ?? "Không tìm thấy comment"
-                        }
-                        style={{
-                          borderWidth: 1,
-                          borderColor: lightGray,
-                          borderRadius: 5,
-                          padding: 10,
-                          backgroundColor: grayBackground,
-                          marginTop: 10,
-                        }}
-                      />
+                      <Form>
+                        <Form.Item noStyle
+                        >
+                          <TextInput
+                            value={editCommentContent}
+                            onChangeText={setEditCommentContent}
+                            style={{
+                              borderWidth: 1,
+                              borderColor: lightGray,
+                              borderRadius: 5,
+                              padding: 10,
+                              backgroundColor: grayBackground,
+                              marginTop: 10,
+                            }}
+                          />
+                        </Form.Item>
+                      </Form>
                     </View>
                   </View>
                 </View>
@@ -634,15 +638,24 @@ function PostDetails(): React.JSX.Element {
                 }}
               >
                 <Button
-                  title={localStrings.Public.Save}
+                  title={
+                    loading
+                      ? localStrings.Public.Save
+                      : localStrings.Public.Save
+                  }
+                  disabled={loading}
                   onPress={() => {
                     if (currentCommentId && editCommentContent) {
-                      handleUpdate(currentCommentId, editCommentContent, parentId || "").then(
-                        () => {
-                          setEditModalVisible(false);
-                          setEditCommentContent(""); // Clear TextInput
-                        }
-                      );
+                      setLoading(true); 
+                      handleUpdate(
+                        currentCommentId,
+                        editCommentContent,
+                        parentId || ""
+                      ).then(() => {
+                        setLoading(false);
+                        setEditModalVisible(false);
+                        setEditCommentContent(""); // Clear TextInput
+                      });
                     } else {
                       console.error("Invalid comment ID or content");
                     }

@@ -10,8 +10,8 @@ const SearchViewModel = (repo: SearchRepo) => {
   const [users, setUsers] = useState<UserModel[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const limit = 10;
-  const [hasMore, setHasMore] = useState(true);
+  const limit = 30;
+  const [hasMore, setHasMore] = useState(false);
 
   const resetSearchResult = () => {
     setUsers([]);

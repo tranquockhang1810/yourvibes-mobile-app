@@ -7,6 +7,7 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
+import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
 
 const UserProfileViewModel = () => {
   const { localStrings } = useAuth();
@@ -20,6 +21,9 @@ const UserProfileViewModel = () => {
   const [userInfo, setUserInfo] = useState<UserModel | null>(null);
   const [sendRequestLoading, setSendRequestLoading] = useState(false);
   const [newFriendStatus, setNewFriendStatus] = useState<FriendStatus | undefined>(undefined);
+
+  const [friends, setFriends] = useState<FriendResponseModel[]>([]);
+  const [friendCount, setFriendCount] = useState(0);
 
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
@@ -246,6 +250,53 @@ const UserProfileViewModel = () => {
     }
   }, [userInfo]);
 
+//====================================================================================
+  // const fetchFriends = async (page: number, userId?: string) => {
+  //   console.log("fetchFriends: ", page);
+  //   try {
+  //     const response = await defaultProfileRepo.getListFriends({
+  //       limit: 10,
+  //       page: 1,
+  //       user_id: userId,
+  //     });
+  //     if (response.data) {
+  //       if (Array.isArray(response.data)) {
+  //         const friends = response.data.map(
+  //           (friendResponse: FriendResponseModel) => ({
+  //             id: friendResponse.id,
+  //             family_name: friendResponse.family_name,
+  //             name: friendResponse.name,
+  //             avatar: friendResponse.avatar_url,
+  //           })
+  //         ) as FriendResponseModel[];
+  //         return friends;
+  //       } else {
+  //         console.error("response.data is not an array");
+  //       }
+  //     } else {
+  //       throw new Error(response.error.message);
+  //     }
+  //   } catch (error: any) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (user?.id) {
+  //     fetchFriends(page, user?.id).then((friends) => {
+  //       setFriends(friends as FriendResponseModel[]);
+  //       setFriendCount(friends?.length ?? 0); //Đếm số lượng bạn bè
+  //     });
+  //   } else {
+  //     fetchFriends(page).then((friends) => {
+  //       setFriends(friends as FriendResponseModel[]);
+  //       setFriendCount(friends?.length ?? 0); //Đếm số lượng bạn bè
+  //     });
+  //   }
+  // }, [page, user?.id]);
+
+ 
   return {
     loading,
     profileLoading,
@@ -263,7 +314,9 @@ const UserProfileViewModel = () => {
     newFriendStatus,
     setNewFriendStatus,
     acceptFriendRequest,
-    unFriend
+    unFriend,
+    friendCount,
+    friends,
   }
 }
 
