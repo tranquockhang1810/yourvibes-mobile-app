@@ -62,7 +62,7 @@ export const VnLocalizedStrings = {
       GetOTP: "Nhập OTP",
       OTP: "Mã OTP",
       ConfirmPassword: "Xác nhận mật khẩu",
-      Biography: "Tiểu sử"
+      Biography: "Tiểu sử",
     },
     RequiredMessages: {
       FamilyNameRequiredMessage: "Vui lòng nhập họ!",
@@ -82,7 +82,7 @@ export const VnLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Xác nhận mật khẩu không hợp lệ!",
       OTPTypeMessage: "Mã OTP phải là chuỗi 6 số!",
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
-    }
+    },
   },
   Login: {
     LoginButton: "Đăng nhập",
@@ -90,7 +90,7 @@ export const VnLocalizedStrings = {
     DontHaveAccout: "Bạn chưa có tài khoản?",
     SignUpNow: "Đăng ký ngay!",
     Or: "Hoặc",
-    LoginFailed: "Đăng nhập thất bại!"
+    LoginFailed: "Đăng nhập thất bại!",
   },
   SignUp: {
     SignUpButton: "Đăng ký",
@@ -111,20 +111,22 @@ export const VnLocalizedStrings = {
     CreatePostSuccess: "Đăng bài thành công!",
     CreatePostFailed: "Đăng bài thất bại!",
     EmptyContent: "Thiếu nội dung hoặc file media",
-    PickImgFailed: "Tải file thất bại!"
+    PickImgFailed: "Tải file thất bại!",
   },
   ObjectPostPrivacy: {
-    PublicDescription: 'Bất kỳ ai ở trên YourVibes',
-    FriendDescription: 'Chỉ bạn bè của bạn ở trên YourVibes',
-    PrivateDescription: 'Chỉ bạn có thể nhìn thấy',
+    PublicDescription: "Bất kỳ ai ở trên YourVibes",
+    FriendDescription: "Chỉ bạn bè của bạn ở trên YourVibes",
+    PrivateDescription: "Chỉ bạn có thể nhìn thấy",
     PostPrivacy: "Đối tượng của bài viết",
     Contents: {
       WhoCanSee: "Ai có thể nhìn thấy bài viết của bạn?",
-      CanFind: "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
+      CanFind:
+        "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
       DefaultPrivacy1: "Tuy đối tượng mặc định là ",
-      DefaultPrivacy2: ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này."
+      DefaultPrivacy2:
+        ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này.",
     },
-    ChoosePrivacy: "Chọn Đối tượng"
+    ChoosePrivacy: "Chọn Đối tượng",
   },
   Post: {
     EditPost: "Chỉnh sửa bài đăng",
@@ -138,13 +140,39 @@ export const VnLocalizedStrings = {
     SharePost: "Chia sẻ",
     DeleteNewFeed: "Ẩn bài viết",
   },
+  PostDetails:{
+    ViewReplies: "Xem phản hồi",
+    HideReplies:"Ẩn phản hồi",
+    Save:"Lưu",
+    Cancel:"Hủy",
+    Error: "Lỗi",
+    ErrorReplies: "Lỗi phản hồi",
+    ReportComment: "Báo cáo bình luận",
+    EditComment: "Chỉnh sửa bình luận",
+    DeleteComment: "Xóa bình luận",
+    ActionOptions:"Chọn hành động",
+    ReportSusesfully:"Báo cáo bình luận thành cônng!",
+    Success  :"Thành công",
+    EditCommentSuccess: "Cập nhật bình luận thành công!",
+    EditCommentFailed: "Cập nhật bình luận thát bị!",
+    EditReplySuccess: "Cập nhật phân hồi thành công!",
+    EditReplyFailed: "Cập nhật phân hồi thát bại!",
+    DeteleReplyFailed: "Xóa phân hồi thát bại!",
+    DeteleReplySuccess: "Xóa phân hồi này này!",
+    CommentSuccess: "Bình luận thành công!",
+    CommentFailed: "Bình luận thát bại!",
+    ReplySuccess: "Phân hồi thành công!",
+    ReplyFailed: "Phân hồi thát bại!",
+    Yes:"Xác nhận",
+    No:"Không",
+  },
   Profile: {
     Posts: {
       GetPostsFailed: "Lấy danh sách bài viết thất bại!",
-      GetOnePostFailed: "Lấy bài viết thất bại!"
+      GetOnePostFailed: "Lấy bài viết thất bại!",
     },
     Info: {
-      GetInfoFailed: "Lấy thống tin người dùng thất bại!"
+      GetInfoFailed: "Lấy thống tin người dùng thất bại!",
     },
     Friend: {
       SendYouARequest: "Đã gửi cho bạn một lời mời kết bạn!",
@@ -158,7 +186,7 @@ export const VnLocalizedStrings = {
       UnfriendFailed: "Hủy kết bạn thất bại!",
       UnfriendSuccess: "Hủy kết bạn thành công!",
       UnfriendConfirm: "Bạn có muốn hủy kết bạn với người dùng này?",
-    }
+    },
   },
   UpdatePost: {
     UpdatePostSuccess: "Cập nhật bài đăng thành công!",
@@ -167,7 +195,7 @@ export const VnLocalizedStrings = {
   DeletePost: {
     DeleteConfirm: "Bạn chắc chắn muốn xóa bài viết này?",
     DeleteSuccess: "Xóa bài viết thành công!",
-    DeleteFailed: "Xóa bài viết thát bại!"
+    DeleteFailed: "Xóa bài viết thát bại!",
   },
   UpdateProfile: {
     UpdateProfile: "Cập nhật trang cá nhân",
@@ -179,7 +207,7 @@ export const VnLocalizedStrings = {
     SearchPlaceholder: "Bạn đang tìm gì...",
     SearchFailed: "Tìm kiếm thất bại!",
     NoUsers: "Không tìm thấy người dùng",
-    TrySearch: "Hãy nhập từ khóa cần tìm"
+    TrySearch: "Hãy nhập từ khóa cần tìm",
   },
 Notification: {
   Notification: "Thông báo",
@@ -192,16 +220,33 @@ Notification: {
     NewPost: "đã đăng một bài viết mới.",
     LikeComment: "đã thích bình luận của bạn: ",
     }
-  },
-  Ads: {
-    Ads: "Quảng cáo bài viết",
-    TimeAndBudget: "Khoảng thời gian và Ngân sách",
-    Minimum: "Tối thiểu: {{price}}/1 ngày",
-    DaysAds: "Số ngày quảng cáo:",
-    TimeAds: "Thời gian quảng cáo: ",
-    BudgetAds: "Ngân sách: ",
-    PaymentMethod: "Phương thức thanh toán",
-    AdvertisePostFailed: "Quảng cáo bài viết thất bại!",
-    AdvertisePostSuccess: "Quảng cáo bài viết thành công!",
-  }
+  }, 
+ListFriends: {
+  ListFriends: "Danh sách bạn bè",
+  Search: "Tim kiếm . . .",
+  ViewProfile: "Xem trang cá nhân",
+  Unfriend: "Hủy kết bạn ",
+  Block: "Chặn ",
+  Cancel: "Hủy",
+},
+
+Ads: {
+  Ads: "Quảng cáo bài viết",
+  TimeAndBudget: "Khoảng thời gian và Ngân sách",
+  Minimum: "Tối thiểu: {{price}}/1 ngày",
+  DaysAds: "Số ngày quảng cáo:",
+  TimeAds: "Thời gian quảng cáo: ",
+  BudgetAds: "Ngân sách: ",
+  PaymentMethod: "Phương thức thanh toán",
+  AdvertisePostFailed: "Quảng cáo bài viết thất bại!",
+  AdvertisePostSuccess: "Quảng cáo bài viết thành công!",
+},
+Report: {
+  ReportPost: " Tại sao bạn báo cáo bài viết này?",
+  ReportUser: "Tại sao bạn báo cáo người dùng này?",
+  ReportComment:"Tại sao bạn báo cáo bình luận này?",
+  ReportSuccess: "Báo cáo bài viết thành công!",
+  ReportFailed: "Báo cáo bài viết thất bại!",
+},
+
 };

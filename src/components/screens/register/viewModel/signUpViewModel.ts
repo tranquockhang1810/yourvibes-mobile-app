@@ -28,7 +28,7 @@ const SignUpViewModel = (repo: AuthenRepo) => {
         otp: data?.otp,
       }
       const response = await repo.register(params);
-      if (!response?.error) {
+      if (response && !response?.error) {
         Toast.show({
           type: "success",
           text1: localStrings.SignUp.SignUpSuccess,

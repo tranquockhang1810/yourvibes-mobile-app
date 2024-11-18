@@ -28,8 +28,8 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
   const showAction = useCallback(() => {
     const options = [
       localStrings.Public.UnFriend,
-      localStrings.Public.ReportFriend,
-      localStrings.Public.Block,
+      // localStrings.Public.ReportFriend,
+      // localStrings.Public.Block,
       localStrings.Public.Cancel,
     ];
 

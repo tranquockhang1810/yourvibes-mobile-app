@@ -10,7 +10,7 @@ const ProfileViewModel = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const limit = 10;
 
   const fetchUserPosts = async (newPage: number = 1) => {

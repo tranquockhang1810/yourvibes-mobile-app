@@ -14,6 +14,8 @@ import EditPostViewModel from '../screens/editPost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
+import HomeViewModel from '../screens/home/viewModel/HomeViewModel';
+import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo';
 
 
 interface IPost {
@@ -21,8 +23,6 @@ interface IPost {
   isParentPost?: boolean,
   noFooter?: boolean,
   children?: React.ReactNode,
-  deleteNewFeed?: (id: string) => void
-  deletePost?: (id: string) => void
 }
 
 const Post: React.FC<IPost> = ({
@@ -30,8 +30,6 @@ const Post: React.FC<IPost> = ({
   isParentPost = false,
   noFooter = false,
   children,
-  deleteNewFeed,
-  deletePost
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
@@ -45,8 +43,10 @@ const Post: React.FC<IPost> = ({
     likedPost,
     setLikedPost,
     sharePost,
-    shareLoading
+    shareLoading,
+    deletePost,
   } = EditPostViewModel(defaultPostRepo);
+  const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
 
   const showAction = () => {
     const options = user?.id === post?.user?.id ? [
@@ -92,8 +92,7 @@ const Post: React.FC<IPost> = ({
         } else {
           switch (buttonIndex) {
             case 0:
-              console.log('báo cáo action selected');
-              router.push('/reportPost');
+              router.push(`/reportPost?postId=${post?.id}`);
               break;
             case 1:
               Modal.alert(
@@ -101,7 +100,7 @@ const Post: React.FC<IPost> = ({
                 localStrings.DeletePost.DeleteConfirm,
                 [
                   { text: localStrings.Public.Cancel, style: 'cancel' },
-                  { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed &&deleteNewFeed(post?.id as string) },
+                  { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed && deleteNewFeed(post?.id as string) },
                   
                 ]
                 

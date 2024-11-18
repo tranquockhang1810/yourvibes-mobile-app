@@ -5,7 +5,7 @@ import useColor from '@/src/hooks/useColor';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { DateTransfer } from '../../../../utils/helper/DateTransfer';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
-import { router } from 'expo-router';
+import { router } from 'expo-router'; 
 
 const AboutTab = ({ user, loading }: { user: UserModel, loading: boolean }) => {
   const { lightGray, brandPrimaryTap } = useColor();
@@ -58,7 +58,7 @@ const AboutTab = ({ user, loading }: { user: UserModel, loading: boolean }) => {
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 <View>
                   <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{localStrings.Public.Friend}</Text>
-                  <Text>435 {localStrings.Public.Friend}</Text>
+                  <Text> {user?.friend_count} {localStrings.Public.Friend}</Text>
                 </View>
                 <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
                   <Text style={{ alignSelf: 'flex-end', color: brandPrimaryTap }}>{localStrings.Public.FriendFind}</Text>
@@ -78,7 +78,7 @@ const AboutTab = ({ user, loading }: { user: UserModel, loading: boolean }) => {
                 ))}
               </View>
 
-              <TouchableOpacity onPress={() => { /* Xử lý xem tất cả bạn bè */ }}>
+              <TouchableOpacity onPress={() => router.push({ pathname: '/listFriends' })}>
                 <Text style={{ textAlign: 'center', marginTop: 20, color: brandPrimaryTap }}>{localStrings.Public.FriendView}</Text>
               </TouchableOpacity>
             </View>

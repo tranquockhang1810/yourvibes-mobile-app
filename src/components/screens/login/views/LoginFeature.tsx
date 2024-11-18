@@ -70,7 +70,7 @@ const LoginFeature = () => {
                 source={require('@/assets/images/yourvibes_black.png')}
                 style={{
                   width: '100%',
-                  height: 80,
+                  height: 80
                 }}
                 contentFit='contain'
               />

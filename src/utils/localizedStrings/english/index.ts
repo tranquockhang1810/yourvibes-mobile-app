@@ -1,3 +1,7 @@
+import PostDetails from "@/src/components/common/PostDetails";
+import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
+import { List, View } from "@ant-design/react-native";
+
 export const ENGLocalizedStrings = {
   Public: {
     All: "All",
@@ -82,7 +86,7 @@ export const ENGLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Confirm password is invalid!",
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
-    }
+    },
   },
   Login: {
     LoginButton: "Login",
@@ -90,7 +94,7 @@ export const ENGLocalizedStrings = {
     DontHaveAccout: "Don't have an account?",
     SignUpNow: "Sign up now!",
     Or: "Or",
-    LoginFailed: "Login failed!"
+    LoginFailed: "Login failed!",
   },
   SignUp: {
     SignUpButton: "Sign up",
@@ -114,17 +118,17 @@ export const ENGLocalizedStrings = {
     PickImgFailed: "Pick images failed!",
   },
   ObjectPostPrivacy: {
-    PublicDescription: 'Everyone on YourVibes',
-    FriendDescription: 'Only friends on YourVibes',
-    PrivateDescription: 'Only you can see the post',
+    PublicDescription: "Everyone on YourVibes",
+    FriendDescription: "Only friends on YourVibes",
+    PrivateDescription: "Only you can see the post",
     PostPrivacy: "Post's privacy",
     Contents: {
       WhoCanSee: "Who can see your post?",
       CanFind: "Your post may appear on your profile and in search results.",
       DefaultPrivacy1: "Although the default audience is ",
-      DefaultPrivacy2: ", you can change the audience for this specific post."
+      DefaultPrivacy2: ", you can change the audience for this specific post.",
     },
-    ChoosePrivacy: "Choose Privacy"
+    ChoosePrivacy: "Choose Privacy",
   },
   Post: {
     EditPost: "Edit post",
@@ -138,10 +142,36 @@ export const ENGLocalizedStrings = {
     SharePost: "Share",
     DeleteNewFeed: "Delete (hide) new feed",
   },
+  PostDetails:{
+    ViewReplies: "View replies",
+    HideReplies:"Hide replies",
+    Save: "Save",
+    Cancel: "Cancel",
+    Error: "Error",
+    ErrorReplies: "Failed to get replies!",
+    ReportComment: "Report comment",
+    EditComment: "Edit comment",
+    DeleteComment: "Delete comment",
+    ActionOptions:"Action options",
+    ReportSusesfully: "Reported succeeded!",
+    Success: "Success",
+    EditCommentSuccess: "Edit comment successful!",
+    EditCommentFailed: "Edit comment failed!",
+    EditReplySuccess: "Edit reply successful!",
+    EditReplyFailed: "Edit reply failed!",
+    DeteleReplyFailed: "Delete reply failed!",
+    DeteleReplySuccess: "Delete reply successful!",
+    CommentSuccess: "Comment successful!",
+    CommentFailed: "Comment failed!",
+    ReplySuccess: "Reply successful!",
+    ReplyFailed: "Reply failed!",
+    Yes: "Yes",
+    No: "No",
+  },
   Profile: {
     Posts: {
       GetPostsFailed: "Failed to get posts!",
-      GetOnePostFailed: "Failed to get post!"
+      GetOnePostFailed: "Failed to get post!",
     },
     Info: {
       GetInfoFailed: "Failed to get user's infomation!",
@@ -158,7 +188,7 @@ export const ENGLocalizedStrings = {
       UnfriendFailed: "Failed to unfriend!",
       UnfriendSuccess: "Unfriend successful!",
       UnfriendConfirm: "Are you sure you want to unfriend this user?",
-    }
+    },
   },
   UpdatePost: {
     UpdatePostSuccess: "Update post successful!",
@@ -179,20 +209,29 @@ export const ENGLocalizedStrings = {
     SearchPlaceholder: "Searching...",
     SearchFailed: "Search failed!",
     NoUsers: "No user found",
-    TrySearch: "Try searching some keyword"
+    TrySearch: "Try searching some keyword",
   },
   Notification: {
-   Notification: "Notification",
-   Items: {
-    LikePost: "liked your post: ",
-    SharePost: "shared your post: ",
-    CommentPost: "commented on your post: ",
-    Friend: "sent you a friend request.",
-    AcceptFriend:"accepted your friend request.",
+    Notification: "Notification",
+    Items: {
+      LikePost: "liked your post: ",
+      SharePost: "shared your post: ",
+      CommentPost: "commented on your post: ",
+      Friend: "sent you a friend request.",
+      AcceptFriend: "accepted your friend request.",
     NewPost: "posted a new post.",
     LikeComment: "liked your comment: ",
-  }
+    },
   },
+  ListFriends: {
+    ListFriends: "List friends",
+    Search: "Search . . .",
+    ViewProfile: "View profile",
+    Unfriend: "Unfriend ",
+    Block: "Block ",
+    Cancel: "Cancel",
+  },
+
   Ads: {
     Ads: "Post Advertisement",
     TimeAndBudget: "Duration and Budget",
@@ -205,5 +244,13 @@ export const ENGLocalizedStrings = {
     PaymentMethod: "Payment method",
     AdvertisePostFailed: "Advertise post failed!",
     AdvertisePostSuccess: "Advertise post successful!",
-  }
+  },
+
+  Report: {
+    ReportPost: "Why are you reporting this post?",
+    ReportUser: "Why are you reporting this user?",
+    ReportComment: "Why are you reporting this comment?",
+    ReportSuccess: "Reported successfully!",
+    ReportFailed: "Report failed!",
+  },
 }

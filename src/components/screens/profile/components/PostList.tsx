@@ -7,8 +7,6 @@ import Post from '@/src/components/common/Post';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
-import EditPostViewModel from '../../editPost/viewModel/EditPostViewModel';
-import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 
 const PostList = React.memo(({
   loading,
@@ -24,23 +22,27 @@ const PostList = React.memo(({
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const router = useRouter();
   const { localStrings } = useAuth();
-  const {deletePost} = EditPostViewModel(defaultPostRepo);
 
-  const renderFooter = () => {
-    if (!loading) return null;
+  const renderFooter = useCallback(() => {
     return (
-      <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size="large" color={brandPrimary} />
-      </View>
+      <>
+        {loading ? (
+          <View style={{ paddingVertical: 20 }}>
+            <ActivityIndicator size="large" color={brandPrimary} />
+          </View>
+        ) : (
+          <></>
+        )}
+      </>
     );
-  };
+  }, [loading]);
 
   const renderFlatList = useCallback(() => {
     return (
       <FlatList
         data={posts}
         renderItem={({ item }) => (
-          <Post key={item?.id} post={item} deletePost={deletePost}>
+          <Post key={item?.id} post={item}>
             {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
           </Post>
         )}
@@ -48,11 +50,11 @@ const PostList = React.memo(({
         ListFooterComponent={renderFooter}
         onEndReached={loadMorePosts}
         onEndReachedThreshold={0.5}
-        removeClippedSubviews={true} 
+        removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
     )
-  }, [posts]);
+  }, [posts, loading]);
 
   return (
     <View style={{ flex: 1, backgroundColor: grayBackground }}>

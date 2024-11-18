@@ -10,6 +10,8 @@ export const ApiPath = {
   PROFILE: getApiPath("users/"),
   SEARCH: getApiPath("users/"),
 
+  REPORT_USER: getApiPath("users/report_user/"),
+
   //Friend
   FRIEND_REQUEST: getApiPath("users/friends/friend_request/"),
   FRIEND_RESPONSE: getApiPath("users/friends/friend_response/"),
@@ -25,12 +27,17 @@ export const ApiPath = {
   SHARE_POST: getApiPath("posts/share_post/"),
   ADVERTISE_POST: getApiPath("posts/advertise_post/"),
 
+  REPORT_POST: getApiPath("posts/report_post/"),
+
   //Comment
   CREATE_COMMENT: getApiPath("comments/"),
   UPDATE_COMMENT: getApiPath("comments/"),
   GET_COMMENTS: getApiPath("comments/"),
   DELETE_COMMENT: getApiPath("comments/"),
   GET_COMMENT_REPLIES: getApiPath("comments/"),
+
+  REPORT_COMMENT: getApiPath("comments/report_comment/"),
+
   //Like Comment
   GET_LIKE_COMMENT: getApiPath("comments/like_comment/"),
   POST_LIKE_COMMENT: getApiPath("comments/like_comment/"), 

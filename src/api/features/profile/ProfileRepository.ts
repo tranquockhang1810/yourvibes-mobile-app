@@ -4,6 +4,7 @@ import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponse
 import client from "../../client";
 import { UserModel } from "../authenticate/model/LoginModel";
 import { UpdateProfileRequestModel } from "./model/UpdateProfileModel";
+import { ReportUserRequestModel } from "./model/ReportUser";
 
 interface IProfileRepo {
   getProfile(userId: string): Promise<BaseApiResponseModel<UserModel>>;
@@ -37,6 +38,9 @@ export class ProfileRepo implements IProfileRepo {
   }
   async unfriend(userId: string): Promise<BaseApiResponseModel<any>> {
     return client.delete(ApiPath.UNFRIEND + userId);
+  }
+  async reportUser(params: ReportUserRequestModel): Promise<BaseApiResponseModel<any>> {
+    return client.post(ApiPath.REPORT_USER, params);
   }
 }
 

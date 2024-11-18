@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Entypo, Feather } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
@@ -8,11 +8,13 @@ import { useAuth } from '@/src/context/auth/useAuth';
 import { useRouter } from 'expo-router';
 import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
 const UserProfileScreen = ({ id }: { id: string }) => {
   const { backgroundColor } = useColor();
   const { localStrings } = useAuth();
   const [tab, setTab] = useState(0);
+  const { showActionSheetWithOptions } = useActionSheet();
   const router = useRouter();
   const {
     loading,
@@ -23,6 +25,36 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     profileLoading,
     userInfo
   } = UserProfileViewModel();
+
+  const showFriendAction = useCallback(() => {
+    const options = [
+      localStrings.Public.ReportFriend,
+      localStrings.Public.Block,
+      localStrings.Public.Cancel,
+    ];
+
+    showActionSheetWithOptions(
+      {
+        title: localStrings.Public.Action,
+        options: options,
+        cancelButtonIndex: options.length - 1,
+        cancelButtonTintColor: "#F95454"
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            console.log('báo cáo tài khoản action selected');
+            router.push(`/reportPost?userId=${id}`);
+            break;
+          case 1:
+            // TODO: block user
+            break;
+          default:
+            break;
+        }
+      }
+    );
+  }, [localStrings]);
 
   useEffect(() => {
     if (!id) return;
@@ -58,6 +90,12 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', flex: 1 }}>
             {userInfo?.family_name} {userInfo?.name || localStrings.Public.Username}
           </Text>
+          <TouchableOpacity
+            style={{ width: '8%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
+            onPress={showFriendAction}
+          >
+            <Entypo name="dots-three-vertical" size={16} />
+          </TouchableOpacity>
         </View>
 
         {/* Content */}
