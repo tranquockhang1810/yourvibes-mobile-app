@@ -15,9 +15,6 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { useFocusEffect, useRouter } from "expo-router";
 import ProfileViewModel from "../viewModel/ProfileViewModel";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
-import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
-import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
-import useListFriendsViewModel from "../../listFriends/viewModel/ListFriendsViewModel";
 
 const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
@@ -28,16 +25,16 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     posts,
     fetchUserPosts,
     loadMorePosts,
+    fetchUserFriends,
     total, 
   } = ProfileViewModel();
-
-  const { getFriendCount } = useListFriendsViewModel();
-  const friendCount = getFriendCount(); 
-
+  
+  const { friends, friendCount } = ProfileViewModel();
   useFocusEffect(
     useCallback(() => {
       if (tab === 0 || tab === 1) {
         fetchUserPosts();
+        fetchUserFriends(1);//LẤY BẠN BÈ
       }
     }, [tab])
   );
@@ -45,7 +42,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
   const renderHeaderItem = useCallback(() => {
     return (
       <>
-        <ProfileHeader total={total} user={user as UserModel} loading={false} />
+        <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount} /> 
         <ProfileTabs
           tabNum={tab}
           posts={posts}
@@ -54,6 +51,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           loadMorePosts={loadMorePosts}
           userInfo={user as UserModel}
           friendCount={friendCount}
+          friends= {friends}
         />
       </>
     );
@@ -114,6 +112,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 loadMorePosts={loadMorePosts}
                 userInfo={user as UserModel}
                 friendCount={friendCount}
+                friends= {friends}
               />
             </>
           }

@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import useColor from '@/src/hooks/useColor';
-import { Button, Modal } from '@ant-design/react-native';
-import { useAuth } from '@/src/context/auth/useAuth';
-import { useActionSheet } from '@expo/react-native-action-sheet';
-import { router } from 'expo-router';
-import ChangePasswordScreen from '@/src/components/screens/changePassword/views/changePassword';
+import React from "react";
+import { View, Text, ScrollView } from "react-native";
+import useColor from "@/src/hooks/useColor";
+import { Button, Modal } from "@ant-design/react-native";
+import { useAuth } from "@/src/context/auth/useAuth";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import { router } from "expo-router"; 
 
 const SettingsTab = () => {
   const { brandPrimary } = useColor();
@@ -17,7 +16,7 @@ const SettingsTab = () => {
       localStrings.Public.Confirm,
       localStrings.Public.LogoutConfirm,
       [
-        { text: localStrings.Public.Cancel, style: 'cancel' },
+        { text: localStrings.Public.Cancel, style: "cancel" },
         { text: localStrings.Public.Confirm, onPress: onLogout },
       ]
     );
@@ -50,17 +49,18 @@ const SettingsTab = () => {
         <Button
           type="ghost"
           onPress={() => {
-            router.push('/update-profile');
+            router.push("/update-profile");
           }}
         >
           <Text style={{ color: brandPrimary, fontSize: 16 }}>
             {localStrings.Public.EditProfile}
           </Text>
         </Button>
+
         <Button
           type="ghost"
           onPress={() => {
-            router.push('/change-password');
+            router.push("/changePassword");
           }}
           style={{ marginTop: 10 }}
         >
@@ -68,6 +68,7 @@ const SettingsTab = () => {
             {localStrings.Public.ChangePassword}
           </Text>
         </Button>
+        
         <Button
           type="ghost"
           onPress={showLanguageOptions}
@@ -77,11 +78,7 @@ const SettingsTab = () => {
             {localStrings.Public.Language}
           </Text>
         </Button>
-        <Button
-          type="ghost"
-          onPress={handleLogout}
-          style={{ marginTop: 10 }}
-        >
+        <Button type="ghost" onPress={handleLogout} style={{ marginTop: 10 }}>
           <Text style={{ color: brandPrimary, fontSize: 16 }}>
             {localStrings.Public.LogOut}
           </Text>

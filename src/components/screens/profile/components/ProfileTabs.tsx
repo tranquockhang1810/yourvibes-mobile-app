@@ -8,6 +8,7 @@ import SettingsTab from './SettingsTab';
 import PostList from './PostList';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
+import { FriendResponseModel } from '@/src/api/features/profile/model/FriendReponseModel';
 
 const ProfileTabs = ({
   tabNum,
@@ -24,7 +25,8 @@ const ProfileTabs = ({
   profileLoading: boolean,
   loadMorePosts: () => void,
   userInfo: UserModel,
-  friendCount: number
+  friendCount: number,
+  friends?:FriendResponseModel[];
 }) => {
   const { brandPrimary } = useColor();
   const { localStrings, user } = useAuth();

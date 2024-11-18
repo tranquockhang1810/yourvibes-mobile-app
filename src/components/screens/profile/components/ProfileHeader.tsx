@@ -8,12 +8,9 @@ import { Button, Modal } from '@ant-design/react-native';
 import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 import { FriendStatus } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { useActionSheet } from '@expo/react-native-action-sheet';
-import { Entypo, FontAwesome5 } from '@expo/vector-icons';
-import  useListFriendsViewModel  from '../../listFriends/viewModel/ListFriendsViewModel';
+import { Entypo, FontAwesome5 } from '@expo/vector-icons'; 
 
-const ProfileHeader = ({ total, user, loading }: { total: number, user: UserModel, loading?: boolean }) => {
-  const { getFriendCount } = useListFriendsViewModel();
-  const friendCount = getFriendCount();
+const ProfileHeader = ({ total, user, loading }: { total: number, user: UserModel, loading?: boolean, friendCount?: number }) => {
   const { lightGray, brandPrimary, brandPrimaryTap, backgroundColor } = useColor();
   const { localStrings, language, isLoginUser } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();

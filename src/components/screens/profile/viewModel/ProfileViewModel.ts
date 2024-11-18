@@ -68,52 +68,59 @@ const ProfileViewModel = () => {
     }
   };
 
+ 
 
-  // const fetchFriends = async (page: number, userId?: string) => {
-  //   console.log("fetchFriends: ", page);
-  //   try {
-  //     const response = await defaultProfileRepo.getListFriends({
-  //       limit: 10,
-  //       page: 1,
-  //       user_id: userId,
-  //     });
-  //     if (response.data) {
-  //       if (Array.isArray(response.data)) {
-  //         const friends = response.data.map(
-  //           (friendResponse: FriendResponseModel) => ({
-  //             id: friendResponse.id,
-  //             family_name: friendResponse.family_name,
-  //             name: friendResponse.name,
-  //             avatar: friendResponse.avatar_url,
-  //           })
-  //         ) as FriendResponseModel[];
-  //         return friends;
-  //       } else {
-  //         console.error("response.data is not an array");
-  //       }
-  //     } else {
-  //       throw new Error(response.error.message);
-  //     }
-  //   } catch (error: any) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // };
+  //LẤY BẠN BÈ
+  const fetchUserFriends = async (page: number, userId?: string) => {
+    console.log("fetchFriends: ", page);
+    try {
+      const response = await defaultProfileRepo.getListFriends({
+        limit: 10,
+        page: 1,
+        user_id: userId,
+      });
+      if (response.data) {
+        if (Array.isArray(response.data)) {
+          const friends = response.data.map(
+            (friendResponse: FriendResponseModel) => ({
+              id: friendResponse.id,
+              family_name: friendResponse.family_name,
+              name: friendResponse.name,
+              avatar: friendResponse.avatar_url,
+            })
+          ) as FriendResponseModel[];
+          setFriends(friends);
+          setFriendCount(friends.length); //Đếm số lượng bạn bè
+        } else {
+          console.error("response.data is not an array");
+        }
+      } else {
+        Toast.show({
+          type: "error",
+          text2: response.error.message,
+        });
+      }
+      return friends;
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text2: error.message,
+      });
+    }
+  };
 
-  // useEffect(() => {
-  //   if (user?.id) {
-  //     fetchFriends(page, user?.id).then((friends) => {
-  //       setFriends(friends as FriendResponseModel[]);
-  //       setFriendCount(friends?.length ?? 0); //Đếm số lượng bạn bè
-  //     });
-  //   } else {
-  //     fetchFriends(page).then((friends) => {
-  //       setFriends(friends as FriendResponseModel[]);
-  //       setFriendCount(friends?.length ?? 0); //Đếm số lượng bạn bè
-  //     });
-  //   }
-  // }, [page, user?.id]);
+  useEffect(() => {
+    if (user) {
+      fetchUserFriends(page, user.id);
+    } else {
+      fetchUserFriends(page);
+    }
+  }, [page, user]);
 
+  useEffect(() => {
+    console.log("Số lượng bạn bè của người dùng:", friendCount);
+  }, [friendCount]);
 
   return {
     loading,
@@ -121,10 +128,10 @@ const ProfileViewModel = () => {
     hasMore,
     loadMorePosts,
     fetchUserPosts,
+    fetchUserFriends,
     total,
     friends,
-    friendCount,
-    // fetchFriends,
+    friendCount, 
   };
 };
 
