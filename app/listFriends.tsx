@@ -1,4 +1,4 @@
-import ListFriends from '@/src/components/screens/listFriends/views/ListFriendsScreen'
+import ListFriends from '@/src/components/screens/profile/components/ListFriendsScreen'
 import React from 'react'
 
 const postDetails = () => {

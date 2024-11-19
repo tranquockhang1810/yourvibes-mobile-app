@@ -10,9 +10,11 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-import useListFriendsViewModel from "../viewModel/ListFriendsViewModel";
+// import useListFriendsViewModel from "../viewModel/ListFriendsViewModel";
 import { router } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
+import UserProfileViewModel from "../viewModel/UserProfileViewModel";
+import ProfileViewModel from "../viewModel/ProfileViewModel";
 
 const ListFriends: React.FC = () => { 
   const {
@@ -22,7 +24,7 @@ const ListFriends: React.FC = () => {
     hasMore,
     page,
     handleMoreOptions,
-  } = useListFriendsViewModel();
+  } = ProfileViewModel();
 
   const { localStrings } = useAuth();
 
