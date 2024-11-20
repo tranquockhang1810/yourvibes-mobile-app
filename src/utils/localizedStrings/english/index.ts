@@ -1,8 +1,4 @@
-import PostDetails from "@/src/components/common/PostDetails";
-import ListFriends from "@/src/components/screens/listFriends/views/ListFriendsScreen";
-import { List, View } from "@ant-design/react-native";
-
-export const ENGLocalizedStrings = {
+ export const ENGLocalizedStrings = {
   Public: {
     All: "All",
     Confirm: "Confirm",
@@ -245,5 +241,19 @@ export const ENGLocalizedStrings = {
     PaymentMethod: "Payment method",
     AdvertisePostFailed: "Advertise post failed!",
     AdvertisePostSuccess: "Advertise post successful!",
-  }
+  },
+
+  ChangePassword: {
+    ChangePassword: "Change password",
+    ChangePasswordFailed: "Change password failed!",
+    ChangePasswordSuccess: "Change password successful!",
+    OldPassword: "Old password",
+    NewPassword: "New password",
+    ConformPassword: "Confirm password",
+    Email: "Email",
+    SendOTP: "Send OTP",
+    OTP: "OTP",
+    ConformChangePassword: "Confirm change password",
+  },
+
 }

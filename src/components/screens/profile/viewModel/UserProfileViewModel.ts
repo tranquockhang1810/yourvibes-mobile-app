@@ -299,7 +299,7 @@ const UserProfileViewModel = () => {
   }, [page, userInfo?.id]);
 
   useEffect(() => {
-    console.log("Số lượng bạn bè của bạn bè người dùng:", friendCount);
+    console.log("Số lượng bạn bè của người ta khi mình xem:", friendCount);
   }, [friendCount]);
  
   return {

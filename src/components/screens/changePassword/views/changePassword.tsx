@@ -6,52 +6,56 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router"; 
+import { useAuth } from '@/src/context/auth/useAuth';
 
-const ChangePasswordScreen: React.FC = () => {
+
+const ChangePasswordScreen = () => {
+
+	const { language, localStrings } = useAuth();
+  
+
   return (
     <ScrollView
       style={{
         flex: 1,
         backgroundColor: "#fff",
-        padding: 16,
       }}
     >
       {/* Header */}
       <View
         style={{
+          marginTop: 30,
+          height: 50,
+          paddingHorizontal: 16,
+          paddingTop: 16,
           flexDirection: "row",
           alignItems: "center",
-          marginBottom: 16,
+          justifyContent: "space-between",
+          backgroundColor: "#fff",
+          zIndex: 10,
+          borderBottomColor: "black",
+          borderBottomWidth: 1,
         }}
       >
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="black" />
+        <TouchableOpacity onPress={() => router.back()}>
+          <Feather name="arrow-left" size={24} color="black" />
         </TouchableOpacity>
         <Text
           style={{
+            textAlign: "center",
             fontSize: 18,
             fontWeight: "bold",
-            marginLeft: 8,
+            flex: 1,
           }}
         >
-          Cài đặt trang cá nhân
+          {localStrings.ChangePassword.ChangePassword}
         </Text>
       </View>
 
-      {/* Title */}
-      <Text
-        style={{
-          fontSize: 16,
-          fontWeight: "bold",
-          marginBottom: 16,
-        }}
-      >
-        Đổi mật khẩu
-      </Text>
-
       {/* Form */}
-      <View>
+      <View style={{ padding: 16 }}>
         <TextInput
           style={{
             borderWidth: 1,
@@ -61,7 +65,7 @@ const ChangePasswordScreen: React.FC = () => {
             marginBottom: 16,
             fontSize: 14,
           }}
-          placeholder="Nhập mật khẩu cũ"
+          placeholder={localStrings.ChangePassword.OldPassword}
           secureTextEntry
         />
         <TextInput
@@ -73,7 +77,7 @@ const ChangePasswordScreen: React.FC = () => {
             marginBottom: 16,
             fontSize: 14,
           }}
-          placeholder="Nhập mật khẩu mới"
+          placeholder={localStrings.ChangePassword.NewPassword}
           secureTextEntry
         />
         <TextInput
@@ -85,7 +89,7 @@ const ChangePasswordScreen: React.FC = () => {
             marginBottom: 16,
             fontSize: 14,
           }}
-          placeholder="Xác nhận mật khẩu mới"
+          placeholder={localStrings.ChangePassword.ConformPassword}
           secureTextEntry
         />
         <View
@@ -105,13 +109,13 @@ const ChangePasswordScreen: React.FC = () => {
               fontSize: 14,
               marginRight: 8,
             }}
-            placeholder="Nhập email"
+            placeholder={localStrings.ChangePassword.Email}
           />
           <TouchableOpacity
             style={{
               backgroundColor: "#ccc",
               borderRadius: 8,
-              paddingVertical: 12,
+              paddingVertical: 16,
               paddingHorizontal: 16,
             }}
           >
@@ -122,7 +126,7 @@ const ChangePasswordScreen: React.FC = () => {
                 fontWeight: "bold",
               }}
             >
-              Nhận OTP
+              {localStrings.ChangePassword.SendOTP}
             </Text>
           </TouchableOpacity>
         </View>
@@ -135,7 +139,7 @@ const ChangePasswordScreen: React.FC = () => {
             marginBottom: 16,
             fontSize: 14,
           }}
-          placeholder="Xác nhận OTP"
+          placeholder={localStrings.ChangePassword.OTP}
         />
 
         {/* Submit Button */}
@@ -155,7 +159,7 @@ const ChangePasswordScreen: React.FC = () => {
               fontWeight: "bold",
             }}
           >
-            Xác nhận thay đổi mật khẩu
+            {localStrings.ChangePassword.ConformChangePassword}
           </Text>
         </TouchableOpacity>
       </View>

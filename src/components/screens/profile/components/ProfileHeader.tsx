@@ -23,6 +23,7 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
     unFriend,
     newFriendStatus,
     setNewFriendStatus,
+    friendCount,
   } = UserProfileViewModel();
 
   const showAction = useCallback(() => {
@@ -203,7 +204,8 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
             <Text style={{ color: 'gray', marginTop: 4 }}>{user?.biography || localStrings.Public.Biography}</Text>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {total || user?.post_count} {localStrings.Public.Post}{language === 'en' && (total || user?.post_count) && (total && total > 1 || user?.post_count && user?.post_count > 1) ? 's' : ''}</Text>
-              <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}{language === 'en' && user?.friend_count && user?.friend_count > 1 ? 's' : ''}</Text>
+              {/* <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}{language === 'en' && user?.friend_count && user?.friend_count > 1 ? 's' : ''}</Text> */}
+              <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {friendCount} {localStrings.Public.Friend}{language === 'en' && friendCount && friendCount > 1 ? 's' : ''}</Text>
             </View>
           </View>
 

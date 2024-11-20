@@ -15,7 +15,7 @@ const ProfileViewModel = () => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
-  const [friendCount, setFriendCount] = useState(0);
+  const [friendCount, setFriendCount] = useState(0); 
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
       setLoading(true);
@@ -88,7 +88,8 @@ const ProfileViewModel = () => {
               name: friendResponse.name,
               avatar: friendResponse.avatar_url,
             })
-          ) as FriendResponseModel[];
+          ) as FriendResponseModel[]; 
+          
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
         } else {

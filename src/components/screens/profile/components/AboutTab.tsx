@@ -13,32 +13,53 @@ import { DateTransfer } from "../../../../utils/helper/DateTransfer";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 import { router } from "expo-router";
 import { Image } from "react-native";
-
+import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
 
 const AboutTab = ({
   user,
   loading,
   friendCount,
-  fetchFriends,
 }: {
   user: UserModel;
   loading: boolean;
   friendCount: number;
-  fetchFriends: () => void;
+  fetchUserFriends: () => void;
 }) => {
-
-
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
   const [friends, setFriends] = useState<
     { id: string; avatar: string; family_name: string; name: string }[]
   >([]);
 
-  const renderFriend = ({
-    item,
-  }: {
-    item: { id: string; avatar: string; family_name: string; name: string };
-  }) => (
+  // const renderFriend = ({item}: { item: { id: string; avatar: string; family_name: string; name: string };
+  // }) => (
+  //   <View
+  //     style={{
+  //       flexDirection: "row",
+  //       alignItems: "center",
+  //       paddingVertical: 10,
+  //       borderBottomWidth: 1,
+  //       borderColor: "#e0e0e0",
+  //     }}
+  //   >
+  //     <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+  //       <Image
+  //         source={{ uri: item.avatar }}
+  //         style={{
+  //           width: 40,
+  //           height: 40,
+  //           borderRadius: 20,
+  //           backgroundColor: "#e0e0e0",
+  //           marginRight: 10,
+  //         }}
+  //       />
+  //       <Text style={{ fontSize: 16, color: "black" }}>
+  //         {item.family_name} {item.name}
+  //       </Text>
+  //     </View>
+  //   </View>
+  // );
+  const renderFriend = ({ item }: { item: FriendResponseModel }) => (
     <View
       style={{
         flexDirection: "row",
@@ -50,7 +71,7 @@ const AboutTab = ({
     >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <Image
-          source={{ uri: item.avatar }}
+          source={{ uri: item.avatar_url }}
           style={{
             width: 40,
             height: 40,
@@ -65,7 +86,7 @@ const AboutTab = ({
       </View>
     </View>
   );
-
+ 
   return (
     <>
       {loading ? (
@@ -174,7 +195,7 @@ const AboutTab = ({
                 </TouchableOpacity>
               </View>
 
-              <View
+              {/* <View
                 style={{
                   flexDirection: "row",
                   flexWrap: "wrap",
@@ -214,6 +235,27 @@ const AboutTab = ({
                     <Text style={{ marginTop: 5 }}>
                       {friend.family_name} {friend.name}
                     </Text>
+                  </View>
+                ))}
+              </View> */}
+              
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {friends.map((friend, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      width: "23%",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    {renderFriend({ item: friend })}
                   </View>
                 ))}
               </View>
