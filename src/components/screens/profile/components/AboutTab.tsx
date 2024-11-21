@@ -13,8 +13,8 @@ import { DateTransfer } from "../../../../utils/helper/DateTransfer";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 import { router } from "expo-router";
 import { Image } from "react-native";
-import useListFriendsViewModel from "../../listFriends/viewModel/ListFriendsViewModel";
-import UserProfileViewModel from '../viewModel/UserProfileViewModel';
+import UserProfileViewModel from "../viewModel/UserProfileViewModel";
+import ProfileViewModel from "../viewModel/ProfileViewModel";
 
 const AboutTab = ({
   user,
@@ -23,9 +23,8 @@ const AboutTab = ({
   user: UserModel;
   loading: boolean;
   friendCount: number;
-  fetchFriends: () => void;
 }) => {
-  const { getFriendCount } = useListFriendsViewModel();
+  const { getFriendCount } = UserProfileViewModel() || ProfileViewModel();
   const friendCount = getFriendCount();
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
@@ -217,7 +216,10 @@ const AboutTab = ({
               </View>
 
               <TouchableOpacity
-                onPress={() => router.push({ pathname: "/listFriends" })}
+              onPress={() => {
+                console.log("Xem danh sách bạn bè", user.id);
+                router.push(`/listFriends?userId=${user.id}`);
+              }}
               >
                 <Text
                   style={{

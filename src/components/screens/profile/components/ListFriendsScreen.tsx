@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   SectionList,
@@ -10,13 +10,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-// import useListFriendsViewModel from "../viewModel/ListFriendsViewModel";
-import { router } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
-import UserProfileViewModel from "../viewModel/UserProfileViewModel";
 import ProfileViewModel from "../viewModel/ProfileViewModel";
+import UserProfileViewModel from "../viewModel/UserProfileViewModel";
 
 const ListFriends: React.FC = () => { 
+  const { userId } = useLocalSearchParams();
+  const {user, localStrings} = useAuth();
   const {
     loading,
     friends,
@@ -24,9 +25,12 @@ const ListFriends: React.FC = () => {
     hasMore,
     page,
     handleMoreOptions,
-  } = ProfileViewModel();
+    // fetchMyFriends,
+    fetchFriends,
+  } =  UserProfileViewModel();
+  
+  const router = useRouter();
 
-  const { localStrings } = useAuth();
 
   const renderFriend = ({
     item,
@@ -89,7 +93,24 @@ const ListFriends: React.FC = () => {
       <View />
     </View>
   );
-
+  useEffect(() => {
+    if (userId) {
+      console.log('User ID:', userId);
+        // Kiểm tra nếu `userId` là của bản thân hay bạn bè
+        // if (userId === user?.id) {
+        //   fetchMyFriends(page);  // Gọi API của bản thân
+        // } else {
+          fetchFriends(page);  // Gọi API của bạn bè
+        // }
+    } else {
+      console.log('No userId found in the `URL');
+    }
+  }, [userId, page, user]);
+  useEffect(() => {
+    if (friends.length > 0) {
+      console.log('Danh sách bạn bè của user:', friends); // Log danh sách bạn bè
+    }
+  }, [friends]);  // Chạy lại mỗi khi friends thay đổi
   return (
     <ActionSheetProvider>
       <View style={{ flex: 1, backgroundColor: "white" }}>

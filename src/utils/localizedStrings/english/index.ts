@@ -1,6 +1,3 @@
-import PostDetails from "@/src/components/common/PostDetails";
-import ListFriends from "@/src/components/screens/profile/components/ListFriendsScreen";
-import { List, View } from "@ant-design/react-native";
 
 export const ENGLocalizedStrings = {
   Public: {

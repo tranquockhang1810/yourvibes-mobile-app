@@ -15,9 +15,8 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { useFocusEffect, useRouter } from "expo-router";
 import ProfileViewModel from "../viewModel/ProfileViewModel";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
-import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
-import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
-import useListFriendsViewModel from "../../listFriends/viewModel/ListFriendsViewModel";
+
+
 
 const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
@@ -31,7 +30,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     total, 
   } = ProfileViewModel();
 
-  const { getFriendCount } = useListFriendsViewModel();
+  const { getFriendCount } = ProfileViewModel();
   const friendCount = getFriendCount(); 
 
   useFocusEffect(

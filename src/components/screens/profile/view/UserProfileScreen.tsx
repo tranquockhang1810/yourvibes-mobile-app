@@ -123,3 +123,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
 };
 
 export default UserProfileScreen;
+function fetchFriends(page: any) {
+  throw new Error('Function not implemented.');
+}
+
