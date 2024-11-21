@@ -8,11 +8,9 @@ import { Button, Modal } from '@ant-design/react-native';
 import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 import { FriendStatus } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { useActionSheet } from '@expo/react-native-action-sheet';
-import { Entypo, FontAwesome5 } from '@expo/vector-icons';
+import { Entypo, FontAwesome5 } from '@expo/vector-icons'; 
 
-const ProfileHeader = ({ total, user, loading }: { total: number, user: UserModel, loading?: boolean }) => {
-  // const { getFriendCount } = useListFriendsViewModel();
-  // const friendCount = getFriendCount();
+const ProfileHeader = ({ total, user, loading }: { total: number, user: UserModel, loading?: boolean, friendCount?: number }) => {
   const { lightGray, brandPrimary, brandPrimaryTap, backgroundColor } = useColor();
   const { localStrings, language, isLoginUser } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
@@ -25,6 +23,7 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
     unFriend,
     newFriendStatus,
     setNewFriendStatus,
+    friendCount,
   } = UserProfileViewModel();
 
   const showAction = useCallback(() => {
@@ -205,7 +204,7 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
             <Text style={{ color: 'gray', marginTop: 4 }}>{user?.biography || localStrings.Public.Biography}</Text>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {total || user?.post_count} {localStrings.Public.Post}{language === 'en' && (total || user?.post_count) && (total && total > 1 || user?.post_count && user?.post_count > 1) ? 's' : ''}</Text>
-              <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {user?.friend_count} {localStrings.Public.Friend}{language === 'en' && user?.friend_count && user?.friend_count > 1 ? 's' : ''}</Text>
+              <Text style={{ marginHorizontal: 20, fontWeight: 'bold' }}> {friendCount} {localStrings.Public.Friend}{language === 'en' && friendCount && friendCount > 1 ? 's' : ''}</Text>
             </View>
           </View>
 
