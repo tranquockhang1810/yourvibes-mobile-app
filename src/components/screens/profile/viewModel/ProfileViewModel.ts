@@ -72,7 +72,8 @@ const ProfileViewModel = () => {
 
   //LẤY BẠN BÈ
   const fetchUserFriends = async (page: number, userId?: string) => {
-    console.log("fetchFriends: ", page);
+    console.log("fetchFriends: ", page); 
+    
     try {
       const response = await defaultProfileRepo.getListFriends({
         limit: 10,
@@ -92,6 +93,8 @@ const ProfileViewModel = () => {
           
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
+          console.log("friends:", friends);
+          
         } else {
           console.error("response.data is not an array");
         }

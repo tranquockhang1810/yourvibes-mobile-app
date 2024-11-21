@@ -63,12 +63,7 @@ const useListFriendsViewModel = (userId?: string) => {
     } else {
       fetchFriends(page);
     }
-  }, [page, userId]);
-
-  // useEffect(() => {
-  //   console.log("Số lượng bạn bè ở list friends:", friendCount);
-  // }, [friendCount]);
-
+  }, [page, userId]); 
   const filteredFriends = friends.filter((friend) =>
     friend?.name?.toLowerCase().includes(search.toLowerCase())
   );
