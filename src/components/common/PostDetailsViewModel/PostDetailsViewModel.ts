@@ -112,10 +112,7 @@ const usePostDetailsViewModel = (
               (cmt) => cmt.id === comment.id
             );
             if (commentToReport) {
-              router.push(`/reportPost?commentId=${commentId}`);
-              console.log(
-                `Báo cáo bình luận với nội dung: "${commentToReport.content}" có id: ${comment.id} "tại bài viết ${postId}"`
-              );
+              router.push(`/reportPost?commentId=${comment.id}`);
             }
             break;
 

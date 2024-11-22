@@ -16,8 +16,6 @@ import { useFocusEffect, useRouter } from "expo-router";
 import ProfileViewModel from "../viewModel/ProfileViewModel";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 
-
-
 const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
@@ -27,12 +25,11 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     posts,
     fetchUserPosts,
     loadMorePosts,
+    fetchMyFriends,
     total, 
   } = ProfileViewModel();
-
-  const { getFriendCount } = ProfileViewModel();
-  const friendCount = getFriendCount(); 
-
+  
+  const { friends, friendCount } = ProfileViewModel();
   useFocusEffect(
     useCallback(() => {
       if (tab === 0 || tab === 1) {
@@ -44,7 +41,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
   const renderHeaderItem = useCallback(() => {
     return (
       <>
-        <ProfileHeader total={total} user={user as UserModel} loading={false} />
+        <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount} /> 
         <ProfileTabs
           tabNum={tab}
           posts={posts}
@@ -53,6 +50,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           loadMorePosts={loadMorePosts}
           userInfo={user as UserModel}
           friendCount={friendCount}
+          friends= {friends}
         />
       </>
     );
@@ -113,6 +111,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 loadMorePosts={loadMorePosts}
                 userInfo={user as UserModel}
                 friendCount={friendCount}
+                friends= {friends}
               />
             </>
           }

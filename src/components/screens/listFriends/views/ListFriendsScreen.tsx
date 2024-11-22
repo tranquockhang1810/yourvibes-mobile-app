@@ -32,7 +32,9 @@ const ListFriendsScreen = ({userId}: {userId: string}) => {
             borderColor: "#e0e0e0",
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+          <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", flex: 1 }} onPress={()=>{
+            router.push(`/(tabs)/user/${item?.id}`);
+          }}>
             <Image
               source={{ uri: item.avatar }}
               style={{
@@ -46,7 +48,8 @@ const ListFriendsScreen = ({userId}: {userId: string}) => {
             <Text style={{ fontSize: 16, color: "black" }}>
               {item.family_name} {item.name}
             </Text>
-          </View>
+          </TouchableOpacity>
+          
           <TouchableOpacity
             style={{ paddingHorizontal: 10 }}
             onPress={() => handleMoreOptions(item)}

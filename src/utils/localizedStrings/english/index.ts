@@ -251,4 +251,16 @@ export const ENGLocalizedStrings = {
     ReportSuccess: "Reported successfully!",
     ReportFailed: "Report failed!",
   },
+  ChangePassword: {
+    ChangePassword: "Change password",
+    ChangePasswordFailed: "Change password failed!",
+    ChangePasswordSuccess: "Change password successful!",
+    OldPassword: "Old password",
+    NewPassword: "New password",
+    ConformPassword: "Confirm password",
+    Email: "Email",
+    SendOTP: "Send OTP",
+    OTP: "OTP",
+    ConformChangePassword: "Confirm change password",
+  },
 }

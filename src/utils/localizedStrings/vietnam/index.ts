@@ -249,5 +249,16 @@ Report: {
   ReportSuccess: "Báo cáo bài viết thành công!",
   ReportFailed: "Báo cáo bài viết thất bại!",
 },
-
+ChangePassword:{
+  ChangePassword: "Thay đổi mật khẩu",
+  ChangePasswordFailed: "Thay đổi mật khẩu thất bại!",
+  ChangePasswordSuccess: "Thay đổi mật khẩu thành công!",
+  OldPassword: "Mật khẩu cũ",
+  NewPassword: "Mật khẩu mới",
+  ConformPassword: "Xác nhận mật khẩu mới",
+  Email: "Email",
+  SendOTP: "Nhận OTP",
+  OTP: "Mã OTP",
+  ConformChangePassword: "Xác nhận thay đổi mật khẩu",
+}
 };

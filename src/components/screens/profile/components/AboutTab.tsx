@@ -29,35 +29,9 @@ const AboutTab = ({
 }) => {
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
+  
 
-  const renderFriend = ({ item }: { item: FriendResponseModel }) => {
-    console.log('item', item);
-    
-    console.log('avatar:', item.avatar_url);
-    
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 10,
-        }}
-      >
-        <Image
-          source={{
-            uri: item.avatar_url,
-          }}
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 25,
-            backgroundColor: "#e0e0e0",
-            marginRight: 10,
-          }}
-        />
-      </View>
-    );
-  };
+  
 
   return (
     <>
@@ -165,7 +139,7 @@ const AboutTab = ({
                   </Text>
                 </TouchableOpacity>
               </View>
-
+          
               <View
                 style={{
                   flexDirection: "row",
@@ -174,25 +148,39 @@ const AboutTab = ({
                 }}
               >
                 {friends?.map((friend, index) => (
-                  <View
+                  <TouchableOpacity 
                     key={index}
                     style={{
                       width: "23%",
                       alignItems: "center",
                       marginBottom: 10,
                     }}
+                    onPress={() => {
+                      router.push(`/(tabs)/user/${friend.id}`);
+                    }}
                   >
-                    {renderFriend({ item: friend })}
+                    
+                    <Image
+                      source={{
+                        uri: friend.avatar_url,
+                      }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                        backgroundColor: "#e0e0e0",
+                        marginRight: 10,
+                      }}
+                    />
                     <Text style={{ marginTop: 5 }}>
                       {friend.family_name} {friend.name}
                     </Text>
-                  </View>
-                ))}
+                  </TouchableOpacity>))}
               </View>
+           
 
               <TouchableOpacity
               onPress={() => {
-                console.log("Xem danh sách bạn bè", user.id);
                 router.push(`/listFriends?userId=${user.id}`);
               }}
               >

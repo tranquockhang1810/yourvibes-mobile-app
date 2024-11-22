@@ -4,55 +4,44 @@ import useColor from '@/src/hooks/useColor';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAuth } from '@/src/context/auth/useAuth';
-import ReportPostViewModel from '../viewModel/ReportPostViewModel';
+import ReportViewModel from '../viewModel/ReportViewModel';
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
 import Post from '@/src/components/common/Post';
 import { Button } from '@ant-design/react-native';
 
-const ReportPostScreen = ({ postId, userId, commentId }: { postId?: string; userId?: string; commentId?: string }) => {
+const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?: string; commentId?: string }) => {
   const { brandPrimary, backgroundColor } = useColor();
   const [reportReason, setReportReason] = useState('');
   const { localStrings } = useAuth();
-  const {getPostDetail, reportPost, loading, post, userInfo, reportUser, getUser, reportComment } = ReportPostViewModel(defaultPostRepo);
+  const { reportPost, loading, post, userInfo, reportUser, reportComment } = ReportViewModel(defaultPostRepo);
 
   const renderPost = useCallback(() => {
     if (loading) {
-			return (
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					<ActivityIndicator size="large" color={brandPrimary} />
-				</View>
-			);
-		} else {
-			return (
-				<Post post={post} noFooter>
-					{post?.parent_post && <Post post={post?.parent_post} isParentPost />}
-				</Post>
-			);
-		}
-	}, [post, loading]);
+      return (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="large" color={brandPrimary} />
+          </View>
+      );
+  } else {
+      return (
+         <Text> báo cáo bài viết {postId}</Text>
+      );
+  }
+}, [postId, loading]);
 
   const renderUserInfo = useCallback(() => {
     if (loading) {
       return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color={brandPrimary} />
-        </View>
-      );}else{
-        return (
-          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: "60%" }}>
-                          <Image
-                            source={{ uri: userInfo?.avatar_url }}
-                            style={{
-                              width: 50,
-                              height: 50,
-                              borderRadius: 50,
-                            }}
-                          />
-                          <Text style={{ marginLeft: 10, fontWeight: 'bold', fontSize: 16 }}>{userInfo?.family_name + ' ' + userInfo?.name}</Text>
-                        </View>
-        );
-      }
-    }, [userInfo, loading]);
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="large" color={brandPrimary} />
+          </View>
+      );
+  } else {
+      return (
+         <Text> báo cáo user {userId}</Text>
+      );
+  }
+}, [userId, loading]);
 
     const renderComment = useCallback(() => {
         if (loading) {
@@ -69,14 +58,6 @@ const ReportPostScreen = ({ postId, userId, commentId }: { postId?: string; user
     }
     , [commentId, loading]);
 
-    useEffect(() => {
-        if (postId) {
-            getPostDetail(postId);
-        }
-        if (userId) {
-            getUser(userId);
-        }
-    }, [postId, userId]);
 
     const handleReport = () => {
         if (postId) {
@@ -100,8 +81,8 @@ const ReportPostScreen = ({ postId, userId, commentId }: { postId?: string; user
 							<Ionicons name="arrow-back-outline" size={24} color={brandPrimary} />
 						</TouchableOpacity>
 						<Text style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 10 }}>
-							{post && localStrings.Post.ReportPost}
-              {/* {userInfo && localStrings.Post.ReportUser} */}
+							{postId && localStrings.Post.ReportPost}
+              {userId && localStrings.Public.ReportFriend}
               {commentId && localStrings.PostDetails.ReportComment}
 						</Text>
 					</View>
@@ -111,14 +92,14 @@ const ReportPostScreen = ({ postId, userId, commentId }: { postId?: string; user
 			{/* Content */}
 			<ScrollView style={{ flex: 1 }}>
 				{/* bài viết được chọn */}
-				{post && renderPost()}
-        {userInfo && renderUserInfo()}
+				{postId && renderPost()}
+        {userId && renderUserInfo()}
         {commentId && renderComment()}
 				 {/* Nội dung báo cáo */}
          <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <Text style={{ fontWeight: 'bold', fontSize: 18 }}>
-            {post && localStrings.Report.ReportPost}
-            {userInfo && localStrings.Report.ReportUser}
+            {postId && localStrings.Report.ReportPost}
+            {userId && localStrings.Report.ReportUser}
             {commentId && localStrings.Report.ReportComment}
           </Text>
           <Text style={{ marginVertical: 10, color: '#666' }}>
@@ -148,7 +129,7 @@ const ReportPostScreen = ({ postId, userId, commentId }: { postId?: string; user
 			    <Button type='primary' onPress={()=>{
             handleReport();
           }}>
-					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Post.ReportPost}</Text>
+					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Public.ReportFriend}</Text>
 				</Button>
 			</View>
 		</ScrollView>
@@ -156,5 +137,5 @@ const ReportPostScreen = ({ postId, userId, commentId }: { postId?: string; user
   );
 }
 
-export default ReportPostScreen;
+export default ReportScreen;
 

@@ -1,5 +1,6 @@
 
-import ReportPostScreen from '@/src/components/screens/reportPost/views/ReportPostScreen'
+
+import ReportScreen from '@/src/components/screens/reportPost/views/ReportScreen';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react'
 
@@ -27,7 +28,7 @@ const reportPost = () => {
     }
   }
   return (
-   <ReportPostScreen postId={getPostID()}  userId={getUserID()} commentId={getCommentID()}/>
+   <ReportScreen postId={getPostID()}  userId={getUserID()} commentId={getCommentID()}/>
   )
 }
 

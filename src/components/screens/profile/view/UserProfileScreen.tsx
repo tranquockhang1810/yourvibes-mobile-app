@@ -23,7 +23,9 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     total,
     fetchUserProfile,
     profileLoading,
-    userInfo
+    userInfo,
+    friends,
+    friendCount
   } = UserProfileViewModel();
 
   const showFriendAction = useCallback(() => {
@@ -59,6 +61,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
   useEffect(() => {
     if (!id) return;
     fetchUserProfile(id);
+    
     setTab(0);
   }, [id])
 
@@ -104,7 +107,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           ListHeaderComponent={
             <>
               <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} />
-              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={0}/>
+              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={friendCount} friends={friends} />
             </>
           }
           renderItem={() => null}
@@ -123,7 +126,3 @@ const UserProfileScreen = ({ id }: { id: string }) => {
 };
 
 export default UserProfileScreen;
-function fetchFriends(page: any) {
-  throw new Error('Function not implemented.');
-}
-
