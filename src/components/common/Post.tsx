@@ -25,7 +25,7 @@ interface IPost {
   children?: React.ReactNode,
 }
 
-const Post: React.FC<IPost> = ({
+const Post: React.FC<IPost> = React.memo(({
   post,
   isParentPost = false,
   noFooter = false,
@@ -79,7 +79,7 @@ const Post: React.FC<IPost> = ({
                 localStrings.DeletePost.DeleteConfirm,
                 [
                   { text: localStrings.Public.Cancel, style: 'cancel' },
-                  { text: localStrings.Public.Confirm, onPress: () => deletePost &&deletePost(post?.id as string) },
+                  { text: localStrings.Public.Confirm, onPress: () => deletePost && deletePost(post?.id as string) },
                 ]
               );
               break;
@@ -102,9 +102,9 @@ const Post: React.FC<IPost> = ({
                 [
                   { text: localStrings.Public.Cancel, style: 'cancel' },
                   { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed && deleteNewFeed(post?.id as string) },
-                  
+
                 ]
-                
+
               );
               break;
             default:
@@ -168,7 +168,11 @@ const Post: React.FC<IPost> = ({
         title={
           <View style={{ flexDirection: 'row', marginRight: 8 }}>
             <View style={{ flexDirection: 'column', marginLeft: 8, width: '92%' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</Text>
+              <TouchableOpacity
+                onPress={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+              >
+                <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</Text>
+              </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
                 {renderPrivacyIcon()}
@@ -185,14 +189,18 @@ const Post: React.FC<IPost> = ({
           </View>
         }
         thumb={
-          <Image
-            source={{ uri: likedPost?.user?.avatar_url }}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 30
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+          >
+            <Image
+              source={{ uri: likedPost?.user?.avatar_url }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 30
+              }}
+            />
+          </TouchableOpacity>
         }
       />
 
@@ -391,6 +399,6 @@ const Post: React.FC<IPost> = ({
       </Modal>
     </Card >
   );
-}
+})
 
 export default Post;

@@ -29,6 +29,7 @@ const MyInput: React.FC<MyInputProps> = (props: MyInputProps) => {
       style={{
         padding: 10,
         borderRadius: 5,
+        height: 54,
         ...styles[props?.variant || "borderless"],
         ...props?.moreStyle
       }}

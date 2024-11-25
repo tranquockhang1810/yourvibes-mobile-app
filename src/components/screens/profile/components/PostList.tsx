@@ -92,7 +92,20 @@ const PostList = React.memo(({
         </View>
       </TouchableOpacity>
 
-      {renderFlatList()}
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => (
+          <Post key={item?.id} post={item}>
+            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+          </Post>
+        )}
+        keyExtractor={(item) => item?.id as string}
+        ListFooterComponent={renderFooter}
+        onEndReached={loadMorePosts}
+        onEndReachedThreshold={0.5}
+        removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 });

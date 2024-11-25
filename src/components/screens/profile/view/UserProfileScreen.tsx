@@ -70,7 +70,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
         {/* Header Cố Định */}
         <View
           style={{
-            marginTop: 30,
+            marginTop: Platform.OS === 'ios' ? 30 : 0,
             height: 50,
             paddingHorizontal: 16,
             paddingTop: 16,

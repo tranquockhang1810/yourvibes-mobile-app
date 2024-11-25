@@ -28,7 +28,7 @@ const AddPostViewModel = (repo: PostRepo) => {
         setPostContent('');
         setSelectedImageFiles([]);
         clearSavedPost!();
-        router.push("/(tabs)/profile?tabNum=0");
+        router.push("/(tabs)/profile?tabNum=1");
       } else {
         Toast.show({
           type: "error",

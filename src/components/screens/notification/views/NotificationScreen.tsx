@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, StatusBar, TouchableOpacity, FlatList, Platform } from 'react-native'
 import React from 'react'
 import useColor from '@/src/hooks/useColor';
 import { router, useFocusEffect } from 'expo-router';
@@ -36,7 +36,7 @@ const NotificationScreen = () => {
     <View style={{ flex: 1 }}>
       {/* Header */}
 
-      <View style={{ backgroundColor: backgroundColor, paddingTop: 40 }}>
+      <View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 30 : 0 }}>
         <StatusBar barStyle="dark-content" />
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 60, paddingBottom: 10 }}>
           <View style={{ flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', flex: 1 }}>

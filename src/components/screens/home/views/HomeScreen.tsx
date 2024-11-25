@@ -10,10 +10,11 @@ import Post from '@/src/components/common/Post'
 import { ActivityIndicator } from '@ant-design/react-native'
 import HomeViewModel from '../viewModel/HomeViewModel'
 import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo'
+import { Platform } from 'react-native';
 
 const HomeScreen = () => {
   const { brandPrimary, backgroundColor} = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
+  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds } = HomeViewModel(defaultNewFeedRepo)
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -31,8 +32,7 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
-      <View style={{ backgroundColor: backgroundColor, paddingTop: 40 }}>
-        <StatusBar barStyle="dark-content" />
+      <View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 40 : 0 }}>
         <View style={{ height: 60, display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
           <Image
             source={require('@/assets/images/yourvibes_black.png')}
@@ -49,7 +49,7 @@ const HomeScreen = () => {
       <FlatList
         data={newFeeds}
         renderItem={({ item }) => (
-          <Post key={item?.id} post={item} deleteNewFeed={deleteNewFeed}>
+          <Post key={item?.id} post={item}>
             {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
           </Post>
         )}

@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from "react-native";
 import { Image } from "expo-image";
 import React, { useCallback, useEffect, useState } from "react";
@@ -50,7 +51,7 @@ const SearchScreen = React.memo(() => {
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
-      <View style={{ backgroundColor: backgroundColor, paddingTop: 40 }}>
+      <View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 40 : 0 }}>
         <StatusBar barStyle="dark-content" />
         <View
           style={{
