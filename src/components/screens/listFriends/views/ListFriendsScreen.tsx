@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, Image, SectionList } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, Image, SectionList, Platform } from 'react-native'
 import React, { useEffect } from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { router } from 'expo-router';
@@ -70,7 +70,7 @@ const ListFriendsScreen = ({userId}: {userId: string}) => {
             backgroundColor: "white",
             borderBottomWidth: 1,
             borderColor: "#e0e0e0",
-            marginTop: 35,
+            marginTop: Platform.OS === 'ios' ? 30 : 0 ,
           }}
         >
           <TouchableOpacity onPress={() => router.back()}>

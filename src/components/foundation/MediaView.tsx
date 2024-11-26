@@ -1,7 +1,6 @@
 import { Image } from 'expo-image';
 import React from 'react'
 import { Carousel } from '@ant-design/react-native';
-import { Video } from 'expo-av';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import useColor from '@/src/hooks/useColor';
 import { PostMediaModel } from '@/src/api/features/post/models/PostResponseModel';
@@ -23,7 +22,7 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
       dotStyle={{
         backgroundColor: lightGray,
       }}
-      selectedIndex={0}
+      //selectedIndex={0}
     >
       {mediaItems?.map((media, index) => {
         const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov'); // Check if media is a video

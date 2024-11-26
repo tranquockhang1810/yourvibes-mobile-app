@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/yourvibes_black.png",
     "scheme": "yourvibes",
+    "platforms": ["ios", "android"],
     "userInterfaceStyle": "automatic",
     "entryPoint": "./node_modules/expo-router/entry.js",
     "jsEngine": "hermes",
@@ -22,7 +23,21 @@
         "INTERNET",
         "ACCESS_NETWORK_STATE"
       ],
-      "package": "com.tranquockhang18102004.yourvibes"
+      "package": "com.tranquockhang18102004.yourvibes",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*.webapp.io",
+              "pathPrefix": "/records"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

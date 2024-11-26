@@ -13,6 +13,8 @@ import { Button } from '@ant-design/react-native';
 import { DateTransfer, getDayDiff } from '@/src/utils/helper/DateTransfer';
 import { CurrencyFormat } from '@/src/utils/helper/CurrencyFormat';
 import dayjs from 'dayjs';
+import { AdsCalculate } from '@/src/utils/helper/AdsCalculate';
+import ENV from '@/env-config';
 
 const Ads = ({ postId }: { postId: string }) => {
 	const price = 30000;
@@ -43,11 +45,11 @@ const Ads = ({ postId }: { postId: string }) => {
 			name: 'MoMo',
 			image: 'https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png',
 		},
-		{
-			id: 'paypal',
-			name: 'PayPal',
-			image: 'https://th.bing.com/th/id/OIP.wBKSzdf1HTUgx1Ax_EecKwHaHa?rs=1&pid=ImgDetMain',
-		},
+		// {
+		// 	id: 'paypal',
+		// 	name: 'PayPal',
+		// 	image: 'https://th.bing.com/th/id/OIP.wBKSzdf1HTUgx1Ax_EecKwHaHa?rs=1&pid=ImgDetMain',
+		// },
 	];
 
 	const renderPost = useCallback(() => {
@@ -125,7 +127,7 @@ const Ads = ({ postId }: { postId: string }) => {
 					{/* Ngân sách */}
 					<View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10, borderRadius: 10 }}>
 						<Ionicons name="cash" size={24} color={brandPrimary} />
-						<Text style={{ paddingLeft: 20 }}>{localStrings.Ads.BudgetAds} {CurrencyFormat(diffDay * price)}</Text>
+						<Text style={{ paddingLeft: 20 }}>{localStrings.Ads.BudgetAds} {CurrencyFormat(AdsCalculate(diffDay, price))}</Text>
 					</View>
 
 					{/* Phương thức thanh toán */}
@@ -146,15 +148,15 @@ const Ads = ({ postId }: { postId: string }) => {
 			</ScrollView>
 
 			{/* Footer */}
-			<View style={{ paddingHorizontal: 10, paddingBottom: 20 }}>
+			<View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
 				<Button
 					type='primary'
 					onPress={() => {
 						advertisePost({
 							post_id: postId,
-							payment_method: method,
-							amount: diffDay * price,
-							duration: (dayjs(date).format('YYYY-MM-DDT00:00:00') + "Z").toString(),
+							redirect_url: `${ENV.SERVER_ENDPOINT.replace('http', 'exp').replace('8080', '8081')}`,
+							end_date: (dayjs(date).format('YYYY-MM-DDT00:00:00') + "Z").toString(),
+							start_date: (dayjs().format('YYYY-MM-DDT00:00:00') + "Z").toString(),
 						})
 					}}
 					loading={adsLoading}

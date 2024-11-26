@@ -422,7 +422,7 @@ function PostDetails(): React.JSX.Element {
             flexDirection: "row",
             alignItems: "center",
             padding: 16,
-            marginTop: 30,
+            marginTop: Platform.OS === 'ios' ? 30 : 0 ,
           }}
         >
           <TouchableOpacity onPress={() => router.back()}>
