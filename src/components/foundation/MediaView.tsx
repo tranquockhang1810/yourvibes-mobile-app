@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import React from 'react'
 import { Carousel } from '@ant-design/react-native';
 import { Video } from 'expo-av';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import useColor from '@/src/hooks/useColor';
 import { PostMediaModel } from '@/src/api/features/post/models/PostResponseModel';
 
@@ -26,16 +27,21 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
     >
       {mediaItems?.map((media, index) => {
         const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov'); // Check if media is a video
+        const player = useVideoPlayer({ uri: media?.media_url || "" }, player => {
+          player.loop = true;
+          player.muted = true;
+          player.play();
+        });
         return isVideo ? (
-          <Video
+          <VideoView
             key={index}
-            source={{ uri: media?.media_url || "" }}
             style={{
               height: 250,
               width: '100%',
             }}
-            useNativeControls
-            isLooping
+            player={player}
+            allowsFullscreen
+            allowsPictureInPicture
           />
         ) : (
           <Image

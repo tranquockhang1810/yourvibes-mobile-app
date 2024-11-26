@@ -143,8 +143,8 @@ const AboutTab = ({
               <View
                 style={{
                   flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "space-between",
+                  // flexWrap: "wrap",
+                  // justifyContent: "space-between",
                 }}
               >
                 {friends?.map((friend, index) => (
@@ -154,6 +154,8 @@ const AboutTab = ({
                       width: "23%",
                       alignItems: "center",
                       marginBottom: 10,
+                      marginRight: 4,
+                      marginLeft: 4,
                     }}
                     onPress={() => {
                       router.push(`/(tabs)/user/${friend.id}`);

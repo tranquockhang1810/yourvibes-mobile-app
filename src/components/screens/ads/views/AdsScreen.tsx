@@ -1,4 +1,4 @@
-import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
@@ -75,7 +75,7 @@ const Ads = ({ postId }: { postId: string }) => {
 	return (
 		<ScrollView style={{ flex: 1 }}>
 			{/* Header */}
-			<View style={{ backgroundColor: backgroundColor, paddingTop: 40 }}>
+			<View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 40 : 0 }}>
 				<StatusBar barStyle="dark-content" />
 				<View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 60, paddingBottom: 10 }}>
 					<View style={{ flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', justifyContent: 'space-between' }}>

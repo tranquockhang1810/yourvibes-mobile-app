@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
@@ -130,7 +131,7 @@ const EditPostScreen = ({ id }: { id: string }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1 }}>
         {/* Header */}
-        <View style={{ backgroundColor: backgroundColor, paddingTop: 30 }}>
+        <View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 30 : 0 }}>
           <StatusBar barStyle="dark-content" />
           <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', height: 60, paddingBottom: 10 }}>
             <View style={{

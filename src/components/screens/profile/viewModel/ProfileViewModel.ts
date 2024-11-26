@@ -91,22 +91,18 @@ const ProfileViewModel = () => {
           ) as FriendResponseModel[];
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
-        } else {
-          console.error("response.data is not an array");
-        }
-    }else{
-      Toast.show({
-        type: 'error',
-        text2: response?.error?.message,
-      });
-    }
+        } 
+    else{
+      console.error("response.data is null");
+      setFriends([]);
+    }}
     return friends;
   }
   catch (error: any) {
     console.error(error);
     Toast.show({
-      type: 'error',
-      text2: error?.message,
+      type: "error",
+      text1: error?.message || "Không có dữ liệu phản hồi từ server.",
     });
   }
 }

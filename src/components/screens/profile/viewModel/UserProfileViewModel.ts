@@ -109,6 +109,7 @@ const UserProfileViewModel = () => {
     try {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.sendFriendRequest(id);
+      
       if (!response?.error) {
         Toast.show({
           type: 'success',
@@ -224,18 +225,20 @@ const UserProfileViewModel = () => {
   const unFriend = async (id: string) => {
     try {
       setSendRequestLoading(true);
-      const response = await defaultProfileRepo.unfriend(id);
+      const response = await defaultProfileRepo.unfriend(id); 
       if (!response?.error) {
         Toast.show({
           type: 'success',
           text1: localStrings.Profile.Friend.UnfriendSuccess,
         });
+        
         setNewFriendStatus(FriendStatus.NotFriend);
       } else {
         Toast.show({
           type: 'error',
           text1: localStrings.Profile.Friend.UnfriendFailed,
           text2: response?.error?.message,
+          
         });
       }
     } catch (error: any) {
@@ -271,22 +274,17 @@ const fetchFriends = async (page: number) => {
           ) as FriendResponseModel[];
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
-        } else {
-          console.error("response.data is not an array");
-        }
-    }else{
-      Toast.show({
-        type: 'error',
-        text2: response?.error?.message,
-      });
-    }
+        } else{
+      console.error("response.data is null");
+      setFriends([]);
+    }}
     return friends;
   }
   catch (error: any) {
     console.error(error);
     Toast.show({
-      type: 'error',
-      text2: error?.message,
+      type: "error",
+      text1: error?.message || "Không có dữ liệu phản hồi từ server.",
     });
   }
 }

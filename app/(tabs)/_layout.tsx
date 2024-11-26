@@ -11,8 +11,8 @@ import Toast from 'react-native-toast-message';
 
 const TabLayout = () => {
   const { brandPrimary, brandPrimaryTap } = useColor();
-  const iconSize = 27;
-  const addIconSize = 35;
+  const iconSize = 25;
+  const addIconSize = 28;
   const { user, localStrings } = useAuth();
   const pathname = usePathname();
   const [statusNotifi, setStatusNotifi] = useState(false);
@@ -151,7 +151,6 @@ const TabLayout = () => {
  
   return (
     <>
-      <StatusBar barStyle="dark-content" />
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: brandPrimary,
@@ -180,7 +179,7 @@ const TabLayout = () => {
               tabBarIcon: ({ focused }) => (tab.href && focused ? tab.focusIcon : tab.icon),
               tabBarShowLabel: false,
               tabBarInactiveTintColor: brandPrimaryTap,
-              tabBarStyle: { height: Platform.OS === 'ios' ? 80 : 55 },
+              tabBarStyle: { height: Platform.OS === 'ios' ? 60 : 40 },
               href: tab.href,
             }}
           />

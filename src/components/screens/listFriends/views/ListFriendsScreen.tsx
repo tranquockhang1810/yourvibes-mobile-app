@@ -106,7 +106,34 @@ const ListFriendsScreen = ({userId}: {userId: string}) => {
               ListFooterComponent={
                 loading && hasMore ? (
                   <ActivityIndicator size="small" color="blue" />
-                ) : null
+                ) : friends?.length === 0 ?
+                (
+                  <>
+                    <Image
+                      source={{
+                        uri: "https://res.cloudinary.com/dkf51e57t/image/upload/v1729847545/Search-rafiki_uuq8tx.png",
+                      }}
+                      style={{
+                        width: "100%",
+                        height: 280,
+                        resizeMode: "contain",
+                      }}
+                    />
+                    <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
+                      <Text
+                      style={{
+                        paddingHorizontal: 20,
+                        color: "gray",
+                        textAlign: "center",
+                        fontSize: 16,
+                      }}
+                    >
+                      {localStrings.Public.FriendFind}
+                    </Text>
+                    </TouchableOpacity>
+                    
+                  </>
+                ): null
               }
             />
           )}

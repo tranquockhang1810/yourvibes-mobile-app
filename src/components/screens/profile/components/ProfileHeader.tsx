@@ -29,8 +29,6 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
   const showAction = useCallback(() => {
     const options = [
       localStrings.Public.UnFriend,
-      // localStrings.Public.ReportFriend,
-      // localStrings.Public.Block,
       localStrings.Public.Cancel,
     ];
 
@@ -49,7 +47,8 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
               localStrings.Profile.Friend.UnfriendConfirm,
               [
                 { text: localStrings.Public.Cancel, style: 'cancel' },
-                { text: localStrings.Public.Confirm, onPress: () => unFriend(user?.id as string) },
+                { text: localStrings.Public.Confirm, onPress: () => unFriend(user?.id as string)
+                },
               ]
             );
             break;
@@ -64,7 +63,7 @@ const ProfileHeader = ({ total, user, loading }: { total: number, user: UserMode
         }
       }
     );
-  }, [localStrings]);
+  }, [user, localStrings]);
 
   const renderFriendButton = useCallback(() => {
     switch (newFriendStatus) {

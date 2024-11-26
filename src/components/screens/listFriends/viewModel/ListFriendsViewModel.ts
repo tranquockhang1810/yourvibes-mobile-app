@@ -36,8 +36,8 @@ const useListFriendsViewModel = (userId?: string) => {
         page: 1,
         user_id: userId,
       });
-      if (response.data) {
-        if (Array.isArray(response.data)) {
+      if (response?.data ) {
+        if (Array.isArray(response?.data)) {
           const friends = response.data.map(
             (friendResponse: FriendResponseModel) => ({
               id: friendResponse.id,
@@ -49,13 +49,10 @@ const useListFriendsViewModel = (userId?: string) => {
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
         } else {
-          console.error("response.data is not an array");
+         console.log("Không có bạn bè nào.");
+         setFriends([]);
+         
         }
-      } else {
-        Toast.show({
-          type: "error",
-          text2: response.error.message,
-        });
       }
       return friends;
     } catch (error: any) {
