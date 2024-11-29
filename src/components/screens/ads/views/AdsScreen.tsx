@@ -107,6 +107,10 @@ const Ads = ({ postId }: { postId: string }) => {
     }
   }, [postId]);
 
+
+  ///       isAdvertise = true thì ẩn phần phương thức quảng cáo "Thông tin quảng cáo" "Chọn thời gian quảng cáo" "Ngân sách" "Phương thức thanh toán"
+  ///                            và hiện "Lịch sử quảng cáo"
+
   return (
     <ScrollView style={{ flex: 1 }}>
       {/* Header */}
