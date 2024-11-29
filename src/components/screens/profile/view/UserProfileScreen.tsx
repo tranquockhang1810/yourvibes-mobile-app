@@ -46,7 +46,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
         switch (buttonIndex) {
           case 0:
             console.log('báo cáo tài khoản action selected');
-            router.push(`/reportPost?userId=${id}`);
+            router.push(`/report?userId=${id}`);
             break;
           case 1:
             // TODO: block user

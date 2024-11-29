@@ -246,8 +246,9 @@ Report: {
   ReportPost: " Tại sao bạn báo cáo bài viết này?",
   ReportUser: "Tại sao bạn báo cáo người dùng này?",
   ReportComment:"Tại sao bạn báo cáo bình luận này?",
-  ReportSuccess: "Báo cáo bài viết thành công!",
-  ReportFailed: "Báo cáo bài viết thất bại!",
+  ReportSuccess: "Báo cáo thành công!",
+  ReportFailed: "Báo cáo thất bại!",
+  Note: "Nếu bạn nhận thấy sự đe dọa hoặc ai đó dang gặp nguy hiểm, đừng chần chừ mà hãy tìm ngay sự giúp đỡ và báo cho dịch vụ khẩn cấp ở địa phương trước khi báo cáo với YourVibes.",
 },
 ChangePassword:{
   ChangePassword: "Thay đổi mật khẩu",
