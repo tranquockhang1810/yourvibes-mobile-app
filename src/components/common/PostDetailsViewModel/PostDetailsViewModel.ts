@@ -88,8 +88,6 @@ const usePostDetailsViewModel = (
       `${localStrings.PostDetails.DeleteComment}`,
       `${localStrings.PostDetails.Cancel}`,
     ];
-
-    //const comment = comments.find((comment) => comment.id === commentId);
     const reply = replyMap[comment?.id];
 
     if (comment && comment.user?.id !== user?.id) {
