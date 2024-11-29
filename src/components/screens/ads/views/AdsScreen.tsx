@@ -5,7 +5,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   Animated,
@@ -258,7 +257,7 @@ const Ads = ({ postId }: { postId: string }) => {
           ) && (
             <View style={styles.activeIndicator}>
               <View style={styles.greenDot} />
-              <Text style={styles.activeText}>Chiến dịch đang thực hiện</Text>
+              <Text style={styles.activeText}>{localStrings.Ads.ActiveCampaign}</Text>
             </View>
           )}
           <TouchableOpacity
@@ -266,7 +265,7 @@ const Ads = ({ postId }: { postId: string }) => {
             onPress={() => setHistoryExpanded((prev) => !prev)}
           >
             <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-              {isHistoryExpanded ? "Ẩn lịch sử" : "Xem lịch sử"}
+              {isHistoryExpanded ? `{localStrings.Ads.HideCampaign}` : `{localStrings.Ads.ShowCampaign}`}
             </Text>
             <Ionicons
               name={isHistoryExpanded ? "chevron-up" : "chevron-down"}
@@ -287,29 +286,29 @@ const Ads = ({ postId }: { postId: string }) => {
               <View key={index} style={styles.historyCard}>
                 <View style={styles.historyHeader}>
                   <Text style={styles.historyTitle}>
-                    Chiến Dịch #{index + 1}
+                    {localStrings.Ads.Campaign} #{index + 1}
                   </Text>
                   <FontAwesome name="calendar" size={20} color={brandPrimary} />
                 </View>
                 <View style={styles.historyContent}>
                   <Text style={styles.historyText}>
-                    <Text style={styles.boldText}>Chiến dịch:</Text>{" "}
+                    <Text style={styles.boldText}>{localStrings.Ads.Campaign}:</Text>{" "}
                     {DateTransfer(history.startDate)}
                   </Text>
                   <Text style={styles.historyText}>
-                    <Text style={styles.boldText}>Kết thúc:</Text>{" "}
+                    <Text style={styles.boldText}>{localStrings.Ads.End}:</Text>{" "}
                     {DateTransfer(history.endDate)}
                   </Text> 
                   <Text style={styles.historyText}>
-                    <Text style={styles.boldText}>Còn lại:</Text>{" "}
-                    {getDayDiff(history.endDate)} ngày
+                    <Text style={styles.boldText}>{localStrings.Ads.RemainingTime}:</Text>{" "}
+                    {getDayDiff(history.endDate)} {localStrings.Ads.Day}
                   </Text>
                   <Text style={styles.historyText}>
-                    <Text style={styles.boldText}>Số tiền:</Text>{" "}
+                    <Text style={styles.boldText}>{localStrings.Ads.Grant}:</Text>{" "}
                     {CurrencyFormat(history.price)}
                   </Text>
                   <Text style={styles.historyText}>
-                    <Text style={styles.boldText}>Thanh toán:</Text>{" "}
+                    <Text style={styles.boldText}>{localStrings.Ads.PaymentMethod}:</Text>{" "}
                     {history.method === "momo" ? "MoMo" : "Khác"}
                   </Text>
                 </View>

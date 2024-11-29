@@ -242,6 +242,14 @@ export const ENGLocalizedStrings = {
     PaymentMethod: "Payment method",
     AdvertisePostFailed: "Advertise post failed!",
     AdvertisePostSuccess: "Advertise post successful!",
+    ActiveCampaign: "Active campaign",
+    HideCampaign:"Hide campaign",
+    ShowCampaign:"Show campaign",
+    Campaign: "Campaign",
+    End:"End",
+    RemainingTime:"Remaining time",
+    Day:"Day",
+    Grant:"Grant", 
   },
 
   Report: {
