@@ -241,7 +241,17 @@ Ads: {
   PaymentMethod: "Phương thức thanh toán",
   AdvertisePostFailed: "Quảng cáo bài viết thất bại!",
   AdvertisePostSuccess: "Quảng cáo bài viết thành công!",
+  ActiveCampaign: "Chiến dịch đang thực hiện",
+  HideCampaign:"Ẩn lịch sử",
+  ShowCampaign:"Xem lịch sử",
+  Campaign:"Chiến dịch",
+  End: "Kết thúc",
+  RemainingTime:"Thời gian còn lại",
+  Day:"Ngày",
+  Grant:"Kinh phí", 
 },
+
+
 Report: {
   ReportPost: " Tại sao bạn báo cáo bài viết này?",
   ReportUser: "Tại sao bạn báo cáo người dùng này?",

@@ -106,7 +106,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} />
+              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} friendCount={friendCount}/>
               <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={friendCount} friends={friends} />
             </>
           }
