@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 	Animated,
+	FlatList,
   } from "react-native";
   import { Image } from "expo-image";
   import React, { useCallback, useEffect, useState } from "react";
@@ -25,7 +26,9 @@ import {
   import dayjs from "dayjs";
   import { AdsCalculate } from "@/src/utils/helper/AdsCalculate";
   import ENV from "@/env-config";
-import EditPostViewModel from "../../editPost/viewModel/EditPostViewModel";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import a from "@ant-design/react-native/lib/modal/alert";
+import { AnimatedScrollView } from "react-native-reanimated/lib/typescript/component/ScrollView";
   
   const Ads = ({ postId }: { postId: string }) => {
 	const price = 30000;
@@ -34,7 +37,7 @@ import EditPostViewModel from "../../editPost/viewModel/EditPostViewModel";
 	const [showDatePicker, setShowDatePicker] = useState(false);
 	const { language, localStrings } = useAuth();
 	const [diffDay, setDiffDay] = useState(1);
-	const { getPostDetail, post, loading, advertisePost, adsLoading } =
+	const { getPostDetail, post, loading, advertisePost, adsLoading, getAdvertisePost, page, ads, adsAll } =
 	  AdsViewModel(defaultPostRepo);
   
 	const getTomorrow = () => {
@@ -53,15 +56,6 @@ import EditPostViewModel from "../../editPost/viewModel/EditPostViewModel";
 	  },
 	];
   
-	// Lịch sử quảng cáo giả
-	const adsHistory = [
-	  {
-		startDate: new Date(),
-		endDate: new Date(new Date().setDate(new Date().getDate() + 3)),
-		price: AdsCalculate(diffDay, price),
-		method: "momo",
-	  },
-	];
   
 	const [isHistoryExpanded, setHistoryExpanded] = useState(false);
   
@@ -101,15 +95,19 @@ import EditPostViewModel from "../../editPost/viewModel/EditPostViewModel";
 		);
 	  }
 	}, [post, loading]);
-  
+
+	
+
 	useEffect(() => {
 	  if (postId) {
 		getPostDetail(postId);
+		getAdvertisePost( page,postId );
+		
 	  }
 	}, [postId]);
   
 	return (
-	  <ScrollView style={{ flex: 1 }}>
+	  <View style={{ flex: 1 }}>
 		{/* Header */}
 		<View
 		  style={{
@@ -153,236 +151,248 @@ import EditPostViewModel from "../../editPost/viewModel/EditPostViewModel";
 		</View>
   
 		{/* Content */}
-		<ScrollView style={{ flex: 1 }}>
-		  {/* bài viết được chọn */}
-		  {renderPost()}
-		 
-		  {post?.is_advertisement === false ? (
-			<>
-			 {/* Lịch sử Quảng Cáo */}
-				<View style={{ flexDirection: "row", alignItems: "center" }}>
-				<View style={styles.activeIndicator}>
-					<View style={styles.greenDot} />
-					<Text style={styles.activeText}>{localStrings.Ads.ActiveCampaign}</Text>
-				</View>
-				</View>
-	
-				<View style={styles.historyContainer}>
-					{adsHistory.map((history, index) => (
-						<View key={index} style={styles.historyCard}>
-						<View style={styles.historyHeader}>
-							<Text style={styles.historyTitle}>
-							{localStrings.Ads.Campaign} #{index + 2}
-							</Text>
-							<FontAwesome name="calendar" size={20} color={brandPrimary} />
-						</View>
-						<View style={styles.historyContent}>
-							<Text style={styles.historyText}>
-							<Text style={styles.boldText}>{localStrings.Ads.Campaign}:</Text>{" "}
-							{DateTransfer(history.startDate)}
-							</Text>
-							<Text style={styles.historyText}>
-							<Text style={styles.boldText}>{localStrings.Ads.End}:</Text>{" "}
-							{DateTransfer(history.endDate)}
-							</Text> 
-							<Text style={styles.historyText}>
-							<Text style={styles.boldText}>{localStrings.Ads.RemainingTime}:</Text>{" "}
-							{getDayDiff(history.endDate)} {localStrings.Ads.Day}
-							</Text>
+		<View style={{ flex: 1 }}>
+			<ScrollView >
+				{/* bài viết được chọn */}
+				{renderPost()}
+				
+				{post?.is_advertisement ? (
+					<>
+					{/* Lịch sử Quảng Cáo */}
+						<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<View style={styles.activeIndicator}>
+							<View style={styles.greenDot} />
+							<Text style={styles.activeText}>{localStrings.Ads.ActiveCampaign}</Text>
 						</View>
 						</View>
-					))};
-				</View>
+			
+						<View style={styles.historyContainer}>
+							
+								<View style={styles.historyCard}>
+								<View style={styles.historyHeader}>
+									<Text style={styles.historyTitle}>
+									{localStrings.Ads.Campaign} #1
+									</Text>
+									<FontAwesome name="calendar" size={20} color={brandPrimary} />
+								</View>
+								<View style={styles.historyContent}>
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.Campaign}:</Text>{" "}
+									{DateTransfer(ads?.start_date)}
+									</Text>
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.End}:</Text>{" "}
+									{DateTransfer(ads?.end_date)}
+									</Text> 
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.RemainingTime}:</Text>{" "}
+									{ads?.day_remaining} {localStrings.Ads.Day}
+									</Text>
+								</View>
+								</View>
+						</View>
 
-			</>
-		  ):(
-			<>
-			  {/* Thông tin quảng cáo */}
-			  <View style={{ flex: 1, paddingHorizontal: 10 }}>
-					<View>
-					<Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5 }}>
-						{localStrings.Ads.TimeAndBudget}
-					</Text>
-					<Text style={{ color: "gray", fontSize: 14 }}>
-						{localStrings.Ads.Minimum.replace(
-						"{{price}}",
-						`${CurrencyFormat(price)}`
-						)}
-					</Text>
-					</View>
-		
-					{/* Chọn thời gian quảng cáo */}
-					<TouchableOpacity
-					style={{
-						flexDirection: "row",
-						alignItems: "center",
-						borderWidth: 1,
-						borderColor: "#ccc",
-						padding: 10,
-						marginVertical: 10,
-						borderRadius: 10,
-					}}
-					onPress={() => {
-						setShowDatePicker(true);
-					}}
-					>
-					<FontAwesome name="calendar" size={24} color={brandPrimary} />
-					<Text style={{ paddingLeft: 20 }}>
-						{`${localStrings.Ads.TimeAds} ${DateTransfer(
-						date
-						)} (${diffDay} ${localStrings.Public.Day.toLowerCase()})`}
-					</Text>
-					</TouchableOpacity>
-					<MyDateTimePicker
-					value={date}
-					show={showDatePicker}
-					onCancel={() => setShowDatePicker(false)}
-					onSubmit={(selectedDate) => {
-						setDate(selectedDate);
-						setDiffDay(getDayDiff(selectedDate));
-					}}
-					minDate={getTomorrow()}
-					/>
-		
-					{/* Ngân sách */}
-					<View
-					style={{
-						flexDirection: "row",
-						alignItems: "center",
-						borderWidth: 1,
-						borderColor: "#ccc",
-						padding: 10,
-						marginVertical: 10,
-						borderRadius: 10,
-					}}
-					>
-					<Ionicons name="cash" size={24} color={brandPrimary} />
-					<Text style={{ paddingLeft: 20 }}>
-						{localStrings.Ads.BudgetAds}{" "}
-						{CurrencyFormat(AdsCalculate(diffDay, price))}
-					</Text>
-					</View>
-		
-					{/* Phương thức thanh toán */}
-					<View style={{ flexDirection: "row", marginTop: 10 }}>
-					<Text style={{ fontWeight: "bold", marginRight: 10 }}>
-						{localStrings.Ads.PaymentMethod}
-					</Text>
-					<View
-						style={{ flexDirection: "row", justifyContent: "space-around" }}
-					>
-						{paymentMethods.map((item) => (
-						<TouchableOpacity
-							key={item.id}
-							onPress={() => setMethod(item.id)}
-							style={[
-							styles.option,
-							method === item.id && styles.selectedOption,
-							]}
-						>
-							<Image
-							source={{ uri: item.image }}
-							style={{ width: 50, height: 50 }}
+					</>
+				):(
+					<>
+					{/* Thông tin quảng cáo */}
+					<View style={{ flex: 1, paddingHorizontal: 10 }}>
+							<View>
+							<Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5 }}>
+								{localStrings.Ads.TimeAndBudget}
+							</Text>
+							<Text style={{ color: "gray", fontSize: 14 }}>
+								{localStrings.Ads.Minimum.replace(
+								"{{price}}",
+								`${CurrencyFormat(price)}`
+								)}
+							</Text>
+							<Text style={{ color: "gray", fontSize: 14 }}>
+								VAT: 10%
+							</Text>
+							</View>
+				
+							{/* Chọn thời gian quảng cáo */}
+							<TouchableOpacity
+							style={{
+								flexDirection: "row",
+								alignItems: "center",
+								borderWidth: 1,
+								borderColor: "#ccc",
+								padding: 10,
+								marginVertical: 10,
+								borderRadius: 10,
+							}}
+							onPress={() => {
+								setShowDatePicker(true);
+							}}
+							>
+							<FontAwesome name="calendar" size={24} color={brandPrimary} />
+							<Text style={{ paddingLeft: 20 }}>
+								{`${localStrings.Ads.TimeAds} ${DateTransfer(
+								date
+								)} (${diffDay} ${localStrings.Public.Day.toLowerCase()})`}
+							</Text>
+							</TouchableOpacity>
+							<MyDateTimePicker
+							value={date}
+							show={showDatePicker}
+							onCancel={() => setShowDatePicker(false)}
+							onSubmit={(selectedDate) => {
+								setDate(selectedDate);
+								setDiffDay(getDayDiff(selectedDate));
+							}}
+							minDate={getTomorrow()}
 							/>
+				
+							{/* Ngân sách */}
+							<View
+							style={{
+								flexDirection: "row",
+								alignItems: "center",
+								borderWidth: 1,
+								borderColor: "#ccc",
+								padding: 10,
+								marginVertical: 10,
+								borderRadius: 10,
+							}}
+							>
+							<Ionicons name="cash" size={24} color={brandPrimary} />
+							<Text style={{ paddingLeft: 20 }}>
+								{localStrings.Ads.BudgetAds}{" "}
+								{CurrencyFormat(AdsCalculate(diffDay, price))}
+							</Text>
+							</View>
+				
+							{/* Phương thức thanh toán */}
+							<View style={{ flexDirection: "row", marginTop: 10 }}>
+							<Text style={{ fontWeight: "bold", marginRight: 10 }}>
+								{localStrings.Ads.PaymentMethod}
+							</Text>
+							<View
+								style={{ flexDirection: "row", justifyContent: "space-around" }}
+							>
+								{paymentMethods.map((item) => (
+								<TouchableOpacity
+									key={item.id}
+									onPress={() => setMethod(item.id)}
+									style={[
+									styles.option,
+									method === item.id && styles.selectedOption,
+									]}
+								>
+									<Image
+									source={{ uri: item.image }}
+									style={{ width: 50, height: 50 }}
+									/>
+								</TouchableOpacity>
+								))}
+							</View>
+							</View>
+						</View>
+					</>
+				)}
+			</ScrollView>
+				{/* Lịch sử quảng cáo */}
+					<View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+						<TouchableOpacity
+						style={[styles.historyToggleButton, {backgroundColor: backgroundColor}]}
+						onPress={() => setHistoryExpanded((prev) => !prev)}
+						>
+						<Text style={{ fontWeight: "bold", fontSize: 16 }}>
+							{isHistoryExpanded ? localStrings.Ads.HideCampaign : localStrings.Ads.ShowCampaign}
+						</Text>
+						<Ionicons
+							name={isHistoryExpanded ? "chevron-up" : "chevron-down"}
+							size={20}
+							color={brandPrimary}
+						/>
 						</TouchableOpacity>
-						))}
+						<Animated.View
+						style={[styles.historyContainer, { height: expandHeight }]}>
+							{(adsAll?.length ?? 0) > 0 ?(
+								 <FlatList
+								data={adsAll}
+								keyExtractor={(item) => item?.id as string}
+								renderItem={({ item, index }) => (
+								<View style={[styles.historyCard, {backgroundColor: backgroundColor}]}>
+								<View style={styles.historyHeader}>
+									<Text style={styles.historyTitle}>
+									{localStrings.Ads.Campaign} #{index + 1}
+									</Text>
+									<FontAwesome name="calendar" size={20} color={brandPrimary} />
+								</View>
+								<View style={styles.historyContent}>
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.Campaign}:</Text>{" "}
+									{DateTransfer(item?.start_date)}
+									</Text>
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.End}:</Text>{" "}
+									{DateTransfer(item?.end_date)}
+									</Text> 
+									{item?.bill?.status && (
+									<Text style={styles.historyText}>
+										<Text style={styles.boldText}>{localStrings.Ads.RemainingTime}:</Text>
+										{item?.day_remaining ? `${item?.day_remaining} ${localStrings.Ads.Day}` : "Đã kết thúc"}
+									</Text>)}
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.Grant}:</Text>{" "}
+									{item?.bill?.price ? CurrencyFormat(item?.bill?.price) : NaN}
+									</Text>
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.PaymentMethod}:</Text>{" "}
+									{method === "momo" ? "MoMo" : "Khác"}
+									</Text>
+									<Text style={styles.historyText}>
+									<Text style={styles.boldText}>{localStrings.Ads.Status}:</Text>{" "}
+									{item?.bill?.status ? localStrings.Ads.PaymentSuccess : localStrings.Ads.PaymentFailed}
+									</Text>
+								</View>
+								</View>
+								)}
+								/>
+							):(
+								<View style={{flex: 1, justifyContent: "center", alignItems: "center", padding: 10,  }}>
+									<Text style={{ fontSize: 16, fontWeight: "bold" }}>
+										{localStrings.Ads.NoCampaign}
+									</Text>
+								</View>
+							)}
+							
+						</Animated.View>
 					</View>
-					</View>
-				</View>
-			</>
-		  )}
-		  
-  
-		</ScrollView>
+			</View>
+		
   
 		{/* Footer */}
-		{post?.is_advertisement=== false ? (
-			<>
-			 <TouchableOpacity
-				style={[styles.historyToggleButton, { flex: 1 }]}
-				onPress={() => setHistoryExpanded((prev) => !prev)}
+			
+			<View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+				<Button
+					type="primary"
+					onPress={() => {
+					advertisePost({
+						post_id: postId,
+						redirect_url: `${ENV.SERVER_ENDPOINT.replace(
+						"http",
+						"exp"
+						).replace("8080", "8081")}`,
+						end_date: (
+						dayjs(date).format("YYYY-MM-DDT00:00:00") + "Z"
+						).toString(),
+						start_date: (
+						dayjs().format("YYYY-MM-DDT00:00:00") + "Z"
+						).toString(),
+					});
+					}}
+					loading={adsLoading}
 				>
-				<Text style={{ fontWeight: "bold", fontSize: 16 }}>
-					{isHistoryExpanded ? localStrings.Ads.HideCampaign : localStrings.Ads.ShowCampaign}
-				</Text>
-				<Ionicons
-					name={isHistoryExpanded ? "chevron-up" : "chevron-down"}
-					size={20}
-					color={brandPrimary}
-				/>
-				</TouchableOpacity>
-				<Animated.View
-				style={[styles.historyContainer, { height: expandHeight }]}
-			>
-				{adsHistory.map((history, index) => {
-				const isActive =
-					new Date() >= history.startDate && new Date() <= history.endDate;
-	
-				return (
-					<View key={index} style={styles.historyCard}>
-					<View style={styles.historyHeader}>
-						<Text style={styles.historyTitle}>
-						{localStrings.Ads.Campaign} #{index + 1}
-						</Text>
-						<FontAwesome name="calendar" size={20} color={brandPrimary} />
-					</View>
-					<View style={styles.historyContent}>
-						<Text style={styles.historyText}>
-						<Text style={styles.boldText}>{localStrings.Ads.Campaign}:</Text>{" "}
-						{DateTransfer(history.startDate)}
-						</Text>
-						<Text style={styles.historyText}>
-						<Text style={styles.boldText}>{localStrings.Ads.End}:</Text>{" "}
-						{DateTransfer(history.endDate)}
-						</Text> 
-						<Text style={styles.historyText}>
-						<Text style={styles.boldText}>{localStrings.Ads.RemainingTime}:</Text>{" "}
-						{getDayDiff(history.endDate)} {localStrings.Ads.Day}
-						</Text>
-						<Text style={styles.historyText}>
-						<Text style={styles.boldText}>{localStrings.Ads.Grant}:</Text>{" "}
-						{CurrencyFormat(history.price)}
-						</Text>
-						<Text style={styles.historyText}>
-						<Text style={styles.boldText}>{localStrings.Ads.PaymentMethod}:</Text>{" "}
-						{history.method === "momo" ? "MoMo" : "Khác"}
-						</Text>
-					</View>
-					</View>
-				);
-				})}
-			</Animated.View>
-			</>
-		):(
-			<>
-			  <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
-			<Button
-				type="primary"
-				onPress={() => {
-				advertisePost({
-					post_id: postId,
-					redirect_url: `${ENV.SERVER_ENDPOINT.replace(
-					"http",
-					"exp"
-					).replace("8080", "8081")}`,
-					end_date: (
-					dayjs(date).format("YYYY-MM-DDT00:00:00") + "Z"
-					).toString(),
-					start_date: (
-					dayjs().format("YYYY-MM-DDT00:00:00") + "Z"
-					).toString(),
-				});
-				}}
-				loading={adsLoading}
-			>
-				<Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>
-				{localStrings.Ads.Ads}
-				</Text>
-			</Button>
+					<Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>
+					{localStrings.Ads.Ads}
+					</Text>
+				</Button>
 			</View>
-			</>
-		)}
-	  </ScrollView>
+	  </View>
 	);
   };
   
@@ -404,16 +414,13 @@ import EditPostViewModel from "../../editPost/viewModel/EditPostViewModel";
 	  paddingVertical: 10,
 	  borderBottomWidth: 1,
 	  borderColor: "#ccc",
-	  backgroundColor: "#F9F9F9",
 	},
 	historyContainer: {
 	  overflow: "hidden",
-	  paddingVertical: 10,
 	},
 	historyCard: {
 	  marginVertical: 8,
 	  marginHorizontal: 10,
-	  backgroundColor: "#fff",
 	  borderRadius: 10,
 	  padding: 15,
 	  shadowColor: "#000",

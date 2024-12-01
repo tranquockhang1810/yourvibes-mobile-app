@@ -176,7 +176,7 @@ const Post: React.FC<IPost> = React.memo(({
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {likedPost?.is_advertisement ? (
                   <>
-                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>được tài trợ</Text>
+                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{localStrings.Post.Sponsor}</Text>
                   <MaterialCommunityIcons name="advertisements" size={16} color={brandPrimaryTap} />
                   </>)
                 :(
@@ -217,24 +217,43 @@ const Post: React.FC<IPost> = React.memo(({
 
       {/* Content */}
       {!isParentPost && children ? (
-        <View>
-          {likedPost?.content && (
+         <View>
+         {likedPost?.content && (
+           <View style={{ paddingLeft: 10 }}>
+             <Text>{likedPost?.content}</Text>
+           </View>
+         )}
+         {children}
+       </View>
+      ):(likedPost?.content &&
+        likedPost?.parent_id ?(
+          <View>
             <View style={{ paddingLeft: 10 }}>
-              <Text>{likedPost?.content}</Text>
+               <Text>{likedPost?.content}</Text>
             </View>
-          )}
-          {children}
-        </View>
-      ) : (
-        <View style={{ paddingLeft: 65, paddingRight: 35 }}>
-          {likedPost?.content && (
-            <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
-              <Text>{likedPost?.content}</Text>
+            <View style={{ paddingLeft: 5, paddingRight: 5 }}>
+              <View style={{ padding: 10, borderColor: "#000", borderWidth: 1, borderRadius: 5 }}>
+                <Text style={{ textAlign: 'center', fontWeight: "bold", fontSize: 16 }}>
+                  {localStrings.Post.NoContent}
+                </Text>
+              </View>
             </View>
-          )}
-          {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
-        </View>
-      )}
+          </View>
+        ):(
+          (
+            <View style={{ paddingLeft: 65, paddingRight: 35 }}>
+            {likedPost?.content && (
+              <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
+                <Text>{likedPost?.content}</Text>
+              </View>
+            )}
+            {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
+          </View>
+    
+          )
+        )
+      )
+    }
 
       {/* Footer */}
       {isParentPost || noFooter ? (

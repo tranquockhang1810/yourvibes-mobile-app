@@ -138,6 +138,8 @@ export const ENGLocalizedStrings = {
     SharePostFailed: "Share post failed!",
     SharePost: "Share",
     DeleteNewFeed: "Delete (hide) new feed",
+    NoContent: "Content is empty",
+    Sponsor: "Sponsored",
   },
   PostDetails:{
     ViewReplies: "View replies",
@@ -250,6 +252,10 @@ export const ENGLocalizedStrings = {
     RemainingTime:"Remaining time",
     Day:"Day",
     Grant:"Grant", 
+    Status:"Status",
+    PaymentSuccess: "Payment successful.",
+    PaymentFailed: "Payment failed.",
+    NoCampaign: "No campaign found",
   },
 
   Report: {
