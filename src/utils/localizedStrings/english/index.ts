@@ -243,8 +243,8 @@ export const ENGLocalizedStrings = {
     AdvertisePostFailed: "Advertise post failed!",
     AdvertisePostSuccess: "Advertise post successful!",
     ActiveCampaign: "Active campaign",
-    HideCampaign:"Hide campaign",
-    ShowCampaign:"Show campaign",
+    HideCampaign:"Hide history campaign",
+    ShowCampaign:"Show history campaign",
     Campaign: "Campaign",
     End:"End",
     RemainingTime:"Remaining time",
@@ -258,6 +258,7 @@ export const ENGLocalizedStrings = {
     ReportComment: "Why are you reporting this comment?",
     ReportSuccess: "Reported successfully!",
     ReportFailed: "Report failed!",
+    Note: "If you see a threat or someone in danger, don't hesitate to seek help and report to local emergency services before reporting to YourVibes.",
   },
   ChangePassword: {
     ChangePassword: "Change password",

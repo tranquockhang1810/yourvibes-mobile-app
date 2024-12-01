@@ -110,7 +110,7 @@ const usePostDetailsViewModel = (
               (cmt) => cmt.id === comment.id
             );
             if (commentToReport) {
-              router.push(`/reportPost?commentId=${comment.id}`);
+              router.push(`/report?commentId=${comment.id}`);
             }
             break;
 

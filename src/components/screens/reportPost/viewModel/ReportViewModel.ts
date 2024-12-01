@@ -14,8 +14,6 @@ const ReportViewModel = (repo: PostRepo) => {
     const { localStrings } = useAuth();
     const [loading, setLoading] = useState(false);
     const [reportLoading, setReportLoading] = useState(false);
-    const [userInfo, setUserInfo] = useState<UserModel | null>(null);
-    const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
 
     const reportPost = async (params: ReportPostRequestModel) => {
         try {
@@ -105,9 +103,7 @@ const ReportViewModel = (repo: PostRepo) => {
     return {
         loading,
         reportLoading,
-        post,
         reportPost,
-        userInfo,
         reportUser,
         reportComment
     }

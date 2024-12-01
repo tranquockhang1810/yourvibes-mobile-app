@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Platf
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Form, Modal } from '@ant-design/react-native';
-import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Entypo, AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import MediaView from '../foundation/MediaView';
@@ -93,7 +93,7 @@ const Post: React.FC<IPost> = React.memo(({
           switch (buttonIndex) {
             case 0:
               console.log('báo cáo action selected');
-              router.push('/reportPost');
+              router.push(`/report?postId=${post?.id}`);
               break;
             case 1:
               Modal.alert(
@@ -174,8 +174,19 @@ const Post: React.FC<IPost> = React.memo(({
                 <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
-                {renderPrivacyIcon()}
+                {likedPost?.is_advertisement ? (
+                  <>
+                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>được tài trợ</Text>
+                  <MaterialCommunityIcons name="advertisements" size={16} color={brandPrimaryTap} />
+                  </>)
+                :(
+                  <>
+                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
+                  {renderPrivacyIcon()}
+                  </>
+                )
+                }
+                
               </View>
             </View>
             {isParentPost || noFooter ? null : (
