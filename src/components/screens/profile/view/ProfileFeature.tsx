@@ -102,6 +102,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 total={total}
                 user={user as UserModel}
                 loading={false}
+                friendCount={friendCount}
               />
               <ProfileTabs
                 tabNum={tab}

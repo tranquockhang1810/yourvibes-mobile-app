@@ -46,8 +46,6 @@ export class ProfileRepo implements IProfileRepo {
     return client.post(ApiPath.REPORT_USER, params);
   }
   async getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>> {
-    console.log("data: ", data);
-    
     return client.get(ApiPath.LIST_FRIENDS + data.user_id, data);
   } 
 }

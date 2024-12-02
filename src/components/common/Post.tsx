@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Platf
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Card, Form, Modal } from '@ant-design/react-native';
-import { Entypo, AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Entypo, AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import useColor from '@/src/hooks/useColor';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import MediaView from '../foundation/MediaView';
@@ -93,7 +93,7 @@ const Post: React.FC<IPost> = React.memo(({
           switch (buttonIndex) {
             case 0:
               console.log('báo cáo action selected');
-              router.push('/reportPost');
+              router.push(`/report?postId=${post?.id}`);
               break;
             case 1:
               Modal.alert(
@@ -174,8 +174,19 @@ const Post: React.FC<IPost> = React.memo(({
                 <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
-                {renderPrivacyIcon()}
+                {likedPost?.is_advertisement ? (
+                  <>
+                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{localStrings.Post.Sponsor}</Text>
+                  <MaterialCommunityIcons name="advertisements" size={16} color={brandPrimaryTap} />
+                  </>)
+                :(
+                  <>
+                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
+                  {renderPrivacyIcon()}
+                  </>
+                )
+                }
+                
               </View>
             </View>
             {isParentPost || noFooter ? null : (
@@ -206,24 +217,43 @@ const Post: React.FC<IPost> = React.memo(({
 
       {/* Content */}
       {!isParentPost && children ? (
-        <View>
-          {likedPost?.content && (
+         <View>
+         {likedPost?.content && (
+           <View style={{ paddingLeft: 10 }}>
+             <Text>{likedPost?.content}</Text>
+           </View>
+         )}
+         {children}
+       </View>
+      ):(likedPost?.content &&
+        likedPost?.parent_id ?(
+          <View>
             <View style={{ paddingLeft: 10 }}>
-              <Text>{likedPost?.content}</Text>
+               <Text>{likedPost?.content}</Text>
             </View>
-          )}
-          {children}
-        </View>
-      ) : (
-        <View style={{ paddingLeft: 65, paddingRight: 35 }}>
-          {likedPost?.content && (
-            <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
-              <Text>{likedPost?.content}</Text>
+            <View style={{ paddingLeft: 5, paddingRight: 5 }}>
+              <View style={{ padding: 10, borderColor: "#000", borderWidth: 1, borderRadius: 5 }}>
+                <Text style={{ textAlign: 'center', fontWeight: "bold", fontSize: 16 }}>
+                  {localStrings.Post.NoContent}
+                </Text>
+              </View>
             </View>
-          )}
-          {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
-        </View>
-      )}
+          </View>
+        ):(
+          (
+            <View style={{ paddingLeft: 65, paddingRight: 35 }}>
+            {likedPost?.content && (
+              <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
+                <Text>{likedPost?.content}</Text>
+              </View>
+            )}
+            {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
+          </View>
+    
+          )
+        )
+      )
+    }
 
       {/* Footer */}
       {isParentPost || noFooter ? (

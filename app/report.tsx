@@ -4,7 +4,7 @@ import ReportScreen from '@/src/components/screens/reportPost/views/ReportScreen
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react'
 
-const reportPost = () => {
+const report = () => {
   const { postId, userId, commentId } = useLocalSearchParams();
   const getPostID = () => {
     if (Array.isArray(postId)) {
@@ -32,4 +32,4 @@ const reportPost = () => {
   )
 }
 
-export default reportPost
+export default report

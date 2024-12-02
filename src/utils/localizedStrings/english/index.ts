@@ -138,6 +138,8 @@ export const ENGLocalizedStrings = {
     SharePostFailed: "Share post failed!",
     SharePost: "Share",
     DeleteNewFeed: "Delete (hide) new feed",
+    NoContent: "Content is empty",
+    Sponsor: "Sponsored",
   },
   PostDetails:{
     ViewReplies: "View replies",
@@ -242,6 +244,18 @@ export const ENGLocalizedStrings = {
     PaymentMethod: "Payment method",
     AdvertisePostFailed: "Advertise post failed!",
     AdvertisePostSuccess: "Advertise post successful!",
+    ActiveCampaign: "Active campaign",
+    HideCampaign:"Hide campaign",
+    ShowCampaign:"Show campaign",
+    Campaign: "Campaign",
+    End:"End",
+    RemainingTime:"Remaining time",
+    Day:"Day",
+    Grant:"Grant", 
+    Status:"Status",
+    PaymentSuccess: "Payment successful.",
+    PaymentFailed: "Payment failed.",
+    NoCampaign: "No campaign found",
   },
 
   Report: {
@@ -250,6 +264,7 @@ export const ENGLocalizedStrings = {
     ReportComment: "Why are you reporting this comment?",
     ReportSuccess: "Reported successfully!",
     ReportFailed: "Report failed!",
+    Note: "If you see a threat or someone in danger, don't hesitate to seek help and report to local emergency services before reporting to YourVibes.",
   },
   ChangePassword: {
     ChangePassword: "Change password",
