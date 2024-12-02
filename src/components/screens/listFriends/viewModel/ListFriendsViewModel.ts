@@ -22,15 +22,9 @@ const useListFriendsViewModel = (userId?: string) => {
   const {fetchUserProfile} = UserProfileViewModel();
 
   const fetchFriends = async (page: number, userId?: string) => {
-    const currentUserId = userId || user?.id;
 
-    if (!currentUserId) {
-      console.log("userId vẫn chưa có, dừng gọi API.");
-      return;
-    }
-  
-    console.log("fetchFriends - page:", page, "userId:", currentUserId);
     try {
+      setLoading(true);
       const response = await defaultProfileRepo.getListFriends({
         limit: 10,
         page: 1,
@@ -61,12 +55,10 @@ const useListFriendsViewModel = (userId?: string) => {
         type: "error",
         text2: error.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    console.log("Số lượng bạn bè ở list friends:", friendCount);
-  }, [friendCount]);
 
   const filteredFriends = friends.filter((friend) =>
     friend?.name?.toLowerCase().includes(search.toLowerCase())
@@ -94,7 +86,7 @@ const useListFriendsViewModel = (userId?: string) => {
 
       showActionSheetWithOptions(
         {
-          title: `Chọn hành động với ${friend.name}`,
+          title: `${friend.name}`,
           options,
           cancelButtonIndex,
           cancelButtonTintColor: "#F95454",

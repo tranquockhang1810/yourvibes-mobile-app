@@ -139,6 +139,8 @@ export const VnLocalizedStrings = {
     SharePostFailed: "Chia sẻ bài viết thất bại!",
     SharePost: "Chia sẻ",
     DeleteNewFeed: "Ẩn bài viết",
+    NoContent: "Nội dung không hiển thị",
+    Sponsor: "Được tài trợ",
   },
   PostDetails:{
     ViewReplies: "Xem phản hồi",
@@ -249,6 +251,10 @@ Ads: {
   RemainingTime:"Thời gian còn lại",
   Day:"Ngày",
   Grant:"Kinh phí", 
+  Status:"Trạng thái",
+  PaymentSuccess:"Thanh toán thành công", 
+  PaymentFailed:"Thanh toán thất bại",
+  NoCampaign:"Không có chiến dịch nào",
 },
 
 
