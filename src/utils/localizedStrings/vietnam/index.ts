@@ -234,7 +234,7 @@ ListFriends: {
 Ads: {
   Ads: "Quảng cáo bài viết",
   TimeAndBudget: "Khoảng thời gian và Ngân sách",
-  Minimum: "Tối thiểu: {{price}}/1 ngày",
+  Minimum: "Tối thiểu: {{price}}/1 ngày (Tối đa: 30 ngày)",
   DaysAds: "Số ngày quảng cáo:",
   TimeAds: "Thời gian quảng cáo: ",
   BudgetAds: "Ngân sách: ",

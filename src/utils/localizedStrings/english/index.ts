@@ -233,7 +233,7 @@ export const ENGLocalizedStrings = {
   Ads: {
     Ads: "Post Advertisement",
     TimeAndBudget: "Duration and Budget",
-    Minimum: "Minimum: {{price}}/day",
+    Minimum: "Minimum: {{price}}/day (Max date: 30 days)",
     DaysAds: "Number of advertisement days:",
     TimeAds: "Advertisement duration: ",
     StartDate: "Start Date",

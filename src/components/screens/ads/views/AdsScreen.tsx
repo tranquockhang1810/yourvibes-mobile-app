@@ -15,6 +15,7 @@ import { CurrencyFormat } from '@/src/utils/helper/CurrencyFormat';
 import dayjs from 'dayjs';
 import { AdsCalculate } from '@/src/utils/helper/AdsCalculate';
 import ENV from '@/env-config';
+import * as Linking from "expo-linking";
 
 const Ads = ({ postId }: { postId: string }) => {
 	const price = 30000;
@@ -123,6 +124,7 @@ const Ads = ({ postId }: { postId: string }) => {
 							setDiffDay(getDayDiff(selectedDate));
 						}}
 						minDate={getTomorrow()}
+						maxDate={new Date(new Date().setDate(new Date().getDate() + 31))}
 					/>
 					{/* Ngân sách */}
 					<View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10, borderRadius: 10 }}>
@@ -154,7 +156,7 @@ const Ads = ({ postId }: { postId: string }) => {
 					onPress={() => {
 						advertisePost({
 							post_id: postId,
-							redirect_url: `${ENV.SERVER_ENDPOINT.replace('http', 'exp').replace('8080', '8081')}`,
+							redirect_url: `${Linking.createURL("")}`,
 							end_date: (dayjs(date).format('YYYY-MM-DDT00:00:00') + "Z").toString(),
 							start_date: (dayjs().format('YYYY-MM-DDT00:00:00') + "Z").toString(),
 						})
