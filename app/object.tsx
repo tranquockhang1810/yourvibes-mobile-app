@@ -2,8 +2,11 @@ import ObjectPostFeature from '@/src/components/screens/objectPost/views/ObjectP
 import React from 'react'
 
 const object = () => {
+
   return (
    <ObjectPostFeature />
+  
+ 
   )
 }
 

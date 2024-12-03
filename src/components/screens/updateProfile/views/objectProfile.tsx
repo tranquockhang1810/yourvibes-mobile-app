@@ -6,20 +6,24 @@ import { router } from 'expo-router';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { usePostContext } from '@/src/context/post/usePostContext';
 import { useAuth } from '@/src/context/auth/useAuth';
+import UpdateProfileViewModel from '../viewModel/UpdateProfileViewModel';
+import { defaultProfileRepo } from '@/src/api/features/profile/ProfileRepository';
 
-const ObjectPostFeature = () => {
-	const { localStrings } = useAuth();
+const ObjectProfile = () => {
+	const { user, localStrings } = useAuth();
 	const { brandPrimary, backgroundColor } = useColor();
-	const { savedPrivacy, setSavedPrivacy } = usePostContext();
-	const [selectedOption, setSelectedOption] = useState<Privacy>(savedPrivacy || Privacy.PUBLIC);
+	const [selectedOption, setSelectedOption] = useState(user?.privacy);
+	const {loading, updateProfile} = UpdateProfileViewModel(defaultProfileRepo);
+	
+	
 
 	const handleSelect = (option: Privacy) => {
 		setSelectedOption(option);
 	};
 
 	const handleSavePrivacy = () => {
-		setSavedPrivacy!(selectedOption);
-		router.back();
+		updateProfile({ privacy: selectedOption });
+		// router.back();
 	};
 
 	const options: {
@@ -55,7 +59,7 @@ const ObjectPostFeature = () => {
 							fontSize: 20,
 							marginLeft: 10,
 						}}>
-							{localStrings.ObjectPostPrivacy.PostPrivacy}
+							{localStrings.ObjectProfile.ProfilePrivacy}
 						</Text>
 					</View>
 				</View>
@@ -64,10 +68,9 @@ const ObjectPostFeature = () => {
 
 			{/* Content */}
 			<View style={{ flex: 1, paddingHorizontal: 10 }}>
-				<Text style={{ fontWeight: 'bold', fontSize: 18 }}>{localStrings.ObjectPostPrivacy.Contents.WhoCanSee}</Text>
-				<Text style={{ paddingTop: 10 }}>{localStrings.ObjectPostPrivacy.Contents.CanFind}</Text>
+				<Text style={{ fontWeight: 'bold', fontSize: 18 }}>{localStrings.ObjectProfile.Contents.WhoCanSee}</Text>
 				<Text style={{ paddingTop: 10 }}>
-					{localStrings.ObjectPostPrivacy.Contents.DefaultPrivacy1}<Text style={{ fontWeight: 'bold' }}>{localStrings.Public.Public}</Text>{localStrings.ObjectPostPrivacy.Contents.DefaultPrivacy2}
+					{localStrings.ObjectPostPrivacy.Contents.DefaultPrivacy1}<Text style={{ fontWeight: 'bold' }}>{localStrings.Public.Public}</Text>{localStrings.ObjectProfile.Contents.DefaultPrivacy2}
 				</Text>
 				<Text style={{ fontWeight: 'bold', fontSize: 18, marginTop: 10 }}>{localStrings.ObjectPostPrivacy.ChoosePrivacy}</Text>
 				<View style={styles.container}>
@@ -110,7 +113,7 @@ const ObjectPostFeature = () => {
 	);
 }
 
-export default ObjectPostFeature;
+export default ObjectProfile;
 
 const styles = StyleSheet.create({
 	container: {
