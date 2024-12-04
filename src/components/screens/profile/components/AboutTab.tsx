@@ -16,22 +16,23 @@ import { router } from "expo-router";
 import { Image } from "react-native";
 import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
 import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
-import { green } from "react-native-reanimated/lib/typescript/Colors";
-import ObjectProfile from "../../updateProfile/views/objectProfile";
 
 const AboutTab = ({
   user,
   loading,
   friendCount,
   friends,
+  resultCode,
 }: {
   user: UserModel;
   loading: boolean;
   friendCount: number;
   friends: FriendResponseModel[];
+  resultCode: number;
 }) => {
   const {brandPrimaryTap,lightGray} = useColor();
   const {isLoginUser, localStrings } = useAuth();
+  
   
 
   const renderPrivacyIcon = () => {
@@ -74,7 +75,7 @@ const AboutTab = ({
             </View>
             
 
-            {user?.email !== "" ? (
+            {resultCode === 20001 ? (
                <>
                {/* Email */}
                  <View
@@ -144,9 +145,11 @@ const AboutTab = ({
                         </Text>
                       </View>
                 </>
-            ): (
+            ): resultCode === 50016 ? (
                  <Text style={{ color: "gray", textAlign: "center"}}> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`} </Text>
-            )}
+            ) : resultCode === 50015 ? (
+              <Text style={{ color: "gray", textAlign: "center"}}>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</Text>
+            ) : null}
            
 
             {/* Danh sách bạn bè */}

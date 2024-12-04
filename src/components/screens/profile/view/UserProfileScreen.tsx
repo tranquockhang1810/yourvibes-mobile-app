@@ -25,7 +25,8 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     profileLoading,
     userInfo,
     friends,
-    friendCount
+    friendCount,
+    resultCode,
   } = UserProfileViewModel();
 
   const showFriendAction = useCallback(() => {
@@ -107,7 +108,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           ListHeaderComponent={
             <>
               <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} friendCount={friendCount}/>
-              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={friendCount} friends={friends} />
+              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={friendCount} friends={friends} resultCode={resultCode} />
             </>
           }
           renderItem={() => null}

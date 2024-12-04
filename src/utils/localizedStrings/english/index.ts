@@ -52,6 +52,7 @@ export const ENGLocalizedStrings = {
     ReportComment: "Report Comment",
     Day: "Day",
     HideInfo: "has hidden personal information",
+    FriendOnly: "only friends can see",
   },
   Form: {
     Label: {

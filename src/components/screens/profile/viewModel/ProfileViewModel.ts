@@ -19,6 +19,8 @@ const ProfileViewModel = () => {
   const [friendCount, setFriendCount] = useState(0);
   const [selectedFriendName, setSelectedFriendName] = useState<string>("");
   const [search, setSearch] = useState<string>("");
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [resultCode, setResultCode] = useState(0);
   const getFriendCount = () => friendCount;
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
@@ -114,6 +116,32 @@ useEffect(() => {
   }
 }, [page, user, friendCount]);
 
+//Privacy setting
+const fetchUserProfile = async (id: string) => {
+  try {
+    setProfileLoading(true);
+    const response = await defaultProfileRepo.getProfile(id);   
+    if (!response?.error) {
+      setResultCode(response?.code);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: localStrings.Profile.Info.GetInfoFailed,
+        text2: response?.error?.message,
+      });
+    }
+  } catch (error: any) {
+    console.error(error);
+    Toast.show({
+      type: 'error',
+      text1: localStrings.Profile.Info.GetInfoFailed,
+      text2: error?.message,
+    });
+  } finally {
+    setProfileLoading(false);
+  }
+}
+
   return {
     loading,
     posts,
@@ -128,6 +156,9 @@ useEffect(() => {
     page,
     getFriendCount,
     fetchMyFriends,
+    profileLoading,
+    fetchUserProfile,
+    resultCode,
   };
 };
 

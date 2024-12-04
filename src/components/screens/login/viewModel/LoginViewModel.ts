@@ -31,7 +31,6 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
         })
       }
     } catch (error: any) {
-      console.error(error);
       Toast.show({
         type: 'error',
         text1: localStrings.Login.LoginFailed,

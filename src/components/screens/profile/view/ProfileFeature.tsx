@@ -25,11 +25,13 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     posts,
     fetchUserPosts,
     loadMorePosts,
-    fetchMyFriends,
-    total, 
+    total,
+    friends, 
+    friendCount,  
+    resultCode,
+    fetchUserProfile,
   } = ProfileViewModel();
   
-  const { friends, friendCount } = ProfileViewModel();
   useFocusEffect(
     useCallback(() => {
       if (tab === 0 || tab === 1) {
@@ -37,6 +39,11 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
       }
     }, [tab])
   );
+  useEffect(() => {
+    if (!user?.id) return;
+    fetchUserProfile(user?.id);
+
+  }, [user?.id]);
 
   return (
     <KeyboardAvoidingView
@@ -95,6 +102,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 userInfo={user as UserModel}
                 friendCount={friendCount}
                 friends= {friends}
+                resultCode={resultCode}
               />
             </>
           }
