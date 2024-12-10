@@ -25,7 +25,7 @@ import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
-import Toast from "react-native-toast-message";
+import { LikeUsersModel } from "@/src/api/features/post/models/LikeUsersModel";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -61,14 +61,14 @@ function PostDetails(): React.JSX.Element {
     fetchComments,
     replyToReplyId,
     setEditCommentContent,
-    editCommentContent, 
+    editCommentContent,
+    fetchUserLikePosts,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
-
-  const parentId = replyToCommentId || replyToReplyId;
-
+  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
+  const parentId = replyToCommentId || replyToReplyId; 
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
@@ -406,6 +406,22 @@ function PostDetails(): React.JSX.Element {
     [comments, post, replyMap, loading]
   );
 
+  const renderUserLikePost = useCallback((like: LikeUsersModel) => {
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Image
+          source={{ uri: like?.avatar_url }}
+          style={{ width: 50, height: 50, borderRadius: 30, marginRight: 10 }}
+        />
+        <View>
+          <Text style={{ fontWeight: "bold" }}>
+            {like?.family_name} {like?.name}
+          </Text>
+        </View>
+      </View>
+    );
+  }, []);
+
   useEffect(() => {
     fetchPostDetails();
   }, [postId]);
@@ -422,7 +438,7 @@ function PostDetails(): React.JSX.Element {
             flexDirection: "row",
             alignItems: "center",
             padding: 16,
-            marginTop: Platform.OS === 'ios' ? 30 : 0 ,
+            marginTop: Platform.OS === "ios" ? 30 : 0,
           }}
         >
           <TouchableOpacity onPress={() => router.back()}>
@@ -446,8 +462,9 @@ function PostDetails(): React.JSX.Element {
             <Text>Loading...</Text>
           </View>
         ) : (
-          <>
+          <>  
             {renderFlatList(comments)}
+            {/* comment input */}
             <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
               <View
                 style={{
@@ -465,7 +482,6 @@ function PostDetails(): React.JSX.Element {
                     marginRight: 10,
                   }}
                 />
-
                 <Form.Item noStyle name="comment" layout="vertical">
                   <TextInput
                     ref={textInputRef}
@@ -607,8 +623,7 @@ function PostDetails(): React.JSX.Element {
                       </Text>
 
                       <Form>
-                        <Form.Item noStyle
-                        >
+                        <Form.Item noStyle>
                           <TextInput
                             value={editCommentContent}
                             onChangeText={setEditCommentContent}
@@ -646,7 +661,7 @@ function PostDetails(): React.JSX.Element {
                   disabled={loading}
                   onPress={() => {
                     if (currentCommentId && editCommentContent) {
-                      setLoading(true); 
+                      setLoading(true);
                       handleUpdate(
                         currentCommentId,
                         editCommentContent,

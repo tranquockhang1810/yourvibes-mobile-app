@@ -38,24 +38,6 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     }, [tab])
   );
 
-  const renderHeaderItem = useCallback(() => {
-    return (
-      <>
-        <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount} /> 
-        <ProfileTabs
-          tabNum={tab}
-          posts={posts}
-          loading={loading}
-          profileLoading={false}
-          loadMorePosts={loadMorePosts}
-          userInfo={user as UserModel}
-          friendCount={friendCount}
-          friends= {friends}
-        />
-      </>
-    );
-  }, [total, user, tab, posts, loading, friendCount]);
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: backgroundColor, width: "100%" }}

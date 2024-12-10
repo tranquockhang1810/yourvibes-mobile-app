@@ -5,7 +5,7 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { useState } from "react"
 import Toast from "react-native-toast-message";
 import * as WebBrowser from 'expo-web-browser';
-import * as AuthSession from 'expo-auth-session';
+import { router } from "expo-router";
 
 const AdsViewModel = (repo: PostRepo) => {
   const { localStrings } = useAuth();
@@ -53,20 +53,23 @@ const AdsViewModel = (repo: PostRepo) => {
         if (res?.data) {
           // Mở trình duyệt với đường link quảng cáo và callback URL
           const result = await WebBrowser.openAuthSessionAsync(res.data);
+          console.log("result: ", result);
   
           // Kiểm tra trạng thái khi người dùng quay lại app
-          if (result.type === 'success' && result.url) {
+          if (result.type === 'success'  && result.url) {
             Toast.show({
               type: 'success',
               text1: "Redirect successful!",
               text2: "Your session has been completed.",
             });
-          } else if (result.type === 'dismiss') {
+            console.log("result.url: ", result.url);
+            
+          } else {
             Toast.show({
-              type: 'info',
-              text1: "Session dismissed",
-              text2: "You canceled the process.",
-            });
+              type: 'error',
+              text1: localStrings.Ads.AdvertisePostFailed,
+              text2: res?.error?.message,
+            })
           }
         }
       } else {
@@ -117,7 +120,6 @@ const AdsViewModel = (repo: PostRepo) => {
       setAdsLoading(false);
     }
   }
-
 
   return {
     loading,

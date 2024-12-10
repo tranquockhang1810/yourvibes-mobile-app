@@ -41,6 +41,9 @@ const MyDateTimePicker = ({
           visible={show}
           transparent={true}
           animationType="slide"
+          style={{
+            width: "100%"
+          }}
         >
           <View
             style={{
@@ -59,8 +62,8 @@ const MyDateTimePicker = ({
                 display={'spinner'}
                 onChange={handleChange}
                 minimumDate={minDate}
+                style={{ width: "50%" }}
               />
-
               {/* Close Button */}
               <Button
                 type='primary'

@@ -11,7 +11,11 @@ import { UpdateCommentsRequestModel } from "@/src/api/features/comment/models/Up
 //LikeComments
 import { defaultLikeCommentRepo } from "@/src/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/src/api/features/likeComment/models/LikeCommentResponses";
+//UserLikePost
+
 import { router } from "expo-router";
+import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
+import { LikeUsersModel } from "@/src/api/features/post/models/LikeUsersModel";
 
 const usePostDetailsViewModel = (
   postId: string,
@@ -37,7 +41,7 @@ const usePostDetailsViewModel = (
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
-
+  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
 
   const fetchComments = async () => {
@@ -432,6 +436,21 @@ const usePostDetailsViewModel = (
     }
   };
 
+  const fetchUserLikePosts = async (postId: string) => {
+    const response = await defaultPostRepo.getPostLikes({
+      postId: postId,
+      page: 1,
+      limit: 10,
+    });
+    console.log(postId, "post id");
+    console.log("ai like bài này: ", response);
+  setUserLikePost(response.data);
+  };
+
+  useEffect(() => {
+    fetchUserLikePosts(postId);
+  }, [postId]);
+
   return {
     comments,
     likeCount,
@@ -459,6 +478,7 @@ const usePostDetailsViewModel = (
     replyMap,
     likeIcon,
     fetchComments,
+    fetchUserLikePosts,
   };
 };
 

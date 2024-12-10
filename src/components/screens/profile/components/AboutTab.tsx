@@ -29,7 +29,7 @@ const AboutTab = ({
 }) => {
   const { lightGray, brandPrimaryTap } = useColor();
   const { localStrings } = useAuth();
-
+  
   return (
     <>
       {loading ? (

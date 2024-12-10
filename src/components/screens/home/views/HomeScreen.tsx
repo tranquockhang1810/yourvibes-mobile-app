@@ -14,12 +14,11 @@ import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo'
 import { router } from 'expo-router'
 import { useAuth } from '@/src/context/auth/useAuth'
 import { Platform } from 'react-native';
+
 const HomeScreen = () => {
   const { brandPrimary, backgroundColor, lightGray} = useColor();
   const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
   const {user, localStrings } = useAuth();
-
-
   
   const renderAddPost = () => {
     return (  
