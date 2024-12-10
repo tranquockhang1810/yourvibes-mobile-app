@@ -63,12 +63,12 @@ function PostDetails(): React.JSX.Element {
     setEditCommentContent,
     editCommentContent,
     fetchUserLikePosts,
+    userLikePost,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
-  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
-  const parentId = replyToCommentId || replyToReplyId; 
+  const parentId = replyToCommentId || replyToReplyId;
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
@@ -322,33 +322,6 @@ function PostDetails(): React.JSX.Element {
 
           {/* Nút để xem phản hồi */}
           {comments.rep_comment_count > 0 && (
-            // <TouchableOpacity
-            //   onPress={() => {
-            //     if (!replyMap[comments.id]) {
-            //       fetchReplies(postId, comments.id);
-            //       setShowMoreReplies((prev) => ({
-            //         ...prev,
-            //         [comments.id]: !prev[comments.id],
-            //       }));
-            //     } else {
-            //       console.log("đóng");
-
-            //       setShowMoreReplies((prev) => ({
-            //         ...prev,
-            //         [comments.id]: false,
-            //       }));
-            //     }
-            //   }}
-            // >
-            //   <View style={{ alignItems: "center" }}>
-            //     <AntDesign name="down" size={16} color={brandPrimaryTap} />
-            //     <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-            //       {showMoreReplies[comments.id]
-            //         ? `${localStrings.PostDetails.HideReplies}`
-            //         : `${localStrings.PostDetails.ViewReplies}`}
-            //     </Text>
-            //   </View>
-            // </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 fetchReplies(postId, comments.id);
@@ -408,10 +381,10 @@ function PostDetails(): React.JSX.Element {
 
   const renderUserLikePost = useCallback((like: LikeUsersModel) => {
     return (
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "column", alignItems: "center" }}>
         <Image
           source={{ uri: like?.avatar_url }}
-          style={{ width: 50, height: 50, borderRadius: 30, marginRight: 10 }}
+          style={{ width: 50, height: 50, borderRadius: 30, marginBottom: 10 }}
         />
         <View>
           <Text style={{ fontWeight: "bold" }}>
@@ -462,7 +435,7 @@ function PostDetails(): React.JSX.Element {
             <Text>Loading...</Text>
           </View>
         ) : (
-          <>  
+          <>
             {renderFlatList(comments)}
             {/* comment input */}
             <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
@@ -512,7 +485,6 @@ function PostDetails(): React.JSX.Element {
                     }}
                   />
                 </Form.Item>
-
                 <View
                   style={{
                     backgroundColor: "white",
@@ -569,10 +541,33 @@ function PostDetails(): React.JSX.Element {
                   </TouchableOpacity>
                 </View>
               </View>
-            </Form>
+            </Form> 
+              {/* Danh sách user like post */} 
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+              {userLikePost.map((like, index) => (
+                <View key={like.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderColor: "#e0e0e0" }}>
+                  <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", flex: 1 }} onPress={() => {
+                    router.push(`/(tabs)/user/${like.id}`);
+                  }}>
+                    <Image
+                      source={{ uri: like.avatar_url }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                        backgroundColor: "#e0e0e0",
+                        marginRight: 10,
+                      }}
+                    />
+                    <Text style={{ fontSize: 16, color: "black" }}>
+                      {like.family_name} {like.name}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
           </>
         )}
-
         {/* Modal edit comment */}
         <Modal visible={isEditModalVisible} transparent animationType="slide">
           <View

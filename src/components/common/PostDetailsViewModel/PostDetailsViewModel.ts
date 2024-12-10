@@ -478,6 +478,7 @@ const usePostDetailsViewModel = (
     replyMap,
     likeIcon,
     fetchComments,
+    userLikePost,
     fetchUserLikePosts,
   };
 };
