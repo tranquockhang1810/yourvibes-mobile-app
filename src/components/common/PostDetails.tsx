@@ -20,12 +20,11 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { ActivityIndicator, Form } from "@ant-design/react-native";
+import { ActivityIndicator, Form,ActionSheet } from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
-import dayjs from "dayjs";
-import { LikeUsersModel } from "@/src/api/features/post/models/LikeUsersModel";
+import dayjs from "dayjs"; 
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -72,6 +71,8 @@ function PostDetails(): React.JSX.Element {
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
+
+  const [isVisible, setIsVisible] = useState(false);
 
   const fetchPostDetails = async () => {
     try {
@@ -379,22 +380,6 @@ function PostDetails(): React.JSX.Element {
     [comments, post, replyMap, loading]
   );
 
-  const renderUserLikePost = useCallback((like: LikeUsersModel) => {
-    return (
-      <View style={{ flexDirection: "column", alignItems: "center" }}>
-        <Image
-          source={{ uri: like?.avatar_url }}
-          style={{ width: 50, height: 50, borderRadius: 30, marginBottom: 10 }}
-        />
-        <View>
-          <Text style={{ fontWeight: "bold" }}>
-            {like?.family_name} {like?.name}
-          </Text>
-        </View>
-      </View>
-    );
-  }, []);
-
   useEffect(() => {
     fetchPostDetails();
   }, [postId]);
@@ -435,7 +420,10 @@ function PostDetails(): React.JSX.Element {
             <Text>Loading...</Text>
           </View>
         ) : (
-          <>
+          <> <Button
+          title="Hiển thị danh sách user like post"
+          onPress={() => setIsVisible(true)}
+        />
             {renderFlatList(comments)}
             {/* comment input */}
             <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
@@ -542,30 +530,48 @@ function PostDetails(): React.JSX.Element {
                 </View>
               </View>
             </Form> 
-              {/* Danh sách user like post */} 
-              <View style={{ flexDirection: "column", alignItems: "center" }}>
-              {userLikePost.map((like, index) => (
-                <View key={like.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderColor: "#e0e0e0" }}>
-                  <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", flex: 1 }} onPress={() => {
-                    router.push(`/(tabs)/user/${like.id}`);
-                  }}>
-                    <Image
-                      source={{ uri: like.avatar_url }}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                        backgroundColor: "#e0e0e0",
-                        marginRight: 10,
-                      }}
-                    />
-                    <Text style={{ fontSize: 16, color: "black" }}>
-                      {like.family_name} {like.name}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
+            
+            <Modal
+  visible={isVisible}
+  style={{ margin: 0, justifyContent: 'flex-end' }}
+  onRequestClose={() => setIsVisible(false)}
+>
+  <View style={{
+    backgroundColor: 'white',
+    padding: 20,
+    maxHeight: '80%', // thiết lập chiều cao tối đa của modal
+    overflow: 'hidden', // ẩn nội dung vượt quá chiều cao tối đa
+  }}>
+    {/* Danh sách user like post */}
+    <View style={{ flexDirection: "column", alignItems: "center" }}>
+      {userLikePost.map((like, index) => (
+        <View key={like.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderColor: "#e0e0e0" }}>
+          <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", flex: 1 }} onPress={() => {
+            router.push(`/(tabs)/user/${like.id}`);
+          }}>
+            <Image
+              source={{ uri: like.avatar_url }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: "#e0e0e0",
+                marginRight: 10,
+              }}
+            />
+            <Text style={{ fontSize: 16, color: "black" }}>
+              {like.family_name} {like.name}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+    </View>
+    <Button
+      title="Đóng"
+      onPress={() => setIsVisible(false)}
+    />
+  </View>
+</Modal>
           </>
         )}
         {/* Modal edit comment */}
