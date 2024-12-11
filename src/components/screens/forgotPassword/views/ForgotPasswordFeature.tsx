@@ -16,6 +16,7 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import useColor from '@/src/hooks/useColor';
 import Toast from 'react-native-toast-message';
+import { useAuth } from '@/src/context/auth/useAuth';
 
 const ForgotPasswordFeature = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ const ForgotPasswordFeature = () => {
   const { backgroundColor, brandPrimaryTap } = useColor();
   const [forgotForm] = Form.useForm();
   const { brandPrimary } = useColor();
+  const { localStrings } = useAuth();
 
   return (
     <KeyboardAvoidingView
@@ -51,7 +53,7 @@ const ForgotPasswordFeature = () => {
               fontSize: 24,
               color: brandPrimaryTap
             }}>
-              ĐẶT LẠI MẬT KHẨU
+              {localStrings.Login.ForgotPasswordText}
             </Text>
             <WhiteSpace size="xl" />
             <Form
@@ -66,11 +68,11 @@ const ForgotPasswordFeature = () => {
               <Form.Item
                 name="phone"
                 rules={[
-                  { required: true, message: 'Vui lòng nhập số điện thoại!' }
+                  { required: true, message: `${localStrings.Form.RequiredMessages.PhoneRequiredMessage}` }
                 ]}
               >
                 <MyInput
-                  placeholder="Số điện thoại"
+                  placeholder={localStrings.Form.Label.Phone}
                   variant="outlined"
                   type='number'
                   maxLength={10}
@@ -91,8 +93,8 @@ const ForgotPasswordFeature = () => {
                   <Form.Item
                     name="email"
                     rules={[
-                      { required: true, message: 'Vui lòng nhập email!' },
-                      { type: 'email', message: 'Email không hợp lệ!' }
+                      { required: true, message: `${localStrings.Form.RequiredMessages.EmailRequiredMessage}` },
+                      { type: 'email', message: `${localStrings.Form.TypeMessage.EmailTypeMessage}` }
                     ]}
                   >
                     <MyInput
@@ -122,7 +124,7 @@ const ForgotPasswordFeature = () => {
                           })
                         }}
                       >
-                        Nhận OTP
+                        {localStrings.Form.Label.GetOTP}
                       </Text>
                     </Button>
                   </Form.Item>
@@ -131,10 +133,10 @@ const ForgotPasswordFeature = () => {
               {/* password */}
               <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới!' }]}
+                rules={[{ required: true, message: `${localStrings.Form.RequiredMessages.PasswordRequiredMessage}` }]}
               >
                 <MyInput
-                  placeholder="Mật khẩu mới"
+                  placeholder= {localStrings.Form.Label.Password}
                   type={seePassword ? "text" : "password"}
                   variant="outlined"
                   suffix={
@@ -147,10 +149,10 @@ const ForgotPasswordFeature = () => {
               {/* confirmPassword */}
               <Form.Item
                 name="confirmPassword"
-                rules={[{ required: true, message: 'Vui lòng xác nhận mật khẩu!' }]}
+                rules={[{ required: true, message: `${localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage}` }]}
               >
                 <MyInput
-                  placeholder="Xác nhận mật khẩu"
+                  placeholder= {localStrings.Form.Label.ConfirmPassword}
                   type={seeConfirmPassword ? "text" : "password"}
                   variant="outlined"
                   suffix={
@@ -165,11 +167,11 @@ const ForgotPasswordFeature = () => {
 
                 name="otp"
                 rules={[
-                  { required: true, message: 'Vui lòng nhập mã xác nhận!' }
+                  { required: true, message: `${localStrings.Form.RequiredMessages.OTPRequiredMessage}` }
                 ]}
               >
                 <MyInput
-                  placeholder="Mã xác nhận OTP"
+                  placeholder= {localStrings.Form.Label.OTP}
                   variant="outlined"
                   type='number'
                   maxLength={6}
@@ -190,7 +192,7 @@ const ForgotPasswordFeature = () => {
                       });
                   }}
                 >
-                  Xác nhận
+                  {localStrings.Public.Confirm}
                 </Button>
               </Form.Item>
               <WhiteSpace size="lg" />
@@ -200,8 +202,8 @@ const ForgotPasswordFeature = () => {
                 style={{ alignItems: 'center', justifyContent: 'center' }}
               >
                 <Text>
-                  Bạn đã có tài khoản?
-                  <Text style={{ fontWeight: 'bold' }}> Đăng nhập ngay!</Text>
+                  {localStrings.Login.DontHaveAccout}
+                  <Text style={{ fontWeight: 'bold' }}> {localStrings.SignUp.LoginNow}</Text>
                 </Text>
               </TouchableOpacity>
             </Form>

@@ -50,6 +50,8 @@ export const VnLocalizedStrings = {
     Reply: "Trả lời",
     ReportComment: "Báo cáo bình luận",
     Day: "Ngày",
+    ListUserLikePost: "Danh sách người thích bài viết",
+    WhoLike:"Khám phá ai đã thích bài viết của bạn !",
     HideInfo: "đã ẩn thông tin cá nhân",
     FriendOnly: "chỉ bạn bè được xem"
   },
@@ -254,8 +256,8 @@ Ads: {
   AdvertisePostFailed: "Quảng cáo bài viết thất bại!",
   AdvertisePostSuccess: "Quảng cáo bài viết thành công!",
   ActiveCampaign: "Chiến dịch đang thực hiện",
-  HideCampaign:"Ẩn lịch sử",
-  ShowCampaign:"Xem lịch sử",
+  HideCampaign:"Ẩn lịch sử các chiến dịch",
+  ShowCampaign:"Xem lịch sử các chiến dịch",
   Campaign:"Chiến dịch",
   End: "Kết thúc",
   RemainingTime:"Thời gian còn lại",
@@ -266,7 +268,6 @@ Ads: {
   PaymentFailed:"Thanh toán thất bại",
   NoCampaign:"Không có chiến dịch nào",
 },
-
 
 Report: {
   ReportPost: " Tại sao bạn báo cáo bài viết này?",

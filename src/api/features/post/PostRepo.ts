@@ -57,7 +57,7 @@ export class PostRepo implements IPostRepo {
 	}
 
 	async getPostLikes(params: LikeUsersResponseModel): Promise<BaseApiResponseModel<LikeUsersModel[]>> {
-		return client.get(ApiPath.GET_USER_LIKES + params.postId, params);
+		return client.get(ApiPath.LIKE_POST + params.postId, params);
 	}
 
 	async advertisePost(params: AdvertisePostRequestModel): Promise<BaseApiResponseModel<any>> {

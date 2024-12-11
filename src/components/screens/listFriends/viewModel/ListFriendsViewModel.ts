@@ -86,7 +86,7 @@ const useListFriendsViewModel = (userId?: string) => {
 
       showActionSheetWithOptions(
         {
-          title: `Chọn hành động với ${friend.name}`,
+          title: `${friend.name}`,
           options,
           cancelButtonIndex,
           cancelButtonTintColor: "#F95454",
