@@ -50,6 +50,8 @@ export const VnLocalizedStrings = {
     Reply: "Trả lời",
     ReportComment: "Báo cáo bình luận",
     Day: "Ngày",
+    ListUserLikePost: "Danh sách người thích bài viết",
+    WhoLike:"Khám phá ai đã thích bài viết của bạn !",
   },
   Form: {
     Label: {
@@ -256,7 +258,6 @@ Ads: {
   PaymentFailed:"Thanh toán thất bại",
   NoCampaign:"Không có chiến dịch nào",
 },
-
 
 Report: {
   ReportPost: " Tại sao bạn báo cáo bài viết này?",

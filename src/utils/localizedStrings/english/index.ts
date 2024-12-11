@@ -51,6 +51,8 @@ export const ENGLocalizedStrings = {
     Reply: "Reply",
     ReportComment: "Report Comment",
     Day: "Day",
+    ListUserLikePost: "List User Like Your Post",
+    WhoLike:"Discover who liked your post!"
   },
   Form: {
     Label: {

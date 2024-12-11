@@ -23,6 +23,7 @@ interface IPost {
   isParentPost?: boolean,
   noFooter?: boolean,
   children?: React.ReactNode,
+  noComment?: boolean,
 }
 
 const Post: React.FC<IPost> = React.memo(({
@@ -30,6 +31,7 @@ const Post: React.FC<IPost> = React.memo(({
   isParentPost = false,
   noFooter = false,
   children,
+  noComment = false,
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
@@ -284,7 +286,7 @@ const Post: React.FC<IPost> = React.memo(({
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => router.push(`/postDetails?postId=${likedPost?.id}`)} >
+              <TouchableOpacity disabled={noComment} style={{ flexDirection: "row", alignItems: "center" }} onPress={() => router.push(`/postDetails?postId=${likedPost?.id}`)} >
                 <FontAwesome name="comments-o" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{likedPost?.comment_count}</Text>
               </TouchableOpacity>
