@@ -666,7 +666,7 @@ function PostDetails(): React.JSX.Element {
                     <View
                       style={{ flexDirection: "column", alignItems: "center" }}
                     >
-                      {userLikePost.map((like, index) => {
+                      {userLikePost?.map((like, index) => {
                         return renderLikedUserItem(like);
                       })}
                     </View>

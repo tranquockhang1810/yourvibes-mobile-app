@@ -168,7 +168,7 @@ const AddPostScreen = () => {
                 variant='outlined'
                 moreStyle={{ paddingLeft: 10, marginTop: 10, borderColor: brandPrimaryTap }}
                 textArea={{
-                  autoSize: { minRows: 8, maxRows: 3 },
+                  autoSize: { minRows: 3 },
                 }}
                 autoFocus
                 value={postContent}
