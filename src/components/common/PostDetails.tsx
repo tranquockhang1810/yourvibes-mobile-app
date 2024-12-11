@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -21,11 +21,17 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { ActivityIndicator, Form, ActionSheet } from "@ant-design/react-native";
+import {
+  ActivityIndicator,
+  Form,
+  ActionSheet,
+  Tabs,
+} from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
+import { LikeUsersModel } from "@/src/api/features/post/models/LikeUsersModel";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -62,7 +68,6 @@ function PostDetails(): React.JSX.Element {
     replyToReplyId,
     setEditCommentContent,
     editCommentContent,
-    fetchUserLikePosts,
     userLikePost,
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [likedComment, setLikedComment] = useState({ is_liked: false });
@@ -72,8 +77,10 @@ function PostDetails(): React.JSX.Element {
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
-
+  const [tab, setTab] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
+
+  const tabs = [{ title: "Likes" }, { title: "Comments" }];
 
   const fetchPostDetails = async () => {
     try {
@@ -358,27 +365,96 @@ function PostDetails(): React.JSX.Element {
     [comments, replyMap, showMoreReplies]
   );
 
+  const renderLikedUserItem = useCallback(
+    (like: LikeUsersModel) => {
+      return (
+        <View
+          key={like.id}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 10,
+            borderBottomWidth: 1,
+            borderColor: "#e0e0e0",
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
+            }}
+            onPress={() => {
+              router.push(`/(tabs)/user/${like.id}`);
+            }}
+          >
+            <Image
+              source={{ uri: like.avatar_url }}
+              style={{
+                marginLeft: 10,
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: "#e0e0e0",
+                marginRight: 10,
+              }}
+            />
+            <Text style={{ fontSize: 16, color: "black" }}>
+              {like.family_name} {like.name}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    },
+    [userLikePost]
+  );
+
+  const renderBody = useCallback(
+    (item: any) => {
+      switch (tab) {
+        case 0:
+          return renderLikedUserItem(item);
+        case 1:
+          return renderCommentItem(item);
+        default:
+          return renderCommentItem(item);
+      }
+    },
+    [tab, comments, replyMap, showMoreReplies]
+  );
+
   const renderFlatList = useCallback(
-    (comments: CommentsResponseModel[]) => {
+    (items: CommentsResponseModel[] | LikeUsersModel[]) => {
       return (
         <FlatList
           ListHeaderComponent={
             <>
               <View style={{ height: 1, backgroundColor: "#000" }} />
               <Post noComment={true} post={post as PostResponseModel} />
-              <View style={{ height: 1, backgroundColor: "#000" }} />
+              <View
+                style={{ height: 1, backgroundColor: "#000", opacity: 0.1 }}
+              />
+              {/* <Tabs
+                tabs={tabs}
+                initialPage={tab}
+                tabBarPosition="top"
+                tabBarActiveTextColor={brandPrimary}
+                onChange={(_, index) => setTab(index)}
+                animated={false}
+                style={{ height: "100%" }}
+              /> */}
             </>
           }
           style={{ flex: 1 }}
-          data={comments}
-          renderItem={({ item }) => renderCommentItem(item)}
+          data={items as any[]}
+          renderItem={({ item }) => renderBody(item)}
           keyExtractor={(comment) => comment.id.toString()}
           onRefresh={fetchPostDetails}
           refreshing={loading}
         />
       );
     },
-    [comments, post, replyMap, loading]
+    [comments, post, replyMap, loading, tab]
   );
 
   useEffect(() => {
@@ -422,12 +498,15 @@ function PostDetails(): React.JSX.Element {
           </View>
         ) : (
           <>
+            {tab === 1
+              ? renderFlatList(comments)
+              : renderFlatList(userLikePost)}
+              
             <Button
               title={localStrings.Public.WhoLike}
               onPress={() => setIsVisible(true)}
-              color={brandPrimary}
+              color={brandPrimaryTap}
             />
-            {renderFlatList(comments)}
             {/* comment input */}
             <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
               <View
@@ -549,7 +628,7 @@ function PostDetails(): React.JSX.Element {
                 <View
                   style={{
                     backgroundColor: "white",
-                    width: "100%", 
+                    width: "100%",
                     height: "100%",
                   }}
                 >
@@ -561,7 +640,7 @@ function PostDetails(): React.JSX.Element {
                       marginTop: Platform.OS === "ios" ? 30 : 0,
 
                       borderBottomWidth: 1,
-                      borderBottomColor: 'black',
+                      borderBottomColor: "black",
                       marginBottom: 10,
                     }}
                   >
@@ -587,44 +666,9 @@ function PostDetails(): React.JSX.Element {
                     <View
                       style={{ flexDirection: "column", alignItems: "center" }}
                     >
-                      {userLikePost.map((like, index) => (
-                        <View
-                          key={like.id}
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            paddingVertical: 10,
-                            borderBottomWidth: 1,
-                            borderColor: "#e0e0e0",
-                          }}
-                        >
-                          <TouchableOpacity
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              flex: 1,
-                            }}
-                            onPress={() => {
-                              router.push(`/(tabs)/user/${like.id}`);
-                            }}
-                          >
-                            <Image
-                              source={{ uri: like.avatar_url }}
-                              style={{
-                                marginLeft: 10,
-                                width: 40,
-                                height: 40,
-                                borderRadius: 20,
-                                backgroundColor: "#e0e0e0",
-                                marginRight: 10,
-                              }}
-                            />
-                            <Text style={{ fontSize: 16, color: "black" }}>
-                              {like.family_name} {like.name}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      ))}
+                      {userLikePost.map((like, index) => {
+                        return renderLikedUserItem(like);
+                      })}
                     </View>
                   </ScrollView>
                 </View>
