@@ -52,6 +52,8 @@ export const VnLocalizedStrings = {
     Day: "Ngày",
     ListUserLikePost: "Danh sách người thích bài viết",
     WhoLike:"Khám phá ai đã thích bài viết của bạn !",
+    HideInfo: "đã ẩn thông tin cá nhân",
+    FriendOnly: "chỉ bạn bè được xem"
   },
   Form: {
     Label: {
@@ -119,16 +121,24 @@ export const VnLocalizedStrings = {
     PublicDescription: "Bất kỳ ai ở trên YourVibes",
     FriendDescription: "Chỉ bạn bè của bạn ở trên YourVibes",
     PrivateDescription: "Chỉ bạn có thể nhìn thấy",
-    PostPrivacy: "Đối tượng của bài viết",
+    PostPrivacy: "Quyền riêng tư của bài viết",
     Contents: {
       WhoCanSee: "Ai có thể nhìn thấy bài viết của bạn?",
       CanFind:
         "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
       DefaultPrivacy1: "Tuy đối tượng mặc định là ",
       DefaultPrivacy2:
-        ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này.",
+        ", nhưng bạn có thể thay đổi Quyền riêng tư của riêng bài viết này.",
     },
     ChoosePrivacy: "Chọn Đối tượng",
+  },
+  ObjectProfile: {
+    ProfilePrivacy: "Quyền riêng tư của thông tin cá nhân",
+    Contents: {
+      WhoCanSee: "Ai có thể nhìn thấy thông tin của bạn?",
+      DefaultPrivacy2:
+        ", nhưng bạn có thể thay đổi quyền riêng tư cho thông tin tài khoản của mình.",
+    },
   },
   Post: {
     EditPost: "Chỉnh sửa bài đăng",

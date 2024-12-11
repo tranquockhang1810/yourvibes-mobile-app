@@ -52,7 +52,9 @@ export const ENGLocalizedStrings = {
     ReportComment: "Report Comment",
     Day: "Day",
     ListUserLikePost: "List User Like Your Post",
-    WhoLike:"Discover who liked your post!"
+    WhoLike:"Discover who liked your post!",
+    HideInfo: "has hidden personal information",
+    FriendOnly: "only friends can see",
   },
   Form: {
     Label: {
@@ -128,6 +130,13 @@ export const ENGLocalizedStrings = {
       DefaultPrivacy2: ", you can change the audience for this specific post.",
     },
     ChoosePrivacy: "Choose Privacy",
+  },
+  ObjectProfile: {
+    ProfilePrivacy: "Profile's privacy",
+    Contents: {
+      WhoCanSee: "Who can see your information?",
+      DefaultPrivacy2: ", but you can change the privacy for your account details.",
+    },
   },
   Post: {
     EditPost: "Edit post",

@@ -20,7 +20,7 @@ export interface UserModel {
   birthday?: string,
   avatar_url?: string,
   capwall_url?: string,
-  validator?: Privacy,
+  privacy?: Privacy,
   auth_type?: string,
   auth_google_id?: string,
   post_count?: number,
@@ -28,5 +28,5 @@ export interface UserModel {
   status?: boolean,
   created_at?: string,
   updated_at?: string,
-  friend_status?: FriendStatus
+  friend_status?: FriendStatus,
 }

@@ -19,6 +19,7 @@ const ProfileTabs = ({
   userInfo,
   friendCount,
   friends,
+  resultCode,
 }: {
   tabNum: number,
   posts: PostResponseModel[],
@@ -28,6 +29,7 @@ const ProfileTabs = ({
   userInfo: UserModel,
   friendCount: number,
   friends:FriendResponseModel[];
+  resultCode: number;
 }) => {
   const { brandPrimary } = useColor();
   const { localStrings, user } = useAuth();
@@ -51,13 +53,13 @@ const ProfileTabs = ({
   const renderBody = useCallback(() => {
     switch (tab) {
       case 0:
-        return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} />;
+        return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode} />;
       case 1:
         return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={userInfo}/>;
       case 2:
         return userInfo?.id === user?.id ? <SettingsTab /> : null;
       default:
-        return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} />;
+        return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode}/>;
     }
   }, [tab, posts, loading, profileLoading, userInfo, friendCount, user]);
 

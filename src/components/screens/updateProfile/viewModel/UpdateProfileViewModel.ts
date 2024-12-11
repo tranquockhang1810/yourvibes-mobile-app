@@ -16,12 +16,12 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
         onUpdateProfile(res?.data)
         Toast.show({
           type: 'success',
-          text1: localStrings.UpdatePost.UpdatePostSuccess
+          text1: localStrings.UpdateProfile.UpdateSuccess,
         })
       } else {
         Toast.show({
           type: 'error',
-          text1: localStrings.UpdatePost.UpdatePostFailed,
+          text1: localStrings.UpdateProfile.UpdateFailed,
           text2: res?.error?.message
         })
       }
@@ -29,7 +29,7 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
       console.error(error)
       Toast.show({
         type: 'error',
-        text1: localStrings.UpdatePost.UpdatePostFailed,
+        text1: localStrings.UpdateProfile.UpdateFailed,
         text2: error?.error?.message
       })
     } finally {

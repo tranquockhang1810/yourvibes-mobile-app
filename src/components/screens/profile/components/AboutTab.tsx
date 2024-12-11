@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   FlatList,
 } from "react-native";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import useColor from "@/src/hooks/useColor";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { DateTransfer } from "../../../../utils/helper/DateTransfer";
@@ -15,101 +15,142 @@ import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
 import { router } from "expo-router";
 import { Image } from "react-native";
 import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
+import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 
 const AboutTab = ({
   user,
   loading,
   friendCount,
   friends,
+  resultCode,
 }: {
   user: UserModel;
   loading: boolean;
   friendCount: number;
   friends: FriendResponseModel[];
+  resultCode: number;
 }) => {
-  const { lightGray, brandPrimaryTap } = useColor();
-  const { localStrings } = useAuth();
+  const {brandPrimaryTap,lightGray} = useColor();
+  const {isLoginUser, localStrings } = useAuth();
+  
+  
+
+  const renderPrivacyIcon = () => {
+    switch (user?.privacy) {
+      case Privacy.PUBLIC:
+        return <Ionicons name="globe" size={18} color={brandPrimaryTap} />;
+      case Privacy.FRIEND_ONLY:
+        return <Ionicons name="people" size={18} color={brandPrimaryTap} />;
+      case Privacy.PRIVATE:
+        return <Ionicons name="lock-closed" size={18} color={brandPrimaryTap} />;
+      default:
+        return null;
+    }
+  }
+
   
   return (
     <>
       {loading ? (
         <ActivityIndicator animating size="large" color={brandPrimaryTap} />
       ) : (
-        <View style={{ padding: 20, flex: 1 }}>
-          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-            <Text
+        <View style={{ padding: 20, flex:1}}>
+          <ScrollView style={{flex:1}} showsVerticalScrollIndicator={false}>
+            <View style={{flex:1, flexDirection: "row", justifyContent: "space-between"
+            }}>
+              <Text
               style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
-            >
-              {localStrings.Public.Detail}
-            </Text>
-
-            {/* Email */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <MaterialIcons name="email" size={24} color="black" />
-              <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Mail}:{" "}
-                <Text style={{ fontWeight: "bold" }}>
-                  {user?.email || "N/A"}
-                </Text>
+              >
+                {localStrings.Public.Detail}
               </Text>
+              {isLoginUser(user?.id || "") && (
+                 <View style={{flexDirection: "row"}}>
+                 <Text style={{paddingRight: 5}}>
+                 {renderPrivacyIcon()}
+                 </Text>
+                 <MaterialCommunityIcons name="circle-edit-outline" size={18} color="gray" onPress={()=> {router.push('/objectProfile')}}/>
+               </View>
+              )}
+              
             </View>
+            
 
-            {/* Số điện thoại */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Feather name="phone" size={24} color="black" />
-              <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Phone}:{" "}
-                <Text style={{ fontWeight: "bold" }}>
-                  {user?.phone_number || "N/A"}
-                </Text>
-              </Text>
-            </View>
+            {resultCode === 20001 ? (
+               <>
+               {/* Email */}
+                 <View
+                   style={{
+                     flexDirection: "row",
+                     alignItems: "center",
+                     marginBottom: 10,
+                   }}
+                 >
+                   <MaterialIcons name="email" size={24} color="black" />
+                   <Text style={{ marginLeft: 10 }}>
+                     {localStrings.Public.Mail}:{" "}
+                     <Text style={{ fontWeight: "bold" }}>
+                       {user?.email || "N/A"}
+                     </Text>
+                   </Text>
+                 </View>
 
-            {/* Ngày sinh */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Feather name="calendar" size={24} color="black" />
-              <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Birthday}:{" "}
-                <Text style={{ fontWeight: "bold" }}>
-                  {DateTransfer(user?.birthday) || "N/A"}
-                </Text>
-              </Text>
-            </View>
+                 {/* Số điện thoại */}
+                 <View
+                   style={{
+                     flexDirection: "row",
+                     alignItems: "center",
+                     marginBottom: 10,
+                   }}
+                 >
+                   <Feather name="phone" size={24} color="black" />
+                        <Text style={{ marginLeft: 10 }}>
+                          {localStrings.Public.Phone}:{" "}
+                          <Text style={{ fontWeight: "bold" }}>
+                            {user?.phone_number || "N/A"}
+                          </Text>
+                        </Text>
+                      </View>
 
-            {/* Ngày tham gia */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <MaterialIcons name="date-range" size={24} color="black" />
-              <Text style={{ marginLeft: 10 }}>
-                {localStrings.Public.Active}:{" "}
-                <Text style={{ fontWeight: "bold" }}>
-                  {DateTransfer(user?.created_at) || "N/A"}
-                </Text>
-              </Text>
-            </View>
+                      {/* Ngày sinh */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginBottom: 10,
+                        }}
+                      >
+                        <Feather name="calendar" size={24} color="black" />
+                        <Text style={{ marginLeft: 10 }}>
+                          {localStrings.Public.Birthday}:{" "}
+                          <Text style={{ fontWeight: "bold" }}>
+                            {DateTransfer(user?.birthday) || "N/A"}
+                          </Text>
+                        </Text>
+                      </View>
+
+                      {/* Ngày tham gia */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginBottom: 10,
+                        }}
+                      >
+                        <MaterialIcons name="date-range" size={24} color="black" />
+                        <Text style={{ marginLeft: 10 }}>
+                          {localStrings.Public.Active}:{" "}
+                          <Text style={{ fontWeight: "bold" }}>
+                            {DateTransfer(user?.created_at) || "N/A"}
+                          </Text>
+                        </Text>
+                      </View>
+                </>
+            ): resultCode === 50016 ? (
+                 <Text style={{ color: "gray", textAlign: "center"}}> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`} </Text>
+            ) : resultCode === 50015 ? (
+              <Text style={{ color: "gray", textAlign: "center"}}>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</Text>
+            ) : null}
+           
 
             {/* Danh sách bạn bè */}
             <View style={{ paddingVertical: 20 }}>

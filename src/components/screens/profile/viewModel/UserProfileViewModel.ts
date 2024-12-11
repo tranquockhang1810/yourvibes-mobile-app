@@ -30,6 +30,7 @@ const UserProfileViewModel = () => {
   const [profile, setProfile] = useState<any>(null);
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
   const [friendCount, setFriendCount] = useState(0);
+  const [resultCode, setResultCode] = useState(0);
 
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
@@ -41,7 +42,7 @@ const UserProfileViewModel = () => {
         page: newPage,
         limit: limit,
       });
-
+      
       if (!response?.error) {
         if (newPage === 1) {
           setPosts(response?.data);
@@ -75,9 +76,10 @@ const UserProfileViewModel = () => {
   const fetchUserProfile = async (id: string) => {
     try {
       setProfileLoading(true);
-      const response = await defaultProfileRepo.getProfile(id);
+      const response = await defaultProfileRepo.getProfile(id);    
       if (!response?.error) {
         setUserInfo(response?.data);
+        setResultCode(response?.code);
         setNewFriendStatus(response?.data?.friend_status || FriendStatus.NotFriend);
       } else {
         Toast.show({
@@ -260,7 +262,6 @@ const fetchFriends = async (page: number) => {
         limit: 10,
         user_id: userInfo?.id,
       });
-      console.log("response: ", response);
       
       if (response?.data) {
         if (Array.isArray(response?.data)) {
@@ -323,6 +324,8 @@ useEffect(() => {
     page,
     getFriendCount,
     fetchFriends,
+    resultCode,
+    setResultCode,
   }
 }
 
