@@ -18,7 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Video } from 'expo-av';
 
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-import AddPostViewModel from '../viewModel/AddpostViewModel';
+import AddPostViewModel from '@/src/components/screens/addPost/viewModel/AddpostViewModel';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { CreatePostRequestModel } from '@/src/api/features/post/models/CreatePostRequestModel';
 import { convertMediaToFiles } from '@/src/utils/helper/TransferToFormData';
