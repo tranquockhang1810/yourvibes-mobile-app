@@ -7,6 +7,7 @@ import { PostRepo } from "@/src/api/features/post/PostRepo";
 import { ReportUserRequestModel } from "@/src/api/features/profile/model/ReportUser";
 import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
 import { useAuth } from "@/src/context/auth/useAuth";
+import { router } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 
@@ -19,11 +20,14 @@ const ReportViewModel = (repo: PostRepo) => {
         try {
             setReportLoading(true);
             const res = await repo.reportPost(params);
+            console.log("resPost", res);
+            
             if (!res?.error) {
                 Toast.show({
                     type: 'success',
                     text1: localStrings.Report.ReportSuccess,
                 });
+                router.back();
             } else {
                Toast.show({
                      type: 'error',
@@ -47,11 +51,14 @@ const ReportViewModel = (repo: PostRepo) => {
         try {
           setReportLoading(true);
           const res = await defaultProfileRepo.reportUser(params);
+          console.log("resUser", res);
+          
           if (!res?.error) {
             Toast.show({
               type: 'success',
               text1: localStrings.Report.ReportSuccess,
             });
+            router.back();
           } else {
             Toast.show({
               type: 'error',
@@ -75,13 +82,14 @@ const ReportViewModel = (repo: PostRepo) => {
           try{
             setReportLoading(true);
             const res = await defaultCommentRepo.reportComment(params);
-            console.log(res);
+            console.log("resComment", res);
             
             if (!res?.error) {
               Toast.show({
                 type: 'success',
                 text1: localStrings.Report.ReportSuccess,
               });
+              router.back();
             } else {
               Toast.show({
                 type: 'error',
