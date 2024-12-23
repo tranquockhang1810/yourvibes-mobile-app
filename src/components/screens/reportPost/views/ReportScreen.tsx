@@ -19,12 +19,12 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
 
     const handleReport = () => {
         if (postId) {
-            reportPost({ post_id: postId, reason: reportReason });
+            reportPost({ report_post_id: postId, reason: reportReason });
         } else if (userId) {
-            reportUser({ user_id: userId, reason: reportReason });
+            reportUser({ reported_user_id: userId, reason: reportReason });
         }
         else if (commentId) {
-            reportComment({ comment_id: commentId, reason: reportReason });
+            reportComment({ report_comment_id: commentId, reason: reportReason });
         }
     };
   return (
