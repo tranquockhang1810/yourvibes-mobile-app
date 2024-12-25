@@ -444,7 +444,7 @@ const usePostDetailsViewModel = (
     });
     console.log(postId, "post id");
     console.log("ai like bài này: ", response);
-  setUserLikePost(response.data);
+  setUserLikePost(response?.data);
   };
 
   useEffect(() => {

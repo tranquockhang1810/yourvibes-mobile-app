@@ -330,9 +330,9 @@ const Post: React.FC<IPost> = React.memo(({
         onClose={() => setShowSharePopup(false)}>
         <KeyboardAvoidingView
           style={{ backgroundColor: backgroundColor, width: '100%' }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={'height'}
         >
-          <View style={{ paddingVertical: 20, height: 600 }}>
+          <View style={{ paddingVertical: 20, height: Platform.OS === 'ios' ? 600 : 600 }}>
             <Form form={shareForm} style={{ backgroundColor, borderWidth: 0 }}>
               {/* Avatar anh Input */}
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
