@@ -1,5 +1,5 @@
-import { ActivityIndicator, Alert, Image, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Keyboard, Platform, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import React, { useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -13,9 +13,6 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
   const [reportReason, setReportReason] = useState('');
   const { localStrings } = useAuth();
   const { reportPost, loading, reportUser, reportComment } = ReportViewModel(defaultPostRepo);
-
- 
-
 
     const handleReport = () => {
         if (postId) {
@@ -31,7 +28,7 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={{ flex: 1 }}>
 			{/* Header */}
-			<View style={{ backgroundColor: backgroundColor}}>
+			<View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 20 : 0 }}>
 				<StatusBar barStyle="dark-content" />
 				<View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 60, paddingBottom: 10 }}>
 					<View style={{ flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', justifyContent: 'space-between' }}>

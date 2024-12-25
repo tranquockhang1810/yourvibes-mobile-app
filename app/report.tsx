@@ -1,5 +1,3 @@
-
-
 import ReportScreen from '@/src/components/screens/reportPost/views/ReportScreen';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react'
