@@ -50,8 +50,12 @@ export const ApiPath = {
   READ_ALL_NOTIFICATION: getApiPath("users/notifications/"),
 
   //New Feeds
-  GET_NEW_FEEDS: getApiPath('posts/new_feeds/'),
-  DELETE_NEW_FEED: getApiPath('posts/new_feeds/'),
+  GET_NEW_FEEDS: getApiPath("posts/new_feeds/"),
+  DELETE_NEW_FEED: getApiPath("posts/new_feeds/"),
+
+  //Forgot Password
+  GET_OTP_FORGOOT_PASSWORD: getApiPath("users/get_otp_forgot_user_password"),
+  FORGOT_PASSWORD: getApiPath("users/forgot_user_password"),
 };
 
 function getApiPath(path: string) {
@@ -60,4 +64,3 @@ function getApiPath(path: string) {
 function getWSPath(path: string) {
   return `${ENV.SERVER_ENDPOINT.replace("http", "ws")!}/v1/2024/${path}`;
 }
-

@@ -109,12 +109,29 @@ const usePostDetailsViewModel = (
       },
       (buttonIndex) => {
         switch (buttonIndex) {
+          // case 0:
+          //   const commentToReport = comments.find(
+          //     (cmt) => cmt.id === comment.id
+          //   );
+          //   if (commentToReport) {
+          //     router.push(`/report?commentId=${comment.id}`);
+          //   }
+          //   break;
           case 0:
-            const commentToReport = comments.find(
-              (cmt) => cmt.id === comment.id
-            );
-            if (commentToReport) {
-              router.push(`/report?commentId=${comment.id}`);
+            if (comment.parent_id) {
+              const replyToReport = replyMap[comment.parent_id]?.find(
+                (reply) => reply.id === comment.id
+              );
+              if (replyToReport) {
+                router.push(`/report?commentId=${replyToReport.id}`);
+              }
+            } else {
+              const commentToReport = comments.find(
+                (cmt) => cmt.id === comment.id
+              );
+              if (commentToReport) {
+                router.push(`/report?commentId=${comment.id}`);
+              }
             }
             break;
 
@@ -444,7 +461,7 @@ const usePostDetailsViewModel = (
     });
     console.log(postId, "post id");
     console.log("ai like bài này: ", response);
-  setUserLikePost(response?.data);
+    setUserLikePost(response?.data);
   };
 
   useEffect(() => {
