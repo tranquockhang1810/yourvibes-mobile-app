@@ -19,6 +19,8 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
             reportPost({ report_post_id: postId, reason: reportReason });
         } else if (userId) {
             reportUser({ reported_user_id: userId, reason: reportReason });
+            console.log('reportUser', reportUser, userId, reportReason);
+            
         }
         else if (commentId) {
             reportComment({ report_comment_id: commentId, reason: reportReason });
