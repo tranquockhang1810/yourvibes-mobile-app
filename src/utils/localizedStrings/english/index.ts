@@ -290,4 +290,10 @@ export const ENGLocalizedStrings = {
     OTP: "OTP",
     ConformChangePassword: "Confirm change password",
   },
+  webSocker: {
+    WebSocketConnected: "Web Socket connected",
+    WebSocketDisconnected: "Web Socket disconnected",
+    WebSocketError: "Web Socket error",
+    WebSocketErrorText: "Please check your network connection",
+  },
 }

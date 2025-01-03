@@ -9,6 +9,7 @@ export const ApiPath = {
   // User
   PROFILE: getApiPath("users/"),
   SEARCH: getApiPath("users/"),
+  CHANGE_PASSWORD: getApiPath("users/change_password"),
 
   REPORT_USER: getApiPath("users/report"),
 

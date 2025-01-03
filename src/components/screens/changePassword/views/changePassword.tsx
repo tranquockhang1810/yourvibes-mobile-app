@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,15 +7,28 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import { Button, Form} from '@ant-design/react-native';
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router"; 
-import { useAuth } from '@/src/context/auth/useAuth';
-
+import { router } from "expo-router";
+import { useAuth } from "@/src/context/auth/useAuth";
+import ChangPassword from "../viewModel/changePasswordViewModel";
+import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
+import MyInput from "@/src/components/foundation/MyInput";
+import useColor from "@/src/hooks/useColor";
+import { ChangePasswordRequestModel } from "@/src/api/features/profile/model/ChangPassword";
+import Toast from "react-native-toast-message";
 
 const ChangePasswordScreen = () => {
-
-	const { language, localStrings } = useAuth();
-  
+  const { language, localStrings } = useAuth();
+  const {
+    loading,
+    changePassword,
+  } = ChangPassword(defaultProfileRepo);
+  const [seePasswordOld, setSeePasswordOld] = useState(false);
+  const [seePasswordNew, setSeePasswordNew] = useState(false);
+  const [seePasswordConfirm, setSeePasswordConfirm] = useState(false);
+  const { brandPrimary } = useColor();
+  const [changePasswordInForm] = Form.useForm();
 
   return (
     <ScrollView
@@ -27,7 +40,7 @@ const ChangePasswordScreen = () => {
       {/* Header */}
       <View
         style={{
-          marginTop: Platform.OS === 'ios' ? 30 : 0 ,
+          marginTop: Platform.OS === "ios" ? 30 : 0,
           height: 50,
           paddingHorizontal: 16,
           paddingTop: 16,
@@ -56,114 +69,140 @@ const ChangePasswordScreen = () => {
       </View>
 
       {/* Form */}
-      <View style={{ padding: 16 }}>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 16,
-            fontSize: 14,
-          }}
-          placeholder={localStrings.ChangePassword.OldPassword}
-          secureTextEntry
-        />
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 16,
-            fontSize: 14,
-          }}
-          placeholder={localStrings.ChangePassword.NewPassword}
-          secureTextEntry
-        />
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 16,
-            fontSize: 14,
-          }}
-          placeholder={localStrings.ChangePassword.ConformPassword}
-          secureTextEntry
-        />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 16,
-          }}
+      <Form
+        layout="vertical"
+        style={{
+          width: "100%",
+          backgroundColor: "none",
+        }}
+        form={changePasswordInForm}
+      >
+        <Form.Item
+          name="oldPassword"
+          rules={[
+            {
+              required: true,
+              message:
+                localStrings.Form.RequiredMessages.PasswordRequiredMessage,
+            },
+          ]}
         >
-          <TextInput
-            style={{
-              flex: 1,
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 8,
-              padding: 12,
-              fontSize: 14,
-              marginRight: 8,
-            }}
-            placeholder={localStrings.ChangePassword.Email}
+          <MyInput
+            placeholder={localStrings.ChangePassword.OldPassword}
+            type={seePasswordOld ? "text" : "password"}
+            variant="outlined"
+            suffix={
+              <TouchableOpacity
+                onPress={() => {
+                  setSeePasswordOld(!seePasswordOld);
+                }}
+              >
+                <Feather
+                  name={seePasswordOld ? "eye" : "eye-off"}
+                  size={20}
+                  color={seePasswordOld ? brandPrimary : "gray"}
+                />
+              </TouchableOpacity>
+            }
           />
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#ccc",
-              borderRadius: 8,
-              paddingVertical: 16,
-              paddingHorizontal: 16,
-            }}
-          >
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 14,
-                fontWeight: "bold",
-              }}
-            >
-              {localStrings.ChangePassword.SendOTP}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 16,
-            fontSize: 14,
-          }}
-          placeholder={localStrings.ChangePassword.OTP}
-        />
+        </Form.Item>
+        <Form.Item
+          name="newPassword"
+          rules={[
+            {
+              required: true,
+              message:
+                localStrings.Form.RequiredMessages.PasswordRequiredMessage,
+            },
+          ]}
+        >
+          <MyInput
+            placeholder={localStrings.ChangePassword.NewPassword}
+            type={seePasswordNew ? "text" : "password"}
+            variant="outlined"
+            
+            suffix={
+              <TouchableOpacity
+                onPress={() => {
+                  setSeePasswordNew(!seePasswordNew);
+                }}
+              >
+                <Feather
+                  name={seePasswordNew ? "eye" : "eye-off"}
+                  size={20}
+                  color={seePasswordNew ? brandPrimary : "gray"}
+                />
+              </TouchableOpacity>
+            }
+          />
+        </Form.Item>
+        {/* Conform Password */}
+        <Form.Item
+          name="confirmPassword"
+          rules={[
+            {
+              required: true,
+              message:
+                localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage,
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('newPassword') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error(localStrings.Form.TypeMessage.ConfirmPasswordTypeMessage));
+              },
+            }),
+          ]}
+        >
+          <MyInput
+            placeholder={localStrings.ChangePassword.ConformPassword}
+            type={seePasswordConfirm ? "text" : "password"}
+            variant="outlined"
+            suffix={
+              <TouchableOpacity
+                onPress={() => {
+                  setSeePasswordConfirm(!seePasswordConfirm);
+                }}
+              >
+                <Feather
+                  name={seePasswordConfirm ? "eye" : "eye-off"}
+                  size={20}
+                  color={seePasswordConfirm ? brandPrimary : "gray"}
+                />
+              </TouchableOpacity>
+            }
+          />
+        </Form.Item>
 
         {/* Submit Button */}
-        <TouchableOpacity
-          style={{
-            backgroundColor: "black",
-            borderRadius: 8,
-            paddingVertical: 16,
-            alignItems: "center",
-            marginTop: 16,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
+        <Form.Item>
+          <Button type="primary" loading={loading} onPress={() => {
+            changePasswordInForm
+              .validateFields()
+              .then(() => {
+                const { oldPassword, newPassword } = changePasswordInForm.getFieldsValue();
+                const data: ChangePasswordRequestModel = {
+                  old_password: oldPassword,
+                  new_password: newPassword,
+                };
+                changePassword(data);
+                
+              })
+              .catch((error) => {
+                console.log("error", error);
+                  Toast.show({
+                                type: "error",
+                                text1: "Change Password Failed",
+                                text2: error?.message,
+                              });
+              }
+            );
+          }}>
             {localStrings.ChangePassword.ConformChangePassword}
-          </Text>
-        </TouchableOpacity>
-      </View>
+          </Button>
+        </Form.Item>
+      </Form>
     </ScrollView>
   );
 };

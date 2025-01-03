@@ -289,5 +289,11 @@ ChangePassword:{
   SendOTP: "Nhận OTP",
   OTP: "Mã OTP",
   ConformChangePassword: "Xác nhận thay đổi mật khẩu",
+},
+webSocker:{
+  WebSocketConnected: "Web Socket đã kết nối",
+  WebSocketDisconnected: "Web Socket đã ngắt kết nối",
+  WebSocketError: "Lỗi Web Socket",
+  WebSocketErrorText: "Vui lòng kiểm tra kết nối mạng của bạn",
 }
 };
