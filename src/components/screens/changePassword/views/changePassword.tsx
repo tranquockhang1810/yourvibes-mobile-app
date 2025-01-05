@@ -15,7 +15,7 @@ import ChangPassword from "../viewModel/changePasswordViewModel";
 import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
 import MyInput from "@/src/components/foundation/MyInput";
 import useColor from "@/src/hooks/useColor";
-import { ChangePasswordRequestModel } from "@/src/api/features/profile/model/ChangPassword";
+import { ChangePasswordRequestModel } from "@/src/api/features/profile/model/ChangPasswordModel";
 import Toast from "react-native-toast-message";
 
 const ChangePasswordScreen = () => {
@@ -112,8 +112,16 @@ const ChangePasswordScreen = () => {
             {
               required: true,
               message:
-                localStrings.Form.RequiredMessages.PasswordRequiredMessage,
+                localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage,
             },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('oldPassword') !== value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error(localStrings.Form.TypeMessage.PleaseOldPasswordDifferentNewPassword));
+              },
+            }),
           ]}
         >
           <MyInput

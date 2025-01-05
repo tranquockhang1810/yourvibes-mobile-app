@@ -21,8 +21,7 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
           text1: localStrings.UpdateProfile.UpdateSuccess,
         })
       } else {
-        console.log("failed", res?.error?.message);
-        
+        console.log("failed", res?.error);
         Toast.show({
           type: 'error',
           text1: localStrings.UpdateProfile.UpdateFailed,

@@ -16,6 +16,7 @@ const TabLayout = () => {
   const { user, localStrings } = useAuth();
   const pathname = usePathname();
   const [statusNotifi, setStatusNotifi] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   const mapNotifiCationContent = (type: string) => {
     switch (type) {
@@ -142,9 +143,13 @@ const TabLayout = () => {
   ];
 
   useEffect(() => {
-    checkNotificationStatus();
-    connectWebSocket();
-  }, []);
+    if (!initialized) {
+      checkNotificationStatus();
+      connectWebSocket();
+      setInitialized(true); // Đặt biến trạng thái thành true sau khi gọi hàm
+    }
+    
+  }, [initialized]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -157,6 +162,7 @@ const TabLayout = () => {
  
   return (
     <>
+
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: brandPrimary,

@@ -1,5 +1,6 @@
-import { ChangePasswordRequestModel } from "@/src/api/features/profile/model/ChangPassword";
+import { ChangePasswordRequestModel } from "@/src/api/features/profile/model/ChangPasswordModel";
 import { ProfileRepo } from "@/src/api/features/profile/ProfileRepository";
+import { useAuth } from "@/src/context/auth/useAuth";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
@@ -10,6 +11,7 @@ const ChangPassword = (repo : ProfileRepo) => {
         const [oldPassword, setOldPassword] = useState('');
         const [newPassword, setNewPassword] = useState('');
         const [conformPassword, setConformPassword] = useState('');
+        const { language, localStrings } = useAuth();
         
         const changePassword = async (data: ChangePasswordRequestModel) => {
             try {
@@ -18,13 +20,15 @@ const ChangPassword = (repo : ProfileRepo) => {
               if (!res?.error) {
                 Toast.show({
                   type: 'success',
-                  text1: "Change Password Success",
+                  text1: localStrings.ChangePassword.ChangePasswordSuccess,
                 });
                 router.back(); // Hoặc điều hướng đến một trang khác
               } else {
+                console.log("failed", res?.error);
+                
                 Toast.show({
                   type: 'error',
-                  text1: "Change Password Failed",
+                  text1: localStrings.ChangePassword.ChangePasswordFailed,
                   text2: res?.error?.message,
                 });
               }
@@ -33,7 +37,7 @@ const ChangPassword = (repo : ProfileRepo) => {
               console.error(error);
               Toast.show({
                 type: 'error',
-                text1: "Change Password Failed",
+                text1: localStrings.ChangePassword.ChangePasswordFailed,
                 text2: error?.message,
               });
             }finally {

@@ -84,8 +84,6 @@ const ListFriendsScreen = ({userId}: {userId: string}) => {
       );
       useEffect(() => {
         if (userId) {
-            console.log("fetchFriends", page, "userId:", userId);
-            
             fetchFriends(page, userId);
         }
     }, [userId]);

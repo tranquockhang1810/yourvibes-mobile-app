@@ -4,7 +4,7 @@ import { ReportCommentRequestModel } from "@/src/api/features/comment/models/Rep
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import { ReportPostRequestModel } from "@/src/api/features/post/models/ReportPost";
 import { PostRepo } from "@/src/api/features/post/PostRepo";
-import { ReportUserRequestModel } from "@/src/api/features/profile/model/ReportUser";
+import { ReportUserRequestModel } from "@/src/api/features/profile/model/ReportUserModel";
 import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { router } from "expo-router";
