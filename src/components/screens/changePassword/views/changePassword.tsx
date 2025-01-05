@@ -10,6 +10,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router"; 
 import { useAuth } from '@/src/context/auth/useAuth';
+import Toast from "react-native-toast-message";
 
 
 const ChangePasswordScreen = () => {
@@ -164,6 +165,7 @@ const ChangePasswordScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      <Toast />
     </ScrollView>
   );
 };

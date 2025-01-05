@@ -3,7 +3,7 @@ import ListFriendsScreen from '@/src/components/screens/listFriends/views/ListFr
 import { useLocalSearchParams } from 'expo-router'
 import React from 'react'
 
-const postDetails = () => {
+const listFriends = () => {
   const {userId} = useLocalSearchParams()
   const getUserID = () => {
     if (Array.isArray(userId)) {
@@ -17,4 +17,4 @@ const postDetails = () => {
   )
 }
 
-export default postDetails
+export default listFriends

@@ -15,6 +15,7 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { useFocusEffect, useRouter } from "expo-router";
 import ProfileViewModel from "../viewModel/ProfileViewModel";
 import { UserModel } from "@/src/api/features/authenticate/model/LoginModel";
+import Toast from "react-native-toast-message";
 
 const ProfileFeatures = ({ tab }: { tab: number }) => {
   const { backgroundColor } = useColor();
@@ -26,12 +27,12 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     fetchUserPosts,
     loadMorePosts,
     total,
-    friends, 
-    friendCount,  
+    friends,
+    friendCount,
     resultCode,
     fetchUserProfile,
   } = ProfileViewModel();
-  
+
   useFocusEffect(
     useCallback(() => {
       if (tab === 0 || tab === 1) {
@@ -42,8 +43,23 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
   useEffect(() => {
     if (!user?.id) return;
     fetchUserProfile(user?.id);
-
   }, [user?.id]);
+
+  const renderTab = useCallback(() => {
+    return (
+      <ProfileTabs
+        tabNum={tab}
+        posts={posts}
+        loading={loading}
+        profileLoading={false}
+        loadMorePosts={loadMorePosts}
+        userInfo={user as UserModel}
+        friendCount={friendCount}
+        friends={friends}
+        resultCode={resultCode}
+      />
+    )
+  }, [tab, posts, loading, friendCount, friends, resultCode]);
 
   return (
     <KeyboardAvoidingView
@@ -93,17 +109,8 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 loading={false}
                 friendCount={friendCount}
               />
-              <ProfileTabs
-                tabNum={tab}
-                posts={posts}
-                loading={loading}
-                profileLoading={false}
-                loadMorePosts={loadMorePosts}
-                userInfo={user as UserModel}
-                friendCount={friendCount}
-                friends= {friends}
-                resultCode={resultCode}
-              />
+              {renderTab()}
+              <Toast />
             </>
           }
           renderItem={() => null}
@@ -113,6 +120,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           refreshing={loading}
         />
       </View>
+      <Toast />
     </KeyboardAvoidingView>
   );
 };

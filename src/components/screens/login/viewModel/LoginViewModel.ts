@@ -1,11 +1,12 @@
 import { AuthenRepo } from "@/src/api/features/authenticate/AuthenRepo"
 import { LoginRequestModel } from "@/src/api/features/authenticate/model/LoginModel"
-import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
-import * as Google from 'expo-auth-session/providers/google';
-import ENV from "@/env-config";
 import { useAuth } from "@/src/context/auth/useAuth";
+import ENV from "@/env-config";
+import * as Linking from 'expo-linking';
+import * as Google from 'expo-auth-session/providers/google';
+import { Platform } from "react-native";
 
 const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
     webClientId: ENV.WEB_CLIENT_ID!,
     androidClientId: ENV.ANDROID_CLIENT_ID!,
     iosClientId: ENV.IOS_CLIENT_ID!,
+    redirectUri: `${Linking.createURL("/login")}`,
   })
 
   const login = async (data: LoginRequestModel) => {
@@ -22,7 +24,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
       setLoading(true);
       const res = await repo.login(data);
       if (res?.data) {
-        onLogin(res.data);
+        onLogin(res?.data);
       } else {
         Toast.show({
           type: 'error',
@@ -42,41 +44,34 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
   };
 
   const handleGoogleLogin = async () => {
-    if (response?.type === "success") {
-      console.log("handleGoogleLogin: ", response);
-      const token = response?.authentication?.accessToken;
-      if (token) {
-        getGoogleUserInfo(token);
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: localStrings.Login.LoginFailed
-        })
+    try {
+      if (response?.type === "success") {
+        setGoogleLoading(true);
+        const res = await repo.googleLogin({
+          authorization_code: response?.params?.code,
+          platform: Platform.OS === 'ios' ? 'ios' : 'android',
+          redirect_url: `${Linking.createURL("/login")}`,
+        });
+        if (res?.data) {
+          onLogin(res?.data);
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: localStrings.Login.LoginFailed,
+            text2: res?.error?.message
+          })
+        }
       }
-    } else {
+    } catch (error: any) {
+      console.error(error);
       Toast.show({
         type: 'error',
-        text1: localStrings.Login.LoginFailed
+        text1: localStrings.Login.LoginFailed,
       })
+    } finally {
+      setGoogleLoading(false);
     }
-  }
-
-  const getGoogleUserInfo = async (token: string) => {
-    if (!token) return;
-    try {
-      const response = await fetch(
-        'https://www.googleapis.com/userinfo/v2/me',
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const data = await response.json();
-      console.log("google data: ", data);
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  };
 
   useEffect(() => {
     if (response)
@@ -88,7 +83,7 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
     googleLoading,
     setGoogleLoading,
     loading,
-    promtAsync
+    promtAsync,
   }
 }
 

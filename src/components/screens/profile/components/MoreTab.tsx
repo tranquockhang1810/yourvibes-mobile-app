@@ -24,7 +24,7 @@ const MoreTab = ({ userInfoProps }: { userInfoProps: UserModel }) => {
 
   useEffect(() => {
     console.log("newFriendStatus: ", newFriendStatus);
-    
+
     if (!newFriendStatus && userInfoProps) {
       setNewFriendStatus(userInfoProps?.friend_status);
     }
@@ -144,7 +144,7 @@ const MoreTab = ({ userInfoProps }: { userInfoProps: UserModel }) => {
           </Text>
         </Button>
       </ScrollView>
-      <ActivityIndicator 
+      <ActivityIndicator
         toast
         animating={sendRequestLoading}
         size="large"

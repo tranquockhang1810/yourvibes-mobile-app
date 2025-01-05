@@ -26,6 +26,7 @@ import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -64,15 +65,13 @@ function PostDetails(): React.JSX.Element {
     editCommentContent,
     fetchUserLikePosts,
     userLikePost,
+    showMoreReplies,
+    setShowMoreReplies
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const parentId = replyToCommentId || replyToReplyId;
-  const [showMoreReplies, setShowMoreReplies] = useState<{
-    [key: string]: boolean;
-  }>({});
-
   const [isVisible, setIsVisible] = useState(false);
 
   const fetchPostDetails = async () => {
@@ -107,132 +106,134 @@ function PostDetails(): React.JSX.Element {
         <FlatList
           data={replies}
           keyExtractor={(reply) => reply.id.toString()}
-          renderItem={({ item: reply }) => (
-            <View
-              style={{
-                padding: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: "#eee",
-                backgroundColor: "#f9f9f9",
-                borderRadius: 5,
-                marginBottom: 10,
-                paddingLeft: 20, // Thụt lề cho các phản hồi lồng nhau
-              }}
-            >
-              {/* Thông tin người dùng và nội dung phản hồi */}
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={{
-                    uri:
-                      reply?.user?.avatar_url ||
-                      "https://i.pravatar.cc/150?img=1",
-                  }}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 15,
-                    marginRight: 10,
-                  }}
-                />
-                <View>
-                  <Text style={{ fontWeight: "bold" }}>
-                    {reply?.user?.family_name} {reply?.user?.name}
-                  </Text>
-                  <Text style={{ fontSize: 12, color: "#888" }}>
-                    {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
-                  </Text>
-                  <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
-                </View>
-              </View>
-              {/* Nút Thích, Trả lời và Hành động */}
+          renderItem={({ item: reply }) => {
+            return (
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 5,
+                  padding: 10,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#eee",
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: 5,
+                  marginBottom: 10,
+                  paddingLeft: 20, // Thụt lề cho các phản hồi lồng nhau
                 }}
               >
-                {/* Like */}
-                <TouchableOpacity
-                  onPress={() =>
-                    handleLike(reply.id).then(() =>
-                      fetchReplies(postId, reply.parent_id as string)
-                    )
-                  }
-                >
-                  {renderLikeIcon(reply)}
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{ marginLeft: 5 }}>
-                  <Text style={{ color: brandPrimary, marginRight: 20 }}>
-                    {likeCount[reply.id] || reply.like_count}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setReplyToCommentId(reply.parent_id ?? null);
-                    setReplyToReplyId(reply.id);
-                    textInputRef.current?.focus();
-                    fetchReplies(postId, reply.id); //
-                  }}
+                {/* Thông tin người dùng và nội dung phản hồi */}
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={{
+                      uri:
+                        reply?.user?.avatar_url ||
+                        "https://i.pravatar.cc/150?img=1",
+                    }}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      marginRight: 10,
+                    }}
+                  />
+                  <View>
+                    <Text style={{ fontWeight: "bold" }}>
+                      {reply?.user?.family_name} {reply?.user?.name}
+                    </Text>
+                    <Text style={{ fontSize: 12, color: "#888" }}>
+                      {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
+                    </Text>
+                    <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
+                  </View>
+                </View>
+                {/* Nút Thích, Trả lời và Hành động */}
+                <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    marginRight: 20,
+                    marginTop: 5,
                   }}
                 >
-                  <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
-                  <Text style={{ marginLeft: 5 }}>
-                    {localStrings.Public.Reply}
-                  </Text>
-                </TouchableOpacity>
+                  {/* Like */}
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleLike(reply.id).then(() =>
+                        fetchReplies(postId, reply.parent_id as string)
+                      )
+                    }
+                  >
+                    {renderLikeIcon(reply)}
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                  onPress={() => handleAction(reply)}
-                >
-                  <AntDesign name="bars" size={20} color={brandPrimaryTap} />
-                  <Text style={{ marginLeft: 5 }}>
-                    {localStrings.Public.Action}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {/* Nút để xem phản hồi lồng nhau */}
-              {reply.rep_comment_count > 0 && (
-                <TouchableOpacity
-                  onPress={() => {
-                    fetchReplies(postId, reply.id);
-                    setShowMoreReplies((prev) => ({
-                      ...prev,
-                      [reply.id]: !prev[reply.id],
-                    }));
-                  }}
-                  style={{ marginTop: 10 }}
-                >
-                  <View style={{ alignItems: "center" }}>
-                    <AntDesign name="down" size={16} color={brandPrimaryTap} />
-                    <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-                      {showMoreReplies[reply.id]
-                        ? `${localStrings.PostDetails.HideReplies}`
-                        : `${localStrings.PostDetails.ViewReplies}`}
+                  <TouchableOpacity style={{ marginLeft: 5 }}>
+                    <Text style={{ color: brandPrimary, marginRight: 20 }}>
+                      {likeCount[reply.id] || reply.like_count}
                     </Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+                  </TouchableOpacity>
 
-              {/* Hiển thị các phản hồi lồng nhau */}
-              {showMoreReplies[reply.id] && replyMap[reply.id] && (
-                <View style={{ marginTop: 10, paddingLeft: 20 }}>
-                  {renderReplies(replyMap[reply.id])}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setReplyToCommentId(reply.parent_id ?? null);
+                      setReplyToReplyId(reply.id);
+                      textInputRef.current?.focus();
+                      fetchReplies(postId, reply.id);
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginRight: 20,
+                    }}
+                  >
+                    <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
+                    <Text style={{ marginLeft: 5 }}>
+                      {localStrings.Public.Reply}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={() => handleAction(reply)}
+                  >
+                    <AntDesign name="bars" size={20} color={brandPrimaryTap} />
+                    <Text style={{ marginLeft: 5 }}>
+                      {localStrings.Public.Action}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-              )}
-            </View>
-          )}
+                {/* Nút để xem phản hồi lồng nhau */}
+                {reply.rep_comment_count > 0 && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      fetchReplies(postId, reply.id);
+                      setShowMoreReplies((prev) => ({
+                        ...prev,
+                        [reply.id]: !prev[reply.id],
+                      }));
+                    }}
+                    style={{ marginTop: 10 }}
+                  >
+                    <View style={{ alignItems: "center" }}>
+                      <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                      <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                        {showMoreReplies[reply.id]
+                          ? `${localStrings.PostDetails.HideReplies}`
+                          : `${localStrings.PostDetails.ViewReplies}`}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+
+                {/* Hiển thị các phản hồi lồng nhau */}
+                {showMoreReplies[reply.id] && replyMap[reply.id] && (
+                  <View style={{ marginTop: 10, paddingLeft: 20 }}>
+                    {renderReplies(replyMap[reply.id])}
+                  </View>
+                )}
+              </View>
+            )
+          }}
         />
       );
     },
-    [replyMap, comments]
+    [replyMap, comments, showMoreReplies]
   );
 
   const renderCommentItem = useCallback(
@@ -295,12 +296,10 @@ function PostDetails(): React.JSX.Element {
                 marginRight: 20,
               }}
               onPress={() => {
-                console.log("Comment được trả lời:", comments.id);
                 setReplyToCommentId(comments.id);
                 setReplyToReplyId(null);
                 setNewComment("");
                 textInputRef.current?.focus();
-                console.log("replyToCommentId sau khi thiết lập:", comments.id);
               }}
             >
               <FontAwesome name="reply" size={20} color={brandPrimaryTap} />
@@ -345,9 +344,9 @@ function PostDetails(): React.JSX.Element {
             </TouchableOpacity>
           )}
           {/* Hiển thị các phản hồi */}
-          {replyMap[comments.id] &&
+          {(replyMap[comments.id] &&
             replyMap[comments.id].length > 0 &&
-            showMoreReplies[comments.id] && (
+            showMoreReplies[comments.id]) && (
               <View style={{ paddingLeft: 20 }}>
                 {renderReplies(replyMap[comments.id])}
               </View>
@@ -378,7 +377,7 @@ function PostDetails(): React.JSX.Element {
         />
       );
     },
-    [comments, post, replyMap, loading]
+    [comments, post, replyMap, loading, showMoreReplies]
   );
 
   useEffect(() => {
@@ -429,12 +428,19 @@ function PostDetails(): React.JSX.Element {
             />
             {renderFlatList(comments)}
             {/* comment input */}
-            <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
+            <Form
+              style={{
+                backgroundColor: "#fff",
+                //paddingBottom: 30
+              }}
+              form={commentForm}
+            >
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   padding: 10,
+                  paddingBottom: 40
                 }}
               >
                 <Image
@@ -469,10 +475,6 @@ function PostDetails(): React.JSX.Element {
                     }
                     onBlur={() => {
                       setReplyToCommentId(null);
-                      console.log(
-                        "Tạm biệt replyToCommentId: ",
-                        replyToCommentId
-                      );
                     }}
                   />
                 </Form.Item>
@@ -497,17 +499,17 @@ function PostDetails(): React.JSX.Element {
                       if (!comment) {
                         return;
                       }
-                      const parentId = setReplyToReplyId
+                      const parentId = setReplyToReplyId // nữa
                         ? String(setReplyToReplyId)
                         : replyToCommentId
-                        ? String(replyToCommentId)
-                        : null;
-
+                          ? String(replyToCommentId)
+                          : null;
                       setLoading(true);
                       if (parentId) {
                         handleAddReply(comment).then(() => {
                           setNewComment("");
                           setReplyToReplyId(null);
+                          setReplyToCommentId(null);
                           textInputRef.current?.blur();
                           commentForm.resetFields();
                           setLoading(false);
@@ -549,7 +551,7 @@ function PostDetails(): React.JSX.Element {
                 <View
                   style={{
                     backgroundColor: "white",
-                    width: "100%", 
+                    width: "100%",
                     height: "100%",
                   }}
                 >
@@ -587,7 +589,7 @@ function PostDetails(): React.JSX.Element {
                     <View
                       style={{ flexDirection: "column", alignItems: "center" }}
                     >
-                      {userLikePost.map((like, index) => (
+                      {userLikePost?.map((like, index) => (
                         <View
                           key={like.id}
                           style={{
@@ -724,7 +726,8 @@ function PostDetails(): React.JSX.Element {
                       handleUpdate(
                         currentCommentId,
                         editCommentContent,
-                        parentId || ""
+                        parentId || "",
+                        !!parentId
                       ).then(() => {
                         setLoading(false);
                         setEditModalVisible(false);
@@ -747,6 +750,7 @@ function PostDetails(): React.JSX.Element {
           </View>
         </Modal>
       </View>
+      <Toast topOffset={100}/>
     </KeyboardAvoidingView>
   );
 }

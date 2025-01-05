@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { TextInput, Modal, LogBox } from "react-native";
+import { TextInput } from "react-native";
+import { Modal } from '@ant-design/react-native';
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useAuth } from "@/src/context/auth/useAuth";
 import Toast from "react-native-toast-message";
@@ -43,6 +44,10 @@ const usePostDetailsViewModel = (
   const [currentCommentId, setCurrentCommentId] = useState("");
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
+  const [lastChange, setLastChange] = useState(false);
+  const [showMoreReplies, setShowMoreReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
@@ -59,13 +64,7 @@ const usePostDetailsViewModel = (
     try {
       const replies = await defaultCommentRepo.getReplies(postId, parentId);
       if (replies && replies.data) {
-        console.log("Data vừa lấy: ", replies.data);
         setReplyMap((prevReplyMap) => {
-          console.log("replyMap updated: ", {
-            ...prevReplyMap,
-            [parentId]: replies.data,
-          });
-
           return {
             ...prevReplyMap,
             [parentId]: replies.data,
@@ -80,10 +79,6 @@ const usePostDetailsViewModel = (
       console.error("Error fetching replies:", error);
     }
   };
-
-  useEffect(() => {
-    fetchComments();
-  }, []);
 
   const handleAction = (comment: CommentsResponseModel) => {
     const options = [
@@ -108,6 +103,8 @@ const usePostDetailsViewModel = (
         cancelButtonTintColor: "#F95454",
       },
       (buttonIndex) => {
+        console.log("buttonIndex", buttonIndex);
+        
         switch (buttonIndex) {
           case 0:
             const commentToReport = comments.find(
@@ -179,14 +176,6 @@ const usePostDetailsViewModel = (
     setCurrentCommentId("");
   };
 
-  const [lastChange, setLastChange] = useState(false);
-  useEffect(() => {
-    if (!lastChange) {
-      console.log("editCommentContent:", editCommentContent);
-      setLastChange(true);
-    }
-  }, [editCommentContent]);
-
   const handleUpdate = async (
     commentId: string,
     updatedContent: string,
@@ -203,36 +192,16 @@ const usePostDetailsViewModel = (
         commentId,
         updateCommentData
       );
-
       if (response && response.data) {
-        if (isReply) {
-          // Cập nhật reply mới
-          setReplyMap((prevReplyMap) => {
-            const updatedReplies = prevReplyMap[parentId].map((reply) => {
-              if (reply.id === commentId) {
-                return { ...reply, content: updatedContent };
-              }
-              return reply;
-            });
-            return { ...prevReplyMap, [parentId]: updatedReplies };
-          });
-          // Hiển thị reply mới
-          setComments((prev) => [...prev, { ...response.data, replies: [] }]);
-        } else {
-          // Cập nhật comment
-          const updatedComments = comments.map((comment) => {
-            if (comment.id === commentId) {
-              return { ...comment, content: updatedContent };
-            }
-            return comment;
-          });
-          setComments(updatedComments);
-        }
+        fetchComments();
+        const parentCommentID = findParentId(replyMap, commentId);
+        const rootCommentID = findParentId(replyMap, parentCommentID ?? "");
+        parentCommentID && fetchReplies(postId, parentCommentID);
+        rootCommentID && fetchReplies(postId, rootCommentID);
         Toast.show({
           type: "success",
           text1: `${localStrings.PostDetails.EditCommentSuccess}`,
         });
-        fetchComments();
       }
     } catch (error) {
       Toast.show({
@@ -242,78 +211,54 @@ const usePostDetailsViewModel = (
     }
   };
 
-  useEffect(() => {
-    if (isEditModalVisible) {
-      console.log("Edit modal is now visible.");
-    }
-  }, [isEditModalVisible]);
-
   const handleDelete = (commentId: string) => {
-    showActionSheetWithOptions(
-      {
-        title: `${localStrings.PostDetails.DeleteComment}`,
-        options: [
-          `${localStrings.PostDetails.Yes}`,
-          `${localStrings.PostDetails.No}`,
-        ],
-        cancelButtonIndex: 1,
-        cancelButtonTintColor: "#F95454",
-      },
-      (buttonIndex) => {
-        if (buttonIndex === 0) {
-          defaultCommentRepo
-            .deleteComment(commentId)
-            .then(() => {
-              // Cập nhật trạng thái comments
-              setComments((prevComments) =>
-                prevComments.filter((comment) => comment.id !== commentId)
-              );
-
-              // Cập nhật trạng thái replyMap
-              if (replyMap[commentId]) {
-                setReplyMap((prevReplyMap) => {
-                  const updatedReplies = prevReplyMap[commentId].filter(
-                    (reply) => reply.id !== commentId
-                  );
-                  return { ...prevReplyMap, [commentId]: updatedReplies };
-                });
-              } else {
-                // Nếu không có replies, cập nhật trạng thái replyMap để xóa commentId
-                setReplyMap((prevReplyMap) => {
-                  const updatedReplyMap = { ...prevReplyMap };
-                  delete updatedReplyMap[commentId];
-                  return updatedReplyMap;
-                });
-              }
-
-              // Cập nhật lại danh sách replies của comment
-              const parentId = replyToCommentId || replyToReplyId;
-              if (parentId) {
-                const updatedReplies = replyMap[parentId].filter(
-                  (reply) => reply.id !== commentId
-                );
-                setReplyMap((prevReplyMap) => ({
-                  ...prevReplyMap,
-                  [parentId]: updatedReplies,
-                }));
-                fetchReplies(postId, parentId);
-              }
-
-              Toast.show({
-                type: "success",
-                text1: `${localStrings.PostDetails.DeteleReplySuccess}`,
-              });
-            })
-            .catch((error) => {
-              Toast.show({
-                type: "error",
-                text1: `${localStrings.PostDetails.DeteleReplyFailed}`,
-              });
-            });
-        }
-      }
-    );
+    Modal.alert(
+      localStrings.PostDetails.DeleteComment + "?","",
+      [
+        { text: localStrings.Public.Cancel, style: 'cancel' },
+        { text: localStrings.Public.Confirm, onPress: () => handleDeleteLogic(commentId) },
+      ]
+    )
   };
+
+  const handleDeleteLogic = async (commentId: string) => {
+    try {
+      const res = await defaultCommentRepo.deleteComment(commentId);
+      if (res && res?.message === 'Success') {
+        const parentCommentID = findParentId(replyMap, commentId);
+        fetchComments();
+        const rootCommentID = findParentId(replyMap, parentCommentID ?? "");
+        console.log("parentCommentID", parentCommentID);
+        console.log("rootCommentID", rootCommentID);
+        setReplyMap((prev) => {
+          return {
+            ...prev,
+            [commentId]: prev[commentId]?.filter(
+              (comment) => comment.id !== commentId
+            ) || [],
+          }
+        });
+        parentCommentID && setShowMoreReplies((prev) => {
+          return {
+            ...prev,
+            [parentCommentID]: false,
+          }
+        });
+        parentCommentID && fetchReplies(postId, parentCommentID);
+        rootCommentID && fetchReplies(postId, rootCommentID);
+        Toast.show({
+          type: "success",
+          text1: `${localStrings.PostDetails.DeteleReplySuccess}`,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: `${localStrings.PostDetails.DeteleReplyFailed}`,
+      });
+    }
+  }
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
@@ -321,7 +266,6 @@ const usePostDetailsViewModel = (
         post_id: postId,
         content: comment,
       };
-
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
@@ -329,9 +273,6 @@ const usePostDetailsViewModel = (
             type: "success",
             text1: `${localStrings.PostDetails.CommentSuccess}`,
           });
-
-          const newComment = { ...response.data, replies: [] };
-          setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
         } else {
           Toast.show({
@@ -361,36 +302,7 @@ const usePostDetailsViewModel = (
         content: comment,
         parent_id: parentId,
       };
-
-      // try {
-      //   const response = await defaultCommentRepo.createComment(commentData);
-      //   if (!response.error) {
-      //     Toast.show({
-      //       type: "success",
-      //       text1: `${localStrings.PostDetails.ReplySuccess}`,
-      //     });
-
-      //     const newComment = { ...response.data, replies: [] };
-      //     setComments((prev) => {
-      //       const parentComment = prev.find(
-      //         (comment) => comment.id === parentId
-      //       );
-      //       return [...prev];
-      //     });
-      //     fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
-      //   } else {
-      //     Toast.show({
-      //       type: "error",
-      //       text1: `${localStrings.PostDetails.ReplyFailed}`,
-      //     });
-      //   }
-      // } catch (error) {
-      //   console.error("Error adding comment:", error);
-      //   Toast.show({
-      //     type: "error",
-      //     text1: `${localStrings.PostDetails.ReplyFailed}`,
-      //   });
-      // }
+      const rootCommentID = findParentId(replyMap, parentId || "");
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
@@ -398,24 +310,9 @@ const usePostDetailsViewModel = (
             type: "success",
             text1: `${localStrings.PostDetails.ReplySuccess}`,
           });
-
-          const newComment = { ...response.data, replies: [] };
-          setComments((prev) => {
-            const parentComment = prev.find(
-              (comment) => comment.id === parentId
-            );
-            return [...prev];
-          });
-          // Cập nhật lại danh sách reply cho comment cha
-          const updatedReplies = [
-            ...(replyMap[parentId || ""] || []),
-            newComment,
-          ];
-          setReplyMap((prevReplyMap) => ({
-            ...prevReplyMap,
-            [parentId || ""]: updatedReplies,
-          }));
-          fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          fetchComments();
+          parentId && fetchReplies(postId, parentId);
+          rootCommentID && fetchReplies(postId, rootCommentID);
         } else {
           Toast.show({
             type: "error",
@@ -442,14 +339,37 @@ const usePostDetailsViewModel = (
       page: 1,
       limit: 10,
     });
-    console.log(postId, "post id");
-    console.log("ai like bài này: ", response);
-  setUserLikePost(response.data);
+    setUserLikePost(response.data);
+  };
+
+  const findParentId = (
+    hashMap: { [key: string]: CommentsResponseModel[] },
+    commentId: string
+  ) => {
+    for (const key in hashMap) {
+      const comments = hashMap[key];
+      for (const comment of comments) {
+        if (comment.id === commentId) {
+          return key; // Trả về parent_id (key của hashMap)
+        }
+      }
+    }
+    return null;
   };
 
   useEffect(() => {
     fetchUserLikePosts(postId);
   }, [postId]);
+
+  useEffect(() => {
+    if (!lastChange) {
+      setLastChange(true);
+    }
+  }, [editCommentContent]);
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   return {
     comments,
@@ -480,6 +400,9 @@ const usePostDetailsViewModel = (
     fetchComments,
     userLikePost,
     fetchUserLikePosts,
+    showMoreReplies,
+    setShowMoreReplies,
+    findParentId
   };
 };
 

@@ -3,7 +3,7 @@ import React from 'react'
 
 const postDetails = () => {
   return (
-    <PostDetails comments={[]} />
+    <PostDetails />
   )
 }
 

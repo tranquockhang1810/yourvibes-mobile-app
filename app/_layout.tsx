@@ -9,14 +9,6 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { PostProvider } from "@/src/context/post/usePostContext";
 
 export default function RootLayout() {
-  const screens = [
-    "index",
-    "login",
-    "signUp",
-    "forgotPassword",
-    "(tabs)",
-  ];
-
   const {
     brandPrimary,
     brandPrimaryTap,
@@ -45,17 +37,16 @@ export default function RootLayout() {
                 }}>
                 <StatusBar backgroundColor={"transparent"} barStyle={"dark-content"} />
                 <Stack
-                  screenOptions={{ headerShown: false }}
-                >
-                  {screens?.map((screen, index) => (
-                    <Stack.Screen key={index} name={screen} />
-                  ))}
-                </Stack>
+                  screenOptions={{
+                    headerShown: false,
+                    animation: "slide_from_right",
+                  }}
+                />
+                <Toast />
               </Provider>
             </View>
           </ActionSheetProvider>
         </GestureHandlerRootView>
-        <Toast />
       </PostProvider>
     </AuthProvider>
   );
