@@ -31,6 +31,8 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     friendCount,
     resultCode,
     fetchUserProfile,
+    page,
+    fetchMyFriends,
   } = ProfileViewModel();
 
   useFocusEffect(
@@ -43,7 +45,8 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
   useEffect(() => {
     if (!user?.id) return;
     fetchUserProfile(user?.id);
-  }, [user?.id]);
+    fetchMyFriends(page);
+  }, [user?.id, page]);
 
   const renderTab = useCallback(() => {
     return (

@@ -1,18 +1,19 @@
 import {
   View,
-  Image,
   FlatList,
-  TouchableOpacity, Text
-} from 'react-native'
-import React, { useEffect } from 'react'
-import useColor from '@/src/hooks/useColor'
-import Post from '@/src/components/common/Post'
-import { ActivityIndicator } from '@ant-design/react-native'
-import HomeViewModel from '../viewModel/HomeViewModel'
-import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo'
-import { router } from 'expo-router'
-import { useAuth } from '@/src/context/auth/useAuth'
-import { Platform } from 'react-native';
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { Image } from "expo-image";
+import React, { useCallback, useEffect } from "react";
+import useColor from "@/src/hooks/useColor";
+import Post from "@/src/components/common/Post";
+import { ActivityIndicator } from "@ant-design/react-native";
+import HomeViewModel from "../viewModel/HomeViewModel";
+import { defaultNewFeedRepo } from "@/src/api/features/newFeed/NewFeedRepo";
+import { router } from "expo-router";
+import { useAuth } from "@/src/context/auth/useAuth";
+import { Platform } from "react-native";
 import Toast from 'react-native-toast-message'
 
 const HomeScreen = () => {
@@ -61,7 +62,7 @@ const HomeScreen = () => {
   const renderFooter = () => {
     if (!loading) return null;
     return (
-      <View style={{ paddingVertical: 10, alignItems: 'center' }}>
+      <View style={{ paddingVertical: 10, alignItems: "center" }}>
         <ActivityIndicator size="large" color={brandPrimary} />
       </View>
     );
@@ -74,14 +75,27 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
-      <View style={{ backgroundColor: backgroundColor, paddingTop: Platform.OS === 'ios' ? 40 : 0 }}>
-        <View style={{ height: 60, display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+      <View
+        style={{
+          backgroundColor: backgroundColor,
+          paddingTop: Platform.OS === "ios" ? 40 : 0,
+        }}
+      >
+        <View
+          style={{
+            height: 70,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+          }}
+        >
           <Image
-            source={require('@/assets/images/yourvibes_black.png')}
+            source={require("@/assets/images/yourvibes_black.png")}
             style={{
-              width: "40%",
-              height: 60,
-              objectFit: 'contain',
+              width: "55%",
+              height: 65,
+              objectFit: "contain",
               marginLeft: 10,
             }}
           />
@@ -94,7 +108,9 @@ const HomeScreen = () => {
         data={newFeeds}
         renderItem={({ item }) => (
           <Post key={item?.id} post={item}>
-            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+            {item?.parent_post && (
+              <Post post={item?.parent_post} isParentPost />
+            )}
           </Post>
         )}
         keyExtractor={(item) => item?.id as string}
@@ -108,7 +124,7 @@ const HomeScreen = () => {
       />
       <Toast />
     </View>
-  )
-}
+  );
+};
 
 export default HomeScreen;

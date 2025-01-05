@@ -86,6 +86,7 @@ export const VnLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Xác nhận mật khẩu không hợp lệ!",
       OTPTypeMessage: "Mã OTP phải là chuỗi 6 số!",
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
+      PleaseOldPasswordDifferentNewPassword: "Mật khẩu mới phải khác mật khẩu cũ!",
     },
   },
   Login: {
@@ -226,6 +227,7 @@ export const VnLocalizedStrings = {
   },
 Notification: {
   Notification: "Thông báo",
+  NoNotification: "Không có thông báo",
   Items:{
     LikePost: "đã thích bài viết của bạn: ",
     SharePost: "đã chia sẻ bài viết của bạn: ",
@@ -288,5 +290,11 @@ ChangePassword:{
   SendOTP: "Nhận OTP",
   OTP: "Mã OTP",
   ConformChangePassword: "Xác nhận thay đổi mật khẩu",
+},
+webSocker:{
+  WebSocketConnected: "Web Socket đã kết nối",
+  WebSocketDisconnected: "Web Socket đã ngắt kết nối",
+  WebSocketError: "Lỗi Web Socket",
+  WebSocketErrorText: "Vui lòng kiểm tra kết nối mạng của bạn",
 }
 };

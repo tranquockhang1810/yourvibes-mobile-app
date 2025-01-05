@@ -87,6 +87,7 @@ export const ENGLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Confirm password is invalid!",
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
+      PleaseOldPasswordDifferentNewPassword:"New password must be different from old password!",
     },
   },
   Login: {
@@ -224,6 +225,7 @@ export const ENGLocalizedStrings = {
   },
   Notification: {
     Notification: "Notification",
+    NoNotification: "No notification",
     Items: {
       LikePost: "liked your post: ",
       SharePost: "shared your post: ",
@@ -288,5 +290,11 @@ export const ENGLocalizedStrings = {
     SendOTP: "Send OTP",
     OTP: "OTP",
     ConformChangePassword: "Confirm change password",
+  },
+  webSocker: {
+    WebSocketConnected: "Web Socket connected",
+    WebSocketDisconnected: "Web Socket disconnected",
+    WebSocketError: "Web Socket error",
+    WebSocketErrorText: "Please check your network connection",
   },
 }

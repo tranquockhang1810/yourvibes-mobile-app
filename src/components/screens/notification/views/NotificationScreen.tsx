@@ -57,6 +57,7 @@ const NotificationScreen = () => {
       </View>
       <View style={{ borderBottomWidth: 1, borderColor: '#000' }} />
       {/* content */}
+      {notifications.length > 0 ? (  
       <FlatList
         data={notifications}
         renderItem={({ item }) => <NotificationItem notification={item}
@@ -70,7 +71,18 @@ const NotificationScreen = () => {
         showsVerticalScrollIndicator={false}
         onRefresh={() => fetchNotifications(1)}
         refreshing={loading}
-      />
+      />):( 
+        loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color={brandPrimary} />
+          </View>
+        ) :
+        (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, color: '#333' }}>{localStrings.Notification.NoNotification}</Text>
+        </View>)
+      )}
+
       <Toast />
     </View>
   )

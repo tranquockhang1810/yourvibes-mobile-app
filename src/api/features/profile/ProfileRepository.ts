@@ -4,9 +4,10 @@ import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponse
 import client from "../../client";
 import { UserModel } from "../authenticate/model/LoginModel";
 import { UpdateProfileRequestModel } from "./model/UpdateProfileModel";
-import { ReportUserRequestModel } from "./model/ReportUser";
+import { ReportUserRequestModel } from "./model/ReportUserModel";
 import { GetFriendRequestModel } from "./model/GetFriendModel";
 import { FriendResponseModel, } from "./model/FriendReponseModel";
+import { ChangePasswordRequestModel } from "./model/ChangPasswordModel";
 
 interface IProfileRepo {
   getProfile(userId: string): Promise<BaseApiResponseModel<UserModel>>;
@@ -17,6 +18,7 @@ interface IProfileRepo {
   refuseFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
   unfriend(userId: string): Promise<BaseApiResponseModel<any>>;
   getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>>; 
+  changePassword(data: ChangePasswordRequestModel): Promise<BaseApiResponseModel<any>>;
 }
 
 export class ProfileRepo implements IProfileRepo {
@@ -48,6 +50,9 @@ export class ProfileRepo implements IProfileRepo {
   async getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>> {
     return client.get(ApiPath.LIST_FRIENDS + data.user_id, data);
   } 
+  async changePassword(data: ChangePasswordRequestModel): Promise<BaseApiResponseModel<any>> {
+    return client.patch(ApiPath.CHANGE_PASSWORD, data);
+  }
 }
 
 export const defaultProfileRepo = new ProfileRepo();

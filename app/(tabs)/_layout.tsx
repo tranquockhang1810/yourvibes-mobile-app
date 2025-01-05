@@ -6,7 +6,7 @@ import { Badge } from '@ant-design/react-native';
 import { AntDesign, FontAwesome, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Href, Tabs, useFocusEffect, usePathname } from 'expo-router';
 import React, { useEffect, useState, ReactNode } from 'react';
-import { Image, View, Platform, StatusBar } from 'react-native';
+import { Image, View, Platform, StatusBar, Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 const TabLayout = () => {
@@ -16,6 +16,7 @@ const TabLayout = () => {
   const { user, localStrings } = useAuth();
   const pathname = usePathname();
   const [statusNotifi, setStatusNotifi] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   const mapNotifiCationContent = (type: string) => {
     switch (type) {
@@ -59,6 +60,7 @@ const TabLayout = () => {
 
     ws.onopen = () => {
       console.log('Web Socket connected');
+
     };
 
     ws.onmessage = (e) => {
@@ -68,7 +70,6 @@ const TabLayout = () => {
       const type = notification?.notification_type;
       const status = notification?.status;
 
-      console.log('Message:', notification);
       setStatusNotifi(status);
 
       const mapType = mapNotifiCationContent(type);
@@ -79,12 +80,18 @@ const TabLayout = () => {
       });
     };
 
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
+    ws.onclose = (e) => {
+      console.log('WebSocket disconnected:', e.reason);
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error: ', error);
+      console.log('WebSocket error:', error);
+      Toast.show({
+        type: 'error',
+        text1: localStrings.webSocker.WebSocketError,
+        text2: localStrings.webSocker.WebSocketErrorText,
+      });
+
     };
 
     return () => {
@@ -136,9 +143,13 @@ const TabLayout = () => {
   ];
 
   useEffect(() => {
-    checkNotificationStatus();
-    connectWebSocket();
-  }, []);
+    if (!initialized) {
+      checkNotificationStatus();
+      connectWebSocket();
+      setInitialized(true); // Đặt biến trạng thái thành true sau khi gọi hàm
+    }
+    
+  }, [initialized]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -151,6 +162,7 @@ const TabLayout = () => {
 
   return (
     <>
+
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: brandPrimary,

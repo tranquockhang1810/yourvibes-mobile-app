@@ -4,16 +4,14 @@ import { Platform, StatusBar, View } from "react-native";
 import useColor from "@/src/hooks/useColor";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/src/context/auth/useAuth";
-import Toast from 'react-native-toast-message';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import Toast from "react-native-toast-message";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { PostProvider } from "@/src/context/post/usePostContext";
 
 export default function RootLayout() {
-  const {
-    brandPrimary,
-    brandPrimaryTap,
-    backgroundColor,
-  } = useColor();
+  const screens = ["index", "login", "signUp", "forgotPassword", "(tabs)"];
+
+  const { brandPrimary, brandPrimaryTap, backgroundColor } = useColor();
 
   return (
     <AuthProvider>
@@ -34,15 +32,17 @@ export default function RootLayout() {
                   ghost_button_fill_tap: brandPrimaryTap,
                   brand_primary: brandPrimary,
                   prefix_padding: 0,
-                }}>
-                <StatusBar backgroundColor={"transparent"} barStyle={"dark-content"} />
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    animation: "slide_from_right",
-                  }}
+                }}
+              >
+                <StatusBar
+                  backgroundColor={"transparent"}
+                  barStyle={"dark-content"}
                 />
-                <Toast />
+                <Stack screenOptions={{ headerShown: false }}>
+                  {screens?.map((screen, index) => (
+                    <Stack.Screen key={index} name={screen} />
+                  ))}
+                </Stack>
               </Provider>
             </View>
           </ActionSheetProvider>

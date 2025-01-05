@@ -30,6 +30,11 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     resultCode,
   } = UserProfileViewModel();
 
+  console.log('userInfo', userInfo);
+  console.log("id", id);
+  
+  
+
   const showFriendAction = useCallback(() => {
     const options = [
       localStrings.Public.ReportFriend,
@@ -47,7 +52,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            console.log('báo cáo tài khoản action selected');
+            console.log('báo cáo tài khoản user id: ', id);
             router.push(`/report?userId=${id}`);
             break;
           case 1:
@@ -58,12 +63,11 @@ const UserProfileScreen = ({ id }: { id: string }) => {
         }
       }
     );
-  }, [localStrings]);
+  }, [localStrings, id]);
 
   useEffect(() => {
     if (!id) return;
     fetchUserProfile(id);
-
     setTab(0);
   }, [id])
 

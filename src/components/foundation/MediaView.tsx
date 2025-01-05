@@ -28,8 +28,6 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
         const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov'); // Check if media is a video
         const player = useVideoPlayer({ uri: media?.media_url || "" }, player => {
           player.loop = true;
-          player.muted = true;
-          player.play();
         });
         return isVideo ? (
           <VideoView

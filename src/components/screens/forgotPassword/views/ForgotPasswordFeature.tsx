@@ -17,15 +17,45 @@ import { useRouter } from 'expo-router';
 import useColor from '@/src/hooks/useColor';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '@/src/context/auth/useAuth';
+import { ForgotPasswordViewModel } from '@/src/components/screens/forgotPassword/viewModel/ForgotPasswordViewModel';
 
 const ForgotPasswordFeature = () => {
   const router = useRouter();
   const [seePassword, setSeePassword] = useState(false);
   const [seeConfirmPassword, setSeeConfirmPassword] = useState(false);
-  const { backgroundColor, brandPrimaryTap } = useColor();
+  const { backgroundColor, brandPrimaryTap, brandPrimary } = useColor();
   const [forgotForm] = Form.useForm();
-  const { brandPrimary } = useColor();
   const { localStrings } = useAuth();
+  const forgotPasswordViewModel = new ForgotPasswordViewModel();
+
+  const onRequestOTP = async () => {
+    try {
+      const email = forgotForm.getFieldValue('email');
+      if (!email) {
+        Toast.show({ type: 'error', text1: localStrings.Form.RequiredMessages.EmailRequiredMessage });
+        return;
+      }
+      await forgotPasswordViewModel.requestOTP(email, '');
+      Toast.show({ type: 'success', text1: localStrings.SignUp.OTPSuccess });
+    } catch (error) {
+      Toast.show({ type: 'error', text1: localStrings.SignUp.OTPFailed });
+    }
+  };
+
+  const onForgotPassword = async () => {
+    try {
+      const values = await forgotForm.validateFields();
+      await forgotPasswordViewModel.resetPassword({
+        email: values.email,
+        new_password: values.new_password,
+        otp: values.otp,
+      });
+      Toast.show({ type: 'success', text1: localStrings.ChangePassword.ChangePasswordSuccess });
+      router.push('/login');
+    } catch (error) {
+      Toast.show({ type: 'error', text1: localStrings.ChangePassword.ChangePasswordFailed });
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -33,179 +63,136 @@ const ForgotPasswordFeature = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-        }}>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
           <ScrollView
             style={{ width: '100%' }}
             contentContainerStyle={{
               flexGrow: 1,
               alignItems: 'center',
               justifyContent: 'center',
-              marginVertical: 20
-            }}>
-            <Text style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 24,
-              color: brandPrimaryTap
-            }}>
+              marginVertical: 20,
+            }}
+          >
+            {/* Title */}
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: 24,
+                color: brandPrimaryTap,
+              }}
+            >
               {localStrings.Login.ForgotPasswordText}
             </Text>
             <WhiteSpace size="xl" />
+
+            {/* Form */}
             <Form
-              layout='vertical'
-              style={{
-                width: '100%',
-                backgroundColor: "none",
-              }}
+              layout="vertical"
+              style={{ width: '100%', backgroundColor: 'none' }}
               form={forgotForm}
             >
-              {/* Phone */}
-              <Form.Item
-                name="phone"
-                rules={[
-                  { required: true, message: `${localStrings.Form.RequiredMessages.PhoneRequiredMessage}` }
-                ]}
-              >
-                <MyInput
-                  placeholder={localStrings.Form.Label.Phone}
-                  variant="outlined"
-                  type='number'
-                  maxLength={10}
-                />
-              </Form.Item>
               {/* Email and OTP */}
               <View
                 style={{
                   width: '100%',
                   flexDirection: 'row',
-                  display: 'flex',
                   justifyContent: 'space-between',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}
               >
-                {/* email */}
                 <View style={{ width: '70%' }}>
                   <Form.Item
                     name="email"
                     rules={[
-                      { required: true, message: `${localStrings.Form.RequiredMessages.EmailRequiredMessage}` },
-                      { type: 'email', message: `${localStrings.Form.TypeMessage.EmailTypeMessage}` }
+                      { required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage },
+                      { type: 'email', message: localStrings.Form.TypeMessage.EmailTypeMessage },
                     ]}
                   >
-                    <MyInput
-                      placeholder="Email"
-                      variant="outlined"
-                      type='email-address'
-                    />
+                    <MyInput placeholder="Email" variant="outlined" type="email-address" />
                   </Form.Item>
                 </View>
-                {/* OTP button */}
                 <View style={{ width: '30%' }}>
                   <Form.Item>
-                    <Button
-                      type="primary"
-                      style={{ width: '100%' }}
-                    >
-                      <Text
-                        style={{
-                          color: 'white',
-                          textAlign: 'center',
-                          fontWeight: 'semibold',
-                        }}
-                        onPress={() => {
-                          Toast.show({
-                            type: "info",
-                            text1: "OTP: 123456",
-                          })
-                        }}
-                      >
+                    <Button type="primary" style={{ width: '100%' }} onPress={onRequestOTP}>
+                      <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'semibold' }}>
                         {localStrings.Form.Label.GetOTP}
                       </Text>
                     </Button>
                   </Form.Item>
                 </View>
               </View>
-              {/* password */}
+
+              {/* Password */}
               <Form.Item
-                name="password"
-                rules={[{ required: true, message: `${localStrings.Form.RequiredMessages.PasswordRequiredMessage}` }]}
+                name="new_password"
+                rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
               >
                 <MyInput
-                  placeholder= {localStrings.Form.Label.Password}
-                  type={seePassword ? "text" : "password"}
+                  placeholder={localStrings.Form.Label.Password}
+                  type={seePassword ? 'text' : 'password'}
                   variant="outlined"
                   suffix={
-                    <TouchableOpacity onPress={() => { setSeePassword(!seePassword) }}>
-                      <Feather name={seePassword ? "eye" : "eye-off"} size={20} color={seePassword ? brandPrimary : "gray"} />
+                    <TouchableOpacity onPress={() => setSeePassword(!seePassword)}>
+                      <Feather name={seePassword ? 'eye' : 'eye-off'} size={20} color={seePassword ? brandPrimary : 'gray'} />
                     </TouchableOpacity>
                   }
                 />
               </Form.Item>
-              {/* confirmPassword */}
+
+              {/* Confirm Password */}
               <Form.Item
                 name="confirmPassword"
-                rules={[{ required: true, message: `${localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage}` }]}
-              >
-                <MyInput
-                  placeholder= {localStrings.Form.Label.ConfirmPassword}
-                  type={seeConfirmPassword ? "text" : "password"}
-                  variant="outlined"
-                  suffix={
-                    <TouchableOpacity onPress={() => { setSeeConfirmPassword(!seeConfirmPassword) }}>
-                      <Feather name={seeConfirmPassword ? "eye" : "eye-off"} size={20} color={seeConfirmPassword ? brandPrimary : "gray"} />
-                    </TouchableOpacity>
-                  }
-                />
-              </Form.Item>
-              {/* OTP */}
-              <Form.Item
-
-                name="otp"
+                dependencies={['new_password']}
                 rules={[
-                  { required: true, message: `${localStrings.Form.RequiredMessages.OTPRequiredMessage}` }
+                  { required: true, message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('new_password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(localStrings.Form.TypeMessage.ConfirmPasswordTypeMessage);
+                    },
+                  }),
                 ]}
               >
                 <MyInput
-                  placeholder= {localStrings.Form.Label.OTP}
+                  placeholder={localStrings.Form.Label.ConfirmPassword}
+                  type={seeConfirmPassword ? 'text' : 'password'}
                   variant="outlined"
-                  type='number'
-                  maxLength={6}
+                  suffix={
+                    <TouchableOpacity onPress={() => setSeeConfirmPassword(!seeConfirmPassword)}>
+                      <Feather name={seeConfirmPassword ? 'eye' : 'eye-off'} size={20} color={seeConfirmPassword ? brandPrimary : 'gray'} />
+                    </TouchableOpacity>
+                  }
                 />
               </Form.Item>
-              <WhiteSpace size="lg" />
-              {/* Sign Up  */}
-              <Form.Item>
-                <Button
-                  type="primary"
-                  onPress={() => {
-                    forgotForm.validateFields()
-                      .then(() => {
-                        console.log("Form Values:", forgotForm.getFieldsValue());
-                      })
-                      .catch(err => {
-                        console.log(err)
-                      });
-                  }}
-                >
-                  {localStrings.Public.Confirm}
-                </Button>
-              </Form.Item>
-              <WhiteSpace size="lg" />
-              {/* Sign in */}
-              <TouchableOpacity
-                onPress={() => router.push('/login')}
-                style={{ alignItems: 'center', justifyContent: 'center' }}
+
+              {/* OTP */}
+              <Form.Item
+                name="otp"
+                rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
               >
-                <Text>
-                  {localStrings.Login.DontHaveAccout}
-                  <Text style={{ fontWeight: 'bold' }}> {localStrings.SignUp.LoginNow}</Text>
+                <MyInput placeholder={localStrings.Form.Label.OTP} variant="outlined" />
+              </Form.Item>
+
+              {/* Submit Button */}
+              <Button
+                type="primary"
+                style={{ marginTop: 20 }}
+                onPress={onForgotPassword}
+              >
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
+                  {localStrings.Form.Label.ConfirmPassword}
                 </Text>
-              </TouchableOpacity>
+              </Button>
             </Form>
           </ScrollView>
         </SafeAreaView>
@@ -213,6 +200,6 @@ const ForgotPasswordFeature = () => {
       <Toast />
     </KeyboardAvoidingView>
   );
-}
+};
 
-export default ForgotPasswordFeature
+export default ForgotPasswordFeature;

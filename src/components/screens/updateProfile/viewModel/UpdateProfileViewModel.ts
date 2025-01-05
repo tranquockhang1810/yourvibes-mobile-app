@@ -20,6 +20,7 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
         })
         onUpdateProfile(res?.data)
       } else {
+        console.log("failed", res?.error);
         Toast.show({
           type: 'error',
           text1: localStrings.UpdateProfile.UpdateFailed,

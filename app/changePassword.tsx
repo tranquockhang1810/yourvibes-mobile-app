@@ -1,5 +1,5 @@
-import React from 'react'
-import ChangePasswordScreen from '@/src/components/screens/changePassword/views/changePassword'
+import ChangePasswordScreen from "@/src/components/screens/changePassword/views/changePassword";
+import React from "react";
 
 const changePassword = () => {
   return (

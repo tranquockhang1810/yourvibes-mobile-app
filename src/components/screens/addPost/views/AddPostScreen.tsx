@@ -18,7 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Video } from 'expo-av';
 
 import { defaultPostRepo } from '@/src/api/features/post/PostRepo';
-import AddPostViewModel from '../viewModel/AddpostViewModel';
+import AddPostViewModel from '@/src/components/screens/addPost/viewModel/AddpostViewModel';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { CreatePostRequestModel } from '@/src/api/features/post/models/CreatePostRequestModel';
 import { convertMediaToFiles } from '@/src/utils/helper/TransferToFormData';
@@ -168,7 +168,7 @@ const AddPostScreen = () => {
                 variant='outlined'
                 moreStyle={{ paddingLeft: 10, marginTop: 10, borderColor: brandPrimaryTap }}
                 textArea={{
-                  autoSize: { minRows: 8, maxRows: 3 },
+                  autoSize: { minRows: 3 },
                 }}
                 autoFocus
                 value={postContent}

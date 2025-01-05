@@ -1,5 +1,5 @@
-import PostDetails from '@/src/components/common/PostDetails'
-import React from 'react'
+import PostDetails from "@/src/components/common/PostDetails";
+import React from "react";
 
 const postDetails = () => {
   return (
@@ -7,4 +7,4 @@ const postDetails = () => {
   )
 }
 
-export default postDetails
+export default postDetails;
