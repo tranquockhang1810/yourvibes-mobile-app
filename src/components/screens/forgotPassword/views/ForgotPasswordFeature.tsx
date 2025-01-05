@@ -197,6 +197,7 @@ const ForgotPasswordFeature = () => {
           </ScrollView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
+      <Toast />
     </KeyboardAvoidingView>
   );
 };

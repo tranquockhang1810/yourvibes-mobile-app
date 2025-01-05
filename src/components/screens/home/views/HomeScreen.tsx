@@ -1,6 +1,5 @@
 import {
   View,
-  StatusBar,
   FlatList,
   TouchableOpacity,
   Text,
@@ -15,21 +14,23 @@ import { defaultNewFeedRepo } from "@/src/api/features/newFeed/NewFeedRepo";
 import { router } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { Platform } from "react-native";
+import Toast from 'react-native-toast-message'
 
 const HomeScreen = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed } =
-    HomeViewModel(defaultNewFeedRepo);
+  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, refeshLoading, refreshNewFeeds } = HomeViewModel(defaultNewFeedRepo)
   const { user, localStrings } = useAuth();
 
-  const renderAddPost = useCallback(() => {
+  const renderAddPost = () => {
     return (
-      <TouchableOpacity onPress={() => router.push({ pathname: "/add" })}>
+      <TouchableOpacity
+        onPress={() => router.push({ pathname: '/add' })}
+      >
         <View
           style={{
             padding: 10,
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             marginHorizontal: 10,
             marginTop: 10,
             backgroundColor: backgroundColor,
@@ -40,7 +41,7 @@ const HomeScreen = () => {
         >
           <Image
             source={{
-              uri: user?.avatar_url,
+              uri: user?.avatar_url || 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
             }}
             style={{
               width: 50,
@@ -50,16 +51,13 @@ const HomeScreen = () => {
             }}
           />
           <View style={{ marginLeft: 10, flex: 1 }}>
-            <Text>
-              {user?.family_name + " " + user?.name ||
-                localStrings.Public.Username}
-            </Text>
-            <Text style={{ color: "gray" }}>{localStrings.Public.Today}</Text>
+            <Text>{user?.family_name + ' ' + user?.name || localStrings.Public.Username}</Text>
+            <Text style={{ color: 'gray' }}>{localStrings.Public.Today}</Text>
           </View>
         </View>
       </TouchableOpacity>
-    );
-  }, [user]);
+    )
+  };
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -121,9 +119,10 @@ const HomeScreen = () => {
         onEndReachedThreshold={0.5}
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
-        onRefresh={fetchNewFeeds}
-        refreshing={loading}
+        onRefresh={refreshNewFeeds}
+        refreshing={refeshLoading}
       />
+      <Toast />
     </View>
   );
 };

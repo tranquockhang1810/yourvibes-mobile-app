@@ -18,6 +18,7 @@ import SearchViewModel from "../viewModel/SearchViewModel";
 import { ActivityIndicator } from "@ant-design/react-native";
 import { defaultSearchRepo } from "@/src/api/features/search/SearchRepository";
 import { useAuth } from "@/src/context/auth/useAuth";
+import Toast from "react-native-toast-message";
 
 const SearchScreen = React.memo(() => {
   const { localStrings } = useAuth();
@@ -218,6 +219,7 @@ const SearchScreen = React.memo(() => {
           </View>
         </View>
       </TouchableWithoutFeedback>
+      <Toast />
     </View>
   );
 });

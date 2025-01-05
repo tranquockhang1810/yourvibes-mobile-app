@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,17 +21,12 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import {
-  ActivityIndicator,
-  Form,
-  ActionSheet,
-  Tabs,
-} from "@ant-design/react-native";
+import { ActivityIndicator, Form, ActionSheet } from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
-import { LikeUsersModel } from "@/src/api/features/post/models/LikeUsersModel";
+import Toast from "react-native-toast-message";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -68,19 +63,16 @@ function PostDetails(): React.JSX.Element {
     replyToReplyId,
     setEditCommentContent,
     editCommentContent,
+    fetchUserLikePosts,
     userLikePost,
+    showMoreReplies,
+    setShowMoreReplies
   } = usePostDetailsViewModel(postId, replyToCommentId);
   const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [loading, setLoading] = useState(false);
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const parentId = replyToCommentId || replyToReplyId;
-  const [showMoreReplies, setShowMoreReplies] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [tab, setTab] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
-
-  const tabs = [{ title: "Likes" }, { title: "Comments" }];
 
   const fetchPostDetails = async () => {
     try {
@@ -114,132 +106,134 @@ function PostDetails(): React.JSX.Element {
         <FlatList
           data={replies}
           keyExtractor={(reply) => reply.id.toString()}
-          renderItem={({ item: reply }) => (
-            <View
-              style={{
-                padding: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: "#eee",
-                backgroundColor: "#f9f9f9",
-                borderRadius: 5,
-                marginBottom: 10,
-                paddingLeft: 20, // Thụt lề cho các phản hồi lồng nhau
-              }}
-            >
-              {/* Thông tin người dùng và nội dung phản hồi */}
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={{
-                    uri:
-                      reply?.user?.avatar_url ||
-                      "https://i.pravatar.cc/150?img=1",
-                  }}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 15,
-                    marginRight: 10,
-                  }}
-                />
-                <View>
-                  <Text style={{ fontWeight: "bold" }}>
-                    {reply?.user?.family_name} {reply?.user?.name}
-                  </Text>
-                  <Text style={{ fontSize: 12, color: "#888" }}>
-                    {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
-                  </Text>
-                  <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
-                </View>
-              </View>
-              {/* Nút Thích, Trả lời và Hành động */}
+          renderItem={({ item: reply }) => {
+            return (
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 5,
+                  padding: 10,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#eee",
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: 5,
+                  marginBottom: 10,
+                  paddingLeft: 20, // Thụt lề cho các phản hồi lồng nhau
                 }}
               >
-                {/* Like */}
-                <TouchableOpacity
-                  onPress={() =>
-                    handleLike(reply.id).then(() =>
-                      fetchReplies(postId, reply.parent_id as string)
-                    )
-                  }
-                >
-                  {renderLikeIcon(reply)}
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{ marginLeft: 5 }}>
-                  <Text style={{ color: brandPrimary, marginRight: 20 }}>
-                    {likeCount[reply.id] || reply.like_count}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setReplyToCommentId(reply.parent_id ?? null);
-                    setReplyToReplyId(reply.id);
-                    textInputRef.current?.focus();
-                    fetchReplies(postId, reply.id); //
-                  }}
+                {/* Thông tin người dùng và nội dung phản hồi */}
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={{
+                      uri:
+                        reply?.user?.avatar_url ||
+                        "https://i.pravatar.cc/150?img=1",
+                    }}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      marginRight: 10,
+                    }}
+                  />
+                  <View>
+                    <Text style={{ fontWeight: "bold" }}>
+                      {reply?.user?.family_name} {reply?.user?.name}
+                    </Text>
+                    <Text style={{ fontSize: 12, color: "#888" }}>
+                      {dayjs(reply.created_at).format("DD/MM/YYYY")}{" "}
+                    </Text>
+                    <Text style={{ marginVertical: 5 }}>{reply.content}</Text>
+                  </View>
+                </View>
+                {/* Nút Thích, Trả lời và Hành động */}
+                <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    marginRight: 20,
+                    marginTop: 5,
                   }}
                 >
-                  <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
-                  <Text style={{ marginLeft: 5 }}>
-                    {localStrings.Public.Reply}
-                  </Text>
-                </TouchableOpacity>
+                  {/* Like */}
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleLike(reply.id).then(() =>
+                        fetchReplies(postId, reply.parent_id as string)
+                      )
+                    }
+                  >
+                    {renderLikeIcon(reply)}
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                  onPress={() => handleAction(reply)}
-                >
-                  <AntDesign name="bars" size={20} color={brandPrimaryTap} />
-                  <Text style={{ marginLeft: 5 }}>
-                    {localStrings.Public.Action}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {/* Nút để xem phản hồi lồng nhau */}
-              {reply.rep_comment_count > 0 && (
-                <TouchableOpacity
-                  onPress={() => {
-                    fetchReplies(postId, reply.id);
-                    setShowMoreReplies((prev) => ({
-                      ...prev,
-                      [reply.id]: !prev[reply.id],
-                    }));
-                  }}
-                  style={{ marginTop: 10 }}
-                >
-                  <View style={{ alignItems: "center" }}>
-                    <AntDesign name="down" size={16} color={brandPrimaryTap} />
-                    <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
-                      {showMoreReplies[reply.id]
-                        ? `${localStrings.PostDetails.HideReplies}`
-                        : `${localStrings.PostDetails.ViewReplies}`}
+                  <TouchableOpacity style={{ marginLeft: 5 }}>
+                    <Text style={{ color: brandPrimary, marginRight: 20 }}>
+                      {likeCount[reply.id] || reply.like_count}
                     </Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+                  </TouchableOpacity>
 
-              {/* Hiển thị các phản hồi lồng nhau */}
-              {showMoreReplies[reply.id] && replyMap[reply.id] && (
-                <View style={{ marginTop: 10, paddingLeft: 20 }}>
-                  {renderReplies(replyMap[reply.id])}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setReplyToCommentId(reply.parent_id ?? null);
+                      setReplyToReplyId(reply.id);
+                      textInputRef.current?.focus();
+                      fetchReplies(postId, reply.id);
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginRight: 20,
+                    }}
+                  >
+                    <FontAwesome name="reply" size={16} color={brandPrimaryTap} />
+                    <Text style={{ marginLeft: 5 }}>
+                      {localStrings.Public.Reply}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={() => handleAction(reply)}
+                  >
+                    <AntDesign name="bars" size={20} color={brandPrimaryTap} />
+                    <Text style={{ marginLeft: 5 }}>
+                      {localStrings.Public.Action}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-              )}
-            </View>
-          )}
+                {/* Nút để xem phản hồi lồng nhau */}
+                {reply.rep_comment_count > 0 && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      fetchReplies(postId, reply.id);
+                      setShowMoreReplies((prev) => ({
+                        ...prev,
+                        [reply.id]: !prev[reply.id],
+                      }));
+                    }}
+                    style={{ marginTop: 10 }}
+                  >
+                    <View style={{ alignItems: "center" }}>
+                      <AntDesign name="down" size={16} color={brandPrimaryTap} />
+                      <Text style={{ fontSize: 12, color: brandPrimaryTap }}>
+                        {showMoreReplies[reply.id]
+                          ? `${localStrings.PostDetails.HideReplies}`
+                          : `${localStrings.PostDetails.ViewReplies}`}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+
+                {/* Hiển thị các phản hồi lồng nhau */}
+                {showMoreReplies[reply.id] && replyMap[reply.id] && (
+                  <View style={{ marginTop: 10, paddingLeft: 20 }}>
+                    {renderReplies(replyMap[reply.id])}
+                  </View>
+                )}
+              </View>
+            )
+          }}
         />
       );
     },
-    [replyMap, comments]
+    [replyMap, comments, showMoreReplies]
   );
 
   const renderCommentItem = useCallback(
@@ -302,12 +296,10 @@ function PostDetails(): React.JSX.Element {
                 marginRight: 20,
               }}
               onPress={() => {
-                console.log("Comment được trả lời:", comments.id);
                 setReplyToCommentId(comments.id);
                 setReplyToReplyId(null);
                 setNewComment("");
                 textInputRef.current?.focus();
-                console.log("replyToCommentId sau khi thiết lập:", comments.id);
               }}
             >
               <FontAwesome name="reply" size={20} color={brandPrimaryTap} />
@@ -352,9 +344,9 @@ function PostDetails(): React.JSX.Element {
             </TouchableOpacity>
           )}
           {/* Hiển thị các phản hồi */}
-          {replyMap[comments.id] &&
+          {(replyMap[comments.id] &&
             replyMap[comments.id].length > 0 &&
-            showMoreReplies[comments.id] && (
+            showMoreReplies[comments.id]) && (
               <View style={{ paddingLeft: 20 }}>
                 {renderReplies(replyMap[comments.id])}
               </View>
@@ -365,96 +357,27 @@ function PostDetails(): React.JSX.Element {
     [comments, replyMap, showMoreReplies]
   );
 
-  const renderLikedUserItem = useCallback(
-    (like: LikeUsersModel) => {
-      return (
-        <View
-          key={like.id}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 10,
-            borderBottomWidth: 1,
-            borderColor: "#e0e0e0",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              flex: 1,
-            }}
-            onPress={() => {
-              router.push(`/(tabs)/user/${like.id}`);
-            }}
-          >
-            <Image
-              source={{ uri: like.avatar_url }}
-              style={{
-                marginLeft: 10,
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: "#e0e0e0",
-                marginRight: 10,
-              }}
-            />
-            <Text style={{ fontSize: 16, color: "black" }}>
-              {like.family_name} {like.name}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    },
-    [userLikePost]
-  );
-
-  const renderBody = useCallback(
-    (item: any) => {
-      switch (tab) {
-        case 0:
-          return renderLikedUserItem(item);
-        case 1:
-          return renderCommentItem(item);
-        default:
-          return renderCommentItem(item);
-      }
-    },
-    [tab, comments, replyMap, showMoreReplies]
-  );
-
   const renderFlatList = useCallback(
-    (items: CommentsResponseModel[] | LikeUsersModel[]) => {
+    (comments: CommentsResponseModel[]) => {
       return (
         <FlatList
           ListHeaderComponent={
             <>
               <View style={{ height: 1, backgroundColor: "#000" }} />
               <Post noComment={true} post={post as PostResponseModel} />
-              <View
-                style={{ height: 1, backgroundColor: "#000", opacity: 0.1 }}
-              />
-              {/* <Tabs
-                tabs={tabs}
-                initialPage={tab}
-                tabBarPosition="top"
-                tabBarActiveTextColor={brandPrimary}
-                onChange={(_, index) => setTab(index)}
-                animated={false}
-                style={{ height: "100%" }}
-              /> */}
+              <View style={{ height: 1, backgroundColor: "#000" }} />
             </>
           }
           style={{ flex: 1 }}
-          data={items as any[]}
-          renderItem={({ item }) => renderBody(item)}
+          data={comments}
+          renderItem={({ item }) => renderCommentItem(item)}
           keyExtractor={(comment) => comment.id.toString()}
           onRefresh={fetchPostDetails}
           refreshing={loading}
         />
       );
     },
-    [comments, post, replyMap, loading, tab]
+    [comments, post, replyMap, loading, showMoreReplies]
   );
 
   useEffect(() => {
@@ -498,22 +421,26 @@ function PostDetails(): React.JSX.Element {
           </View>
         ) : (
           <>
-            {tab === 1
-              ? renderFlatList(comments)
-              : renderFlatList(userLikePost)}
-              
             <Button
               title={localStrings.Public.WhoLike}
               onPress={() => setIsVisible(true)}
-              color={brandPrimaryTap}
+              color={brandPrimary}
             />
+            {renderFlatList(comments)}
             {/* comment input */}
-            <Form style={{ backgroundColor: "#fff" }} form={commentForm}>
+            <Form
+              style={{
+                backgroundColor: "#fff",
+                //paddingBottom: 30
+              }}
+              form={commentForm}
+            >
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   padding: 10,
+                  paddingBottom: 40
                 }}
               >
                 <Image
@@ -548,10 +475,6 @@ function PostDetails(): React.JSX.Element {
                     }
                     onBlur={() => {
                       setReplyToCommentId(null);
-                      console.log(
-                        "Tạm biệt replyToCommentId: ",
-                        replyToCommentId
-                      );
                     }}
                   />
                 </Form.Item>
@@ -576,17 +499,17 @@ function PostDetails(): React.JSX.Element {
                       if (!comment) {
                         return;
                       }
-                      const parentId = setReplyToReplyId
+                      const parentId = setReplyToReplyId // nữa
                         ? String(setReplyToReplyId)
                         : replyToCommentId
-                        ? String(replyToCommentId)
-                        : null;
-
+                          ? String(replyToCommentId)
+                          : null;
                       setLoading(true);
                       if (parentId) {
                         handleAddReply(comment).then(() => {
                           setNewComment("");
                           setReplyToReplyId(null);
+                          setReplyToCommentId(null);
                           textInputRef.current?.blur();
                           commentForm.resetFields();
                           setLoading(false);
@@ -640,7 +563,7 @@ function PostDetails(): React.JSX.Element {
                       marginTop: Platform.OS === "ios" ? 30 : 0,
 
                       borderBottomWidth: 1,
-                      borderBottomColor: "black",
+                      borderBottomColor: 'black',
                       marginBottom: 10,
                     }}
                   >
@@ -666,9 +589,44 @@ function PostDetails(): React.JSX.Element {
                     <View
                       style={{ flexDirection: "column", alignItems: "center" }}
                     >
-                      {userLikePost?.map((like, index) => {
-                        return renderLikedUserItem(like);
-                      })}
+                      {userLikePost?.map((like, index) => (
+                        <View
+                          key={like.id}
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            paddingVertical: 10,
+                            borderBottomWidth: 1,
+                            borderColor: "#e0e0e0",
+                          }}
+                        >
+                          <TouchableOpacity
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              flex: 1,
+                            }}
+                            onPress={() => {
+                              router.push(`/(tabs)/user/${like.id}`);
+                            }}
+                          >
+                            <Image
+                              source={{ uri: like.avatar_url }}
+                              style={{
+                                marginLeft: 10,
+                                width: 40,
+                                height: 40,
+                                borderRadius: 20,
+                                backgroundColor: "#e0e0e0",
+                                marginRight: 10,
+                              }}
+                            />
+                            <Text style={{ fontSize: 16, color: "black" }}>
+                              {like.family_name} {like.name}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      ))}
                     </View>
                   </ScrollView>
                 </View>
@@ -768,7 +726,8 @@ function PostDetails(): React.JSX.Element {
                       handleUpdate(
                         currentCommentId,
                         editCommentContent,
-                        parentId || ""
+                        parentId || "",
+                        !!parentId
                       ).then(() => {
                         setLoading(false);
                         setEditModalVisible(false);
@@ -791,6 +750,7 @@ function PostDetails(): React.JSX.Element {
           </View>
         </Modal>
       </View>
+      <Toast topOffset={100}/>
     </KeyboardAvoidingView>
   );
 }

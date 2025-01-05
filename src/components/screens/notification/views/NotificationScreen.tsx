@@ -9,17 +9,18 @@ import { ActivityIndicator } from '@ant-design/react-native';
 import NotifiCationViewModel from '../viewModel/NotifiCationViewModel';
 import { defaultNotificationRepo } from '@/src/api/features/notification/NotifiCationRepo';
 import { useAuth } from '@/src/context/auth/useAuth';
+import Toast from 'react-native-toast-message';
 
 
 
 const NotificationScreen = () => {
-  const { brandPrimary, backgroundColor} = useColor();
-  const { notifications, loading, fetchNotifications,  loadMoreNotifi, updateNotification,updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
+  const { brandPrimary, backgroundColor } = useColor();
+  const { notifications, loading, fetchNotifications, loadMoreNotifi, updateNotification, updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
   const { localStrings } = useAuth();
 
   useFocusEffect(
-    React.useCallback(()=>{
-        fetchNotifications();
+    React.useCallback(() => {
+      fetchNotifications();
     }, [])
   )
   // Render footer (Hiển thị loading ở cuối danh sách nếu đang tải)
@@ -60,7 +61,7 @@ const NotificationScreen = () => {
       <FlatList
         data={notifications}
         renderItem={({ item }) => <NotificationItem notification={item}
-        onUpdate={() => updateNotification(item)}
+          onUpdate={() => updateNotification(item)}
         />}
         keyExtractor={(item) => item?.id as string}
         ListFooterComponent={renderFooter}
@@ -82,7 +83,7 @@ const NotificationScreen = () => {
         </View>)
       )}
 
-
+      <Toast />
     </View>
   )
 }

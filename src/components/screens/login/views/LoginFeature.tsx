@@ -21,9 +21,7 @@ import Toast from 'react-native-toast-message';
 import LoginViewModel from '../viewModel/LoginViewModel';
 import { defaultAuthenRepo } from '@/src/api/features/authenticate/AuthenRepo';
 import { LoginRequestModel } from '@/src/api/features/authenticate/model/LoginModel';
-import * as WebBrownser from 'expo-web-browser';
-
-WebBrownser.maybeCompleteAuthSession();
+import * as WebBrowser from 'expo-web-browser';
 
 const LoginFeature = () => {
   const router = useRouter();
@@ -31,12 +29,14 @@ const LoginFeature = () => {
   const { backgroundColor } = useColor();
   const [signInForm] = Form.useForm();
   const { brandPrimary } = useColor();
-  const { onLogin, localStrings, changeLanguage, language } = useAuth();
+  const { onLogin, localStrings } = useAuth();
   const {
     loading,
     login,
-    promtAsync,
     googleLoading,
+    // getGoogleLoginUrl,
+    // handleGGButtonClicked,
+    promtAsync,
     setGoogleLoading
   } = LoginViewModel(defaultAuthenRepo, onLogin);
   const { email, password } = useGlobalSearchParams();
@@ -194,6 +194,7 @@ const LoginFeature = () => {
           </ScrollView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
+      <Toast />
     </KeyboardAvoidingView>
   );
 };

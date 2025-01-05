@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router';
 import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import Toast from 'react-native-toast-message';
 
 const UserProfileScreen = ({ id }: { id: string }) => {
   const { backgroundColor } = useColor();
@@ -67,8 +68,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
   useEffect(() => {
     if (!id) return;
     fetchUserProfile(id);
-    
-    
     setTab(0);
   }, [id])
 
@@ -113,8 +112,9 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} friendCount={friendCount}/>
+              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} friendCount={friendCount} />
               <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={friendCount} friends={friends} resultCode={resultCode} />
+              <Toast />
             </>
           }
           renderItem={() => null}
@@ -128,6 +128,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           refreshing={loading}
         />
       </View>
+      <Toast />
     </KeyboardAvoidingView>
   );
 };

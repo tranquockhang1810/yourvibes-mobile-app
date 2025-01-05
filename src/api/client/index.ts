@@ -37,7 +37,7 @@ api.interceptors.response.use(
     return response?.data;
   },
   (error) => {
-    console.error(error)
+    console.error("Response error:", error?.response?.data);
     return Promise.resolve(error?.response?.data);
   }
 );

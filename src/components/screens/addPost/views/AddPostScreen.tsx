@@ -111,7 +111,7 @@ const AddPostScreen = () => {
       setPrivacy(savedPost.savedPrivacy)
     }
   }, [savedPost])
-  
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1 }}>
@@ -275,6 +275,7 @@ const AddPostScreen = () => {
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.AddPost.PostNow}</Text>
           </Button>
         </View>
+        <Toast />
       </View>
     </TouchableWithoutFeedback>
   );

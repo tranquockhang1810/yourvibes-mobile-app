@@ -13,6 +13,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
   const [hasMore, setHasMore] = useState(false);
   const { localStrings } = useAuth();
   const limit = 20;
+  const [refeshLoading, setRefeshLoading] = useState(false);
 
   const fetchNewFeeds = async (newPage: number = 1) => {
     try {
@@ -82,6 +83,44 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     }
   }
 
+  const refreshNewFeeds = async (newPage: number = 1) => {
+    try {
+      setRefeshLoading(true);
+      const response = await repo.getNewFeed({
+        page: newPage,
+        limit: limit,
+      });
+
+      if (!response?.error) {
+        if (newPage === 1) {
+          setNewFeeds(response?.data || []);
+        } else {
+          setNewFeeds((prevNewFeeds) => [...prevNewFeeds, ...response?.data || []]);
+        }
+        const { page: currentPage, limit: currentLimit, total: totalRecords } = response?.paging;
+
+        setTotal(totalRecords);
+        setPage(currentPage);
+        setHasMore(currentPage * currentLimit < totalRecords);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: "Get NewFeeds Failed",
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: "Get NewFeeds Failed catch",
+        text2: error?.message,
+      });
+    } finally {
+      setRefeshLoading(false);
+    }
+  };
+
   const loadMoreNewFeeds = () => {
     if (!loading && hasMore) {
       setPage((prevPage) => prevPage + 1);
@@ -95,6 +134,8 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     fetchNewFeeds,
     loadMoreNewFeeds,
     deleteNewFeed,
+    refreshNewFeeds,
+    refeshLoading,
   }
 }
 

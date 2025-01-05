@@ -5,7 +5,6 @@ import { useAuth } from "@/src/context/auth/useAuth";
 import { useState } from "react"
 import Toast from "react-native-toast-message";
 import * as WebBrowser from 'expo-web-browser';
-import { router } from "expo-router";
 
 const AdsViewModel = (repo: PostRepo) => {
   const { localStrings } = useAuth();
@@ -16,12 +15,18 @@ const AdsViewModel = (repo: PostRepo) => {
   const [adsAll, setAdsAll] = useState<AdvertisePostResponseModel[] | undefined>(undefined);
   const [page, setPage] = useState<number>(1);
 
-  const getPostDetail = async (id: string) => {
+  const getPostDetail = async (id: string, newAds = false) => {
     try {
       setLoading(true);
       const res = await repo.getPostById(id);
       if (!res?.error) {
         setPost(res?.data);
+        if (newAds && res?.data?.is_advertisement) {
+          Toast.show({
+            type: 'success',
+            text1: localStrings.Ads.AdvertisePostSuccess,
+          })
+        }
       } else {
         Toast.show({
           type: 'error',
@@ -46,31 +51,11 @@ const AdsViewModel = (repo: PostRepo) => {
       setAdsLoading(true);
       const res = await repo.advertisePost(params);
       if (!res?.error) {
-        Toast.show({
-          type: 'success',
-          text1: localStrings.Ads.AdvertisePostSuccess
-        })
         if (res?.data) {
-          // Mở trình duyệt với đường link quảng cáo và callback URL
-          const result = await WebBrowser.openAuthSessionAsync(res.data);
-          console.log("result: ", result);
-  
-          // Kiểm tra trạng thái khi người dùng quay lại app
-          if (result.type === 'success'  && result.url) {
-            Toast.show({
-              type: 'success',
-              text1: "Redirect successful!",
-              text2: "Your session has been completed.",
-            });
-            console.log("result.url: ", result.url);
-            
-          } else {
-            Toast.show({
-              type: 'error',
-              text1: localStrings.Ads.AdvertisePostFailed,
-              text2: res?.error?.message,
-            })
-          }
+          const result = await WebBrowser.openAuthSessionAsync(res.data, params?.redirect_url);
+          console.log("result", result);
+          getPostDetail(params?.post_id || "", true);
+          getAdvertisePost(1, params?.post_id || "");
         }
       } else {
         Toast.show({
@@ -93,7 +78,7 @@ const AdsViewModel = (repo: PostRepo) => {
 
   const getAdvertisePost = async (page: number, post_id: string) => {
     try {
-      setAdsLoading(true);
+      setLoading(true);
       const res = await repo.getAdvertisePost(
         {
           post_id: post_id,
@@ -108,7 +93,6 @@ const AdsViewModel = (repo: PostRepo) => {
         setAdsPost(undefined);
         setAdsAll([]);
       }
-      
     } catch (error: any) {
       console.error(error);
       Toast.show({
@@ -117,7 +101,7 @@ const AdsViewModel = (repo: PostRepo) => {
         text2: error?.error?.message,
       })
     } finally {
-      setAdsLoading(false);
+      setLoading(false);
     }
   }
 

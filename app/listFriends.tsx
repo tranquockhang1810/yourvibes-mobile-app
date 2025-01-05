@@ -2,8 +2,8 @@ import ListFriendsScreen from "@/src/components/screens/listFriends/views/ListFr
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 
-const postDetails = () => {
-  const { userId } = useLocalSearchParams();
+const listFriends = () => {
+  const {userId} = useLocalSearchParams()
   const getUserID = () => {
     if (Array.isArray(userId)) {
       return userId[0];
@@ -14,4 +14,4 @@ const postDetails = () => {
   return <ListFriendsScreen userId={getUserID()} />;
 };
 
-export default postDetails;
+export default listFriends
