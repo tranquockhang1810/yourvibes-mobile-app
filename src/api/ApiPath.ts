@@ -5,7 +5,7 @@ export const ApiPath = {
   LOGIN: getApiPath("users/login"),
   REGISTER: getApiPath("users/register"),
   VERIFIED_EMAIL: getApiPath("users/verifyemail"),
-  GOOGLE_LOGIN: getApiPath("users/auth_google"),
+  GOOGLE_LOGIN: getApiPath("users/app_auth_google"),
 
   // User
   PROFILE: getApiPath("users/"),

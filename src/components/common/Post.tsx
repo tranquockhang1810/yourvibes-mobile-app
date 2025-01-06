@@ -17,13 +17,13 @@ import MyInput from '../foundation/MyInput';
 import HomeViewModel from '../screens/home/viewModel/HomeViewModel';
 import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo';
 
-
 interface IPost {
   post?: PostResponseModel,
   isParentPost?: boolean,
   noFooter?: boolean,
   children?: React.ReactNode,
   noComment?: boolean,
+  isVisible?: boolean
 }
 
 const Post: React.FC<IPost> = React.memo(({
@@ -32,6 +32,7 @@ const Post: React.FC<IPost> = React.memo(({
   noFooter = false,
   children,
   noComment = false,
+  isVisible = false,
 }) => {
   const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
@@ -94,7 +95,6 @@ const Post: React.FC<IPost> = React.memo(({
         } else {
           switch (buttonIndex) {
             case 0:
-              console.log('báo cáo action selected');
               router.push(`/report?postId=${post?.id}`);
               break;
             case 1:
@@ -106,7 +106,6 @@ const Post: React.FC<IPost> = React.memo(({
                   { text: localStrings.Public.Confirm, onPress: () => deleteNewFeed && deleteNewFeed(post?.id as string) },
 
                 ]
-
               );
               break;
             default:
@@ -178,17 +177,17 @@ const Post: React.FC<IPost> = React.memo(({
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {likedPost?.is_advertisement ? (
                   <>
-                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{localStrings.Post.Sponsor}</Text>
-                  <MaterialCommunityIcons name="advertisements" size={16} color={brandPrimaryTap} />
+                    <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{localStrings.Post.Sponsor}</Text>
+                    <MaterialCommunityIcons name="advertisements" size={16} color={brandPrimaryTap} />
                   </>)
-                :(
-                  <>
-                  <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
-                  {renderPrivacyIcon()}
-                  </>
-                )
+                  : (
+                    <>
+                      <Text style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</Text>
+                      {renderPrivacyIcon()}
+                    </>
+                  )
                 }
-                
+
               </View>
             </View>
             {isParentPost || noFooter ? null : (
@@ -219,44 +218,46 @@ const Post: React.FC<IPost> = React.memo(({
 
       {/* Content */}
       {!isParentPost && children ? (
-         <View>
-         {likedPost?.content && (
-           <View style={{ paddingLeft: 10 }}>
-             <Text>{likedPost?.content}</Text>
-           </View>
-         )}
-         {children}
-       </View>
-      ):(likedPost?.content &&
-        likedPost?.parent_id ?(
-          <View>
+        <View>
+          {likedPost?.content && (
             <View style={{ paddingLeft: 10 }}>
-               <Text>{likedPost?.content}</Text>
+              <Text>{likedPost?.content}</Text>
             </View>
-            <View style={{ paddingLeft: 5, paddingRight: 5 }}>
-              <View style={{ padding: 10, borderColor: "#000", borderWidth: 1, borderRadius: 5 }}>
-                <Text style={{ textAlign: 'center', fontWeight: "bold", fontSize: 16 }}>
-                  {localStrings.Post.NoContent}
-                </Text>
-              </View>
+          )}
+          {children}
+        </View>
+      ) : (likedPost?.content &&
+        likedPost?.parent_id ? (
+        <View>
+          <View style={{ paddingLeft: 10 }}>
+            <Text>{likedPost?.content}</Text>
+          </View>
+          <View style={{ paddingLeft: 5, paddingRight: 5 }}>
+            <View style={{ padding: 10, borderColor: "#000", borderWidth: 1, borderRadius: 5 }}>
+              <Text style={{ textAlign: 'center', fontWeight: "bold", fontSize: 16 }}>
+                {localStrings.Post.NoContent}
+              </Text>
             </View>
           </View>
-        ):(
-          (
-            <View style={{ paddingLeft: 65, paddingRight: 35 }}>
+        </View>
+      ) : (
+        (
+          <View style={{ paddingLeft: 65, paddingRight: 35 }}>
             {likedPost?.content && (
               <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
                 <Text>{likedPost?.content}</Text>
               </View>
             )}
-            {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
+            {likedPost?.media && likedPost?.media?.length > 0 &&
+              <MediaView
+                mediaItems={likedPost?.media}
+                isVisible={isVisible}
+              />
+            }
           </View>
-    
-          )
-        )
-      )
-    }
 
+        )
+      ))}
       {/* Footer */}
       {isParentPost || noFooter ? (
         <></>
@@ -419,7 +420,6 @@ const Post: React.FC<IPost> = React.memo(({
                       privacy: sharePostPrivacy,
                     }).then(() => {
                       setShowSharePopup(false)
-                      router.dismiss();
                     });
                   }}
                   loading={shareLoading}

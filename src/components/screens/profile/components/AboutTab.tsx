@@ -33,7 +33,89 @@ const AboutTab = ({
   const { brandPrimaryTap, lightGray } = useColor();
   const { isLoginUser, localStrings } = useAuth();
 
+  const renderFriend = useCallback(() => {
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              {localStrings.Public.Friend}
+            </Text>
+            <Text>
+              {friendCount} {localStrings.Public.Friend}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
+            <Text
+              style={{ alignSelf: "flex-end", color: brandPrimaryTap }}
+            >
+              {localStrings.Public.FriendFind}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            // flexWrap: "wrap",
+            // justifyContent: "space-between",
+          }}
+        >
+          {friends?.map((friend, index) => (
+            <TouchableOpacity
+              key={index}
+              style={{
+                width: "23%",
+                alignItems: "center",
+                marginBottom: 10,
+                marginRight: 4,
+                marginLeft: 4,
+              }}
+              onPress={() => {
+                router.push(`/(tabs)/user/${friend.id}`);
+              }}
+            >
 
+              <Image
+                source={{
+                  uri: friend.avatar_url,
+                }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                  backgroundColor: "#e0e0e0",
+                  marginRight: 10,
+                }}
+              />
+              <Text style={{ marginTop: 5 }}>
+                {friend.family_name} {friend.name}
+              </Text>
+            </TouchableOpacity>))}
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            router.push(`/listFriends?userId=${user.id}`);
+          }}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 20,
+              color: brandPrimaryTap,
+            }}
+          >
+            {localStrings.Public.FriendView}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }, [friends]);
 
   const renderPrivacyIcon = () => {
     switch (user?.privacy) {
@@ -47,7 +129,6 @@ const AboutTab = ({
         return null;
     }
   }
-
 
   return (
     <>
@@ -72,10 +153,7 @@ const AboutTab = ({
                   <MaterialCommunityIcons name="circle-edit-outline" size={18} color="gray" onPress={() => { router.push('/objectProfile') }} />
                 </View>
               )}
-
             </View>
-
-
             {resultCode === 20001 ? (
               <>
                 {/* Email */}
@@ -154,88 +232,7 @@ const AboutTab = ({
 
 
             {/* Danh sách bạn bè */}
-            <View style={{ paddingVertical: 20 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 20,
-                }}
-              >
-                <View>
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {localStrings.Public.Friend}
-                  </Text>
-                  <Text>
-                    {friendCount} {localStrings.Public.Friend}
-                  </Text>
-                </View>
-                <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
-                  <Text
-                    style={{ alignSelf: "flex-end", color: brandPrimaryTap }}
-                  >
-                    {localStrings.Public.FriendFind}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  // flexWrap: "wrap",
-                  // justifyContent: "space-between",
-                }}
-              >
-                {friends?.map((friend, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={{
-                      width: "23%",
-                      alignItems: "center",
-                      marginBottom: 10,
-                      marginRight: 4,
-                      marginLeft: 4,
-                    }}
-                    onPress={() => {
-                      router.push(`/(tabs)/user/${friend.id}`);
-                    }}
-                  >
-
-                    <Image
-                      source={{
-                        uri: friend.avatar_url,
-                      }}
-                      style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 25,
-                        backgroundColor: "#e0e0e0",
-                        marginRight: 10,
-                      }}
-                    />
-                    <Text style={{ marginTop: 5 }}>
-                      {friend.family_name} {friend.name}
-                    </Text>
-                  </TouchableOpacity>))}
-              </View>
-
-
-              <TouchableOpacity
-                onPress={() => {
-                  router.push(`/listFriends?userId=${user.id}`);
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    marginTop: 20,
-                    color: brandPrimaryTap,
-                  }}
-                >
-                  {localStrings.Public.FriendView}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {friendCount > 0 && renderFriend()}
           </ScrollView>
         </View>
       )}

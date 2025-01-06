@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { TextInput } from "react-native";
 import { Modal } from '@ant-design/react-native';
 import { useActionSheet } from "@expo/react-native-action-sheet";
@@ -8,7 +8,6 @@ import Toast from "react-native-toast-message";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/src/api/features/comment/CommentRepo";
 import { CreateCommentsRequestModel } from "@/src/api/features/comment/models/CreateCommentsModel";
-import { UpdateCommentsRequestModel } from "@/src/api/features/comment/models/UpdateCommentsModel";
 //LikeComments
 import { defaultLikeCommentRepo } from "@/src/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/src/api/features/likeComment/models/LikeCommentResponses";
@@ -55,7 +54,7 @@ const usePostDetailsViewModel = (
       page: 1,
       limit: 10,
     });
-    if (response && response?.data) {
+    if (response && response?.message === "Success") {
       setComments(response?.data);
     }
   };
@@ -90,9 +89,9 @@ const usePostDetailsViewModel = (
     const reply = replyMap[comment?.id];
 
     if (comment && comment.user?.id !== user?.id) {
-      options.splice(1, 1);
+      options.splice(1, 2);
     } else if (reply && reply.length > 0 && reply[0].user?.id !== user?.id) {
-      options.splice(1, 1);
+      options.splice(1, 2);
     }
 
     showActionSheetWithOptions(
@@ -103,30 +102,40 @@ const usePostDetailsViewModel = (
         cancelButtonTintColor: "#F95454",
       },
       (buttonIndex) => {
-        console.log("buttonIndex", buttonIndex);
-        
-        switch (buttonIndex) {
-          case 0:
-            const commentToReport = comments.find(
-              (cmt) => cmt.id === comment.id
-            );
-            if (commentToReport) {
-              router.push(`/report?commentId=${comment.id}`);
-            }
-            break;
-
-          case 1:
-            setEditCommentContent(comment.content);
-            setCurrentCommentId(comment.id);
-            setEditModalVisible(true);
-            break;
-
-          case 2:
-            handleDelete(comment.id);
-            break;
-
-          default:
-            break;
+        if (comment.user?.id === user?.id || (reply && reply.length > 0 && reply[0].user?.id === user?.id)) {
+          switch (buttonIndex) {
+            case 0:
+              const commentToReport = comments.find(
+                (cmt) => cmt.id === comment.id
+              );
+              if (commentToReport) {
+                router.push(`/report?commentId=${comment.id}`);
+              }
+              break;
+            case 1:
+              setEditCommentContent(comment.content);
+              setCurrentCommentId(comment.id);
+              setEditModalVisible(true);
+              break;
+            case 2:
+              handleDelete(comment.id);
+              break;
+            default:
+              break;
+          }
+        } else {
+          switch (buttonIndex) {
+            case 0:
+              const commentToReport = comments.find(
+                (cmt) => cmt.id === comment.id
+              );
+              if (commentToReport) {
+                router.push(`/report?commentId=${comment.id}`);
+              }
+              break;
+            default:
+              break;
+          }
         }
       }
     );
@@ -213,7 +222,7 @@ const usePostDetailsViewModel = (
 
   const handleDelete = (commentId: string) => {
     Modal.alert(
-      localStrings.PostDetails.DeleteComment + "?","",
+      localStrings.PostDetails.DeleteComment + "?", "",
       [
         { text: localStrings.Public.Cancel, style: 'cancel' },
         { text: localStrings.Public.Confirm, onPress: () => handleDeleteLogic(commentId) },
@@ -356,10 +365,6 @@ const usePostDetailsViewModel = (
     }
     return null;
   };
-
-  useEffect(() => {
-    fetchUserLikePosts(postId);
-  }, [postId]);
 
   useEffect(() => {
     if (!lastChange) {

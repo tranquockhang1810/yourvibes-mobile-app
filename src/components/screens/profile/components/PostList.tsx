@@ -12,12 +12,16 @@ const PostList = React.memo(({
   loading,
   posts,
   loadMorePosts,
-  userProfile
+  userProfile,
+  onViewableItemsChanged,
+  visibleItems
 }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
-  userProfile: UserModel
+  userProfile: UserModel;
+  onViewableItemsChanged: React.MutableRefObject<({ viewableItems }: any) => void>;
+  visibleItems: string[];
 }) => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const router = useRouter();
@@ -42,8 +46,10 @@ const PostList = React.memo(({
       <FlatList
         data={posts}
         renderItem={({ item }) => (
-          <Post key={item?.id} post={item}>
-            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+          <Post key={item?.id} post={item} isVisible={visibleItems.includes(item?.id as string)}>
+            {item?.parent_post && (
+              <Post post={item?.parent_post} isParentPost isVisible={visibleItems.includes(item?.parent_post?.id as string)}/>
+            )}
           </Post>
         )}
         keyExtractor={(item) => item?.id as string}
@@ -52,9 +58,11 @@ const PostList = React.memo(({
         onEndReachedThreshold={0.5}
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewableItemsChanged.current}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
       />
     )
-  }, [posts, loading]);
+  }, [posts, loading, visibleItems]);
 
   return (
     <View style={{ flex: 1, backgroundColor: grayBackground }}>

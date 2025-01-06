@@ -47,8 +47,9 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
     try {
       if (response?.type === "success") {
         setGoogleLoading(true);
+        console.log("param",response?.params);
         const res = await repo.googleLogin({
-          authorization_code: response?.params?.code,
+          open_id: response?.params?.id_token,
           platform: Platform.OS === 'ios' ? 'ios' : 'android',
           redirect_url: `${Linking.createURL("/login")}`,
         });

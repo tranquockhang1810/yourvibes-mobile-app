@@ -33,6 +33,8 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     fetchUserProfile,
     page,
     fetchMyFriends,
+    visibleItems,
+    onViewableItemsChanged
   } = ProfileViewModel();
 
   useFocusEffect(
@@ -40,13 +42,10 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
       if (tab === 0 || tab === 1) {
         fetchUserPosts();
       }
-    }, [tab])
-  );
-  useEffect(() => {
-    if (!user?.id) return;
-    fetchUserProfile(user?.id);
+      fetchUserProfile(user?.id as string);
     fetchMyFriends(page);
-  }, [user?.id, page]);
+    }, [tab, user?.id])
+  );
 
   const renderTab = useCallback(() => {
     return (
@@ -60,9 +59,11 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
         friendCount={friendCount}
         friends={friends}
         resultCode={resultCode}
+        onViewableItemsChanged={onViewableItemsChanged}
+        visibleItems={visibleItems}
       />
     )
-  }, [tab, posts, loading, friendCount, friends, resultCode]);
+  }, [tab, posts, loading, friendCount, friends, resultCode, visibleItems]);
 
   return (
     <KeyboardAvoidingView
@@ -119,7 +120,11 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           renderItem={() => null}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-          onRefresh={() => (tab === 0 || tab === 1) && fetchUserPosts()}
+          onRefresh={() => {
+            fetchUserProfile(user?.id || "");
+            fetchMyFriends(page);
+            (tab === 0 || tab === 1) && fetchUserPosts();
+          }}
           refreshing={loading}
         />
       </View>

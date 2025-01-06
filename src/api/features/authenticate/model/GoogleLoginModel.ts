@@ -1,5 +1,5 @@
 export interface GoogleLoginRequestModel {
-  authorization_code?: string,
+  open_id?: string,
   platform?: "web" | "android" | "ios"
   redirect_url?: string
 }

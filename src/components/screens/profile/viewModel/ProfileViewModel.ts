@@ -1,7 +1,7 @@
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { useAuth } from "@/src/context/auth/useAuth";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Toast from "react-native-toast-message";
 import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
 import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
@@ -21,7 +21,15 @@ const ProfileViewModel = () => {
   const [search, setSearch] = useState<string>("");
   const [profileLoading, setProfileLoading] = useState(false);
   const [resultCode, setResultCode] = useState(0);
+  const [visibleItems, setVisibleItems] = useState<string[]>([]);
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    const visibleIds = viewableItems.map((item: any) => item.item.id);
+    setVisibleItems(visibleIds);
+  });
+
   const getFriendCount = () => friendCount;
+  
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
       setLoading(true);
@@ -93,54 +101,54 @@ const ProfileViewModel = () => {
           ) as FriendResponseModel[];
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
-        } 
-    else{
-      console.error("response.data is null");
-      setFriends([]);
-    }}
-    return friends;
+        }
+        else {
+          console.error("response.data is null");
+          setFriends([]);
+        }
+      }
+      return friends;
+    }
+    catch (error: any) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: error?.message || "Không có dữ liệu phản hồi từ server.",
+      });
+    }
   }
-  catch (error: any) {
-    console.error(error);
-    Toast.show({
-      type: "error",
-      text1: error?.message || "Không có dữ liệu phản hồi từ server.",
-    });
-  }
-}
-// useEffect(() => {
-//   if (user) {
-//     fetchMyFriends(page);
-//     console.log("Số lượng bạn bè ở list friends:", friendCount);
-    
-//   }
-// }, [page, user, friendCount]);
+  
+  useEffect(() => {
+    if (user) {
+      fetchMyFriends(page);
+    }
+  }, [page, user, friendCount]);
 
-//Privacy setting
-const fetchUserProfile = async (id: string) => {
-  try {
-    setProfileLoading(true);
-    const response = await defaultProfileRepo.getProfile(id);   
-    if (!response?.error) {
-      setResultCode(response?.code);
-    } else {
+  //Privacy setting
+  const fetchUserProfile = async (id: string) => {
+    try {
+      setProfileLoading(true);
+      const response = await defaultProfileRepo.getProfile(id);
+      if (!response?.error) {
+        setResultCode(response?.code);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: localStrings.Profile.Info.GetInfoFailed,
+          text2: response?.error?.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
       Toast.show({
         type: 'error',
         text1: localStrings.Profile.Info.GetInfoFailed,
-        text2: response?.error?.message,
+        text2: error?.message,
       });
+    } finally {
+      setProfileLoading(false);
     }
-  } catch (error: any) {
-    console.error(error);
-    Toast.show({
-      type: 'error',
-      text1: localStrings.Profile.Info.GetInfoFailed,
-      text2: error?.message,
-    });
-  } finally {
-    setProfileLoading(false);
   }
-}
 
   return {
     loading,
@@ -159,6 +167,8 @@ const fetchUserProfile = async (id: string) => {
     profileLoading,
     fetchUserProfile,
     resultCode,
+    onViewableItemsChanged,
+    visibleItems
   };
 };
 

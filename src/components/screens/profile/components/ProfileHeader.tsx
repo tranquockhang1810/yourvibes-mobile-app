@@ -14,28 +14,34 @@ import Toast from "react-native-toast-message";
 const ProfileHeader = ({
   total,
   user,
-  loading, 
+  loading,
   friendCount,
+  sendFriendRequest,
+  sendRequestLoading,
+  refuseFriendRequest,
+  cancelFriendRequest,
+  acceptFriendRequest,
+  unFriend,
+  newFriendStatus,
+  setNewFriendStatus,
 }: {
   total: number;
   user: UserModel;
-  loading?: boolean; 
-  friendCount: number
+  loading?: boolean;
+  friendCount: number,
+  sendFriendRequest?: (userId: string) => void | Promise<void>;
+  sendRequestLoading?: boolean;
+  refuseFriendRequest?: (userId: string) => void | Promise<void>;
+  cancelFriendRequest?: (userId: string) => void | Promise<void>;
+  acceptFriendRequest?: (userId: string) => void | Promise<void>;
+  unFriend?: (userId: string) => void | Promise<void>;
+  newFriendStatus?: FriendStatus | undefined;
+  setNewFriendStatus?: React.Dispatch<React.SetStateAction<FriendStatus | undefined>>
 }) => {
   const { lightGray, brandPrimary, brandPrimaryTap, backgroundColor } =
     useColor();
   const { localStrings, language, isLoginUser } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
-  const {
-    sendFriendRequest,
-    sendRequestLoading,
-    refuseFriendRequest,
-    cancelFriendRequest,
-    acceptFriendRequest,
-    unFriend,
-    newFriendStatus,
-    setNewFriendStatus,
-  } = UserProfileViewModel();
 
   const showAction = useCallback(() => {
     const options = [localStrings.Public.UnFriend, localStrings.Public.Cancel];
@@ -57,7 +63,7 @@ const ProfileHeader = ({
                 { text: localStrings.Public.Cancel, style: "cancel" },
                 {
                   text: localStrings.Public.Confirm,
-                  onPress: () => unFriend(user?.id as string),
+                  onPress: () => unFriend && unFriend(user?.id as string),
                 },
               ]
             );
@@ -82,7 +88,7 @@ const ProfileHeader = ({
           <Button
             type="ghost"
             onPress={() => {
-              sendFriendRequest(user?.id as string);
+              sendFriendRequest && sendFriendRequest(user?.id as string);
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -137,7 +143,7 @@ const ProfileHeader = ({
             <Button
               type="ghost"
               onPress={() => {
-                cancelFriendRequest(user?.id as string);
+                cancelFriendRequest && cancelFriendRequest(user?.id as string);
               }}
               loading={sendRequestLoading}
             >
@@ -181,7 +187,7 @@ const ProfileHeader = ({
                 style={{ width: "48%" }}
                 type="primary"
                 onPress={() => {
-                  acceptFriendRequest(user?.id as string);
+                  acceptFriendRequest && acceptFriendRequest(user?.id as string);
                 }}
                 loading={sendRequestLoading}
               >
@@ -191,7 +197,7 @@ const ProfileHeader = ({
                 style={{ width: "48%" }}
                 type="ghost"
                 onPress={() => {
-                  refuseFriendRequest(user?.id as string);
+                  refuseFriendRequest && refuseFriendRequest(user?.id as string);
                 }}
               >
                 {localStrings.Public.RefuseFriendRequest}
@@ -201,7 +207,7 @@ const ProfileHeader = ({
         );
       default:
         return (
-          <Button type="ghost" onPress={() => {}}>
+          <Button type="ghost" onPress={() => { }}>
             <Text style={{ color: brandPrimary, fontSize: 16 }}>
               {localStrings.Public.AddFriend}
             </Text>
@@ -211,7 +217,7 @@ const ProfileHeader = ({
   }, [newFriendStatus, localStrings, sendRequestLoading]);
 
   useEffect(() => {
-    if (user) setNewFriendStatus(user?.friend_status);
+    if (user && user?.friend_status && setNewFriendStatus) setNewFriendStatus(user?.friend_status);
   }, [user]);
 
   return (
@@ -263,9 +269,9 @@ const ProfileHeader = ({
                 {" "}
                 {total || user?.post_count} {localStrings.Public.Post}
                 {language === "en" &&
-                (total || user?.post_count) &&
-                ((total && total > 1) ||
-                  (user?.post_count && user?.post_count > 1))
+                  (total || user?.post_count) &&
+                  ((total && total > 1) ||
+                    (user?.post_count && user?.post_count > 1))
                   ? "s"
                   : ""}
               </Text>

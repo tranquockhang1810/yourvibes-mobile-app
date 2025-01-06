@@ -18,7 +18,16 @@ import Toast from 'react-native-toast-message'
 
 const HomeScreen = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, refeshLoading, refreshNewFeeds } = HomeViewModel(defaultNewFeedRepo)
+  const {
+    loading,
+    newFeeds,
+    fetchNewFeeds,
+    loadMoreNewFeeds,
+    refeshLoading,
+    refreshNewFeeds,
+    onViewableItemsChanged,
+    visibleItems
+  } = HomeViewModel(defaultNewFeedRepo)
   const { user, localStrings } = useAuth();
 
   const renderAddPost = () => {
@@ -107,9 +116,17 @@ const HomeScreen = () => {
         ListHeaderComponent={renderAddPost}
         data={newFeeds}
         renderItem={({ item }) => (
-          <Post key={item?.id} post={item}>
+          <Post
+            key={item?.id}
+            post={item}
+            isVisible={visibleItems.includes(item?.id as string)}
+          >
             {item?.parent_post && (
-              <Post post={item?.parent_post} isParentPost />
+              <Post
+                post={item?.parent_post}
+                isParentPost
+                isVisible={visibleItems.includes(item?.parent_post?.id as string)}
+              />
             )}
           </Post>
         )}
@@ -121,6 +138,8 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         onRefresh={refreshNewFeeds}
         refreshing={refeshLoading}
+        onViewableItemsChanged={onViewableItemsChanged.current}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
       />
       <Toast />
     </View>

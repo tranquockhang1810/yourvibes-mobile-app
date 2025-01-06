@@ -1,8 +1,7 @@
 import { NewFeedResponseModel } from "@/src/api/features/newFeed/Model/NewFeedModel";
 import { NewFeedRepo } from "@/src/api/features/newFeed/NewFeedRepo"
 import { useAuth } from "@/src/context/auth/useAuth";
-import { router } from "expo-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Toast from "react-native-toast-message";
 
 const HomeViewModel = (repo: NewFeedRepo) => {
@@ -14,6 +13,12 @@ const HomeViewModel = (repo: NewFeedRepo) => {
   const { localStrings } = useAuth();
   const limit = 20;
   const [refeshLoading, setRefeshLoading] = useState(false);
+  const [visibleItems, setVisibleItems] = useState<string[]>([]);
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {    
+    const visibleIds = viewableItems.map((item: any) => item.item.id);
+    setVisibleItems(visibleIds);
+  });
 
   const fetchNewFeeds = async (newPage: number = 1) => {
     try {
@@ -136,6 +141,8 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     deleteNewFeed,
     refreshNewFeeds,
     refeshLoading,
+    onViewableItemsChanged,
+    visibleItems,
   }
 }
 

@@ -28,12 +28,20 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     friends,
     friendCount,
     resultCode,
+    visibleItems,
+    onViewableItemsChanged,
+    fetchFriends,
+    fetchUserPosts,
+    //profile
+    sendFriendRequest,
+    sendRequestLoading,
+    refuseFriendRequest,
+    cancelFriendRequest,
+    acceptFriendRequest,
+    unFriend,
+    newFriendStatus,
+    setNewFriendStatus,
   } = UserProfileViewModel();
-
-  console.log('userInfo', userInfo);
-  console.log("id", id);
-  
-  
 
   const showFriendAction = useCallback(() => {
     const options = [
@@ -52,7 +60,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            console.log('báo cáo tài khoản user id: ', id);
             router.push(`/report?userId=${id}`);
             break;
           case 1:
@@ -112,8 +119,32 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader total={total} user={userInfo as UserModel} loading={profileLoading} friendCount={friendCount} />
-              <ProfileTabs tabNum={tab} posts={posts} loading={loading} profileLoading={profileLoading} loadMorePosts={loadMorePosts} userInfo={userInfo as UserModel} friendCount={friendCount} friends={friends} resultCode={resultCode} />
+              <ProfileHeader
+                total={total}
+                user={userInfo as UserModel}
+                loading={profileLoading}
+                friendCount={friendCount}
+                sendFriendRequest={sendFriendRequest}
+                sendRequestLoading={sendRequestLoading}
+                refuseFriendRequest={refuseFriendRequest}
+                cancelFriendRequest={cancelFriendRequest}
+                acceptFriendRequest={acceptFriendRequest}
+                unFriend={unFriend}
+                newFriendStatus={newFriendStatus}
+                setNewFriendStatus={setNewFriendStatus}
+              />
+              <ProfileTabs
+                onViewableItemsChanged={onViewableItemsChanged}
+                visibleItems={visibleItems}
+                tabNum={tab} posts={posts}
+                loading={loading}
+                profileLoading={profileLoading}
+                loadMorePosts={loadMorePosts}
+                userInfo={userInfo as UserModel}
+                friendCount={friendCount}
+                friends={friends}
+                resultCode={resultCode}
+              />
               <Toast />
             </>
           }
@@ -123,6 +154,8 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           onRefresh={() => {
             if (tab === 0 || tab === 1) {
               fetchUserProfile(id)
+              fetchUserPosts();
+              fetchFriends(1);
             }
           }}
           refreshing={loading}

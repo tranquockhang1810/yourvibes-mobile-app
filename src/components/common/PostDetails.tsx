@@ -27,6 +27,7 @@ import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
 import dayjs from "dayjs";
 import Toast from "react-native-toast-message";
+import UserLikePostModal from "./UserLikePostModal";
 
 function PostDetails(): React.JSX.Element {
   const {
@@ -364,7 +365,9 @@ function PostDetails(): React.JSX.Element {
           ListHeaderComponent={
             <>
               <View style={{ height: 1, backgroundColor: "#000" }} />
-              <Post noComment={true} post={post as PostResponseModel} />
+              <Post noComment={true} post={post as PostResponseModel}>
+                {post?.parent_post && <Post isParentPost post={post?.parent_post as PostResponseModel} />}
+              </Post>
               <View style={{ height: 1, backgroundColor: "#000" }} />
             </>
           }
@@ -383,6 +386,12 @@ function PostDetails(): React.JSX.Element {
   useEffect(() => {
     fetchPostDetails();
   }, [postId]);
+
+  useEffect(() => {
+    if (isVisible) {
+      fetchUserLikePosts(postId);
+    }
+  }, [isVisible]);
 
   return (
     <KeyboardAvoidingView
@@ -431,7 +440,6 @@ function PostDetails(): React.JSX.Element {
             <Form
               style={{
                 backgroundColor: "#fff",
-                //paddingBottom: 30
               }}
               form={commentForm}
             >
@@ -440,7 +448,7 @@ function PostDetails(): React.JSX.Element {
                   flexDirection: "row",
                   alignItems: "center",
                   padding: 10,
-                  paddingBottom: 40
+                  paddingBottom: Platform.OS === "ios" ? 10 : 40,
                 }}
               >
                 <Image
@@ -535,103 +543,11 @@ function PostDetails(): React.JSX.Element {
                 </View>
               </View>
             </Form>
-            <Modal
-              visible={isVisible}
-              transparent
-              onRequestClose={() => setIsVisible(false)}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      padding: 16,
-                      marginTop: Platform.OS === "ios" ? 30 : 0,
-
-                      borderBottomWidth: 1,
-                      borderBottomColor: 'black',
-                      marginBottom: 10,
-                    }}
-                  >
-                    <TouchableOpacity onPress={() => setIsVisible(false)}>
-                      <AntDesign name="arrowleft" size={24} color="black" />
-                    </TouchableOpacity>
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        marginLeft: 10,
-                      }}
-                    >
-                      {localStrings.Public.ListUserLikePost}
-                    </Text>
-                  </View>
-                  <ScrollView
-                    style={{
-                      flex: 1, // thiết lập chiều cao tự động
-                    }}
-                  >
-                    {/* Danh sách user like post */}
-                    <View
-                      style={{ flexDirection: "column", alignItems: "center" }}
-                    >
-                      {userLikePost?.map((like, index) => (
-                        <View
-                          key={like.id}
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            paddingVertical: 10,
-                            borderBottomWidth: 1,
-                            borderColor: "#e0e0e0",
-                          }}
-                        >
-                          <TouchableOpacity
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              flex: 1,
-                            }}
-                            onPress={() => {
-                              router.push(`/(tabs)/user/${like.id}`);
-                            }}
-                          >
-                            <Image
-                              source={{ uri: like.avatar_url }}
-                              style={{
-                                marginLeft: 10,
-                                width: 40,
-                                height: 40,
-                                borderRadius: 20,
-                                backgroundColor: "#e0e0e0",
-                                marginRight: 10,
-                              }}
-                            />
-                            <Text style={{ fontSize: 16, color: "black" }}>
-                              {like.family_name} {like.name}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      ))}
-                    </View>
-                  </ScrollView>
-                </View>
-              </View>
-            </Modal>
+            <UserLikePostModal 
+              isVisible={isVisible}
+              setIsVisible={setIsVisible}
+              userLikePost={userLikePost}
+            />
           </>
         )}
         {/* Modal edit comment */}
@@ -750,7 +666,7 @@ function PostDetails(): React.JSX.Element {
           </View>
         </Modal>
       </View>
-      <Toast topOffset={100}/>
+      <Toast topOffset={100} />
     </KeyboardAvoidingView>
   );
 }

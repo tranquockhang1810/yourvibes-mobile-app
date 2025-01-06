@@ -21,6 +21,8 @@ const ProfileTabs = ({
   friendCount,
   friends,
   resultCode,
+  onViewableItemsChanged,
+  visibleItems
 }: {
   tabNum: number,
   posts: PostResponseModel[],
@@ -31,6 +33,8 @@ const ProfileTabs = ({
   friendCount: number,
   friends:FriendResponseModel[];
   resultCode: number;
+  onViewableItemsChanged: React.MutableRefObject<({ viewableItems }: any) => void>;
+  visibleItems: string[];
 }) => {
   const { brandPrimary } = useColor();
   const { localStrings, user } = useAuth();
@@ -56,13 +60,13 @@ const ProfileTabs = ({
       case 0:
         return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode} />;
       case 1:
-        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} userProfile={userInfo}/>;
+        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} userProfile={userInfo} onViewableItemsChanged={onViewableItemsChanged} visibleItems={visibleItems}/>;
       case 2:
         return userInfo?.id === user?.id ? <SettingsTab /> : null;
       default:
         return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode}/>;
     }
-  }, [tab, posts, loading, profileLoading, userInfo, friendCount, user]);
+  }, [tab, posts, loading, profileLoading, userInfo, friendCount, user, visibleItems, friends, resultCode]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>
