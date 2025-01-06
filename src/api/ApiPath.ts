@@ -1,5 +1,3 @@
-import ENV from "@/env-config";
-
 export const ApiPath = {
   // Auth
   LOGIN: getApiPath("users/login"),
@@ -60,8 +58,8 @@ export const ApiPath = {
 };
 
 function getApiPath(path: string) {
-  return `${ENV.SERVER_ENDPOINT!}/v1/2024/${path}`;
+  return `${process.env.EXPO_PUBLIC_SERVER_ENDPOINT!}/v1/2024/${path}`;
 }
 function getWSPath(path: string) {
-  return `${ENV.SERVER_ENDPOINT.replace("http", "ws")!}/v1/2024/${path}`;
+  return `${process.env.EXPO_PUBLIC_SERVER_ENDPOINT!.replace("http", "ws")!}/v1/2024/${path}`;
 }

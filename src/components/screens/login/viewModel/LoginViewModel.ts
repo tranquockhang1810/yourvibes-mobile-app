@@ -3,7 +3,6 @@ import { LoginRequestModel } from "@/src/api/features/authenticate/model/LoginMo
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { useAuth } from "@/src/context/auth/useAuth";
-import ENV from "@/env-config";
 import * as Linking from 'expo-linking';
 import * as Google from 'expo-auth-session/providers/google';
 import { Platform } from "react-native";
@@ -13,9 +12,9 @@ const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const { localStrings } = useAuth();
   const [request, response, promtAsync] = Google.useAuthRequest({
-    webClientId: ENV.WEB_CLIENT_ID!,
-    androidClientId: ENV.ANDROID_CLIENT_ID!,
-    iosClientId: ENV.IOS_CLIENT_ID!,
+    webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID!,
+    androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID!,
+    iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID!,
     redirectUri: `${Linking.createURL("/login")}`,
   })
 

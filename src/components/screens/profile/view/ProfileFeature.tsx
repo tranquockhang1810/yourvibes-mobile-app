@@ -44,7 +44,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
       }
       fetchUserProfile(user?.id as string);
     fetchMyFriends(page);
-    }, [tab, user?.id])
+    }, [tab])
   );
 
   const renderTab = useCallback(() => {

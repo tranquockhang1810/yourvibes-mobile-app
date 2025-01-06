@@ -122,7 +122,7 @@ const ProfileViewModel = () => {
     if (user) {
       fetchMyFriends(page);
     }
-  }, [page, user, friendCount]);
+  }, [page, friendCount]);
 
   //Privacy setting
   const fetchUserProfile = async (id: string) => {
