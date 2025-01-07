@@ -151,8 +151,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           onRefresh={() => {
             if (tab === 0 || tab === 1) {
               fetchUserProfile(id)
-              fetchUserPosts();
-              fetchFriends(1);
             }
           }}
           refreshing={loading}

@@ -53,11 +53,7 @@ const UserProfileViewModel = () => {
         setPage(currentPage);
         setHasMore(currentPage * currentLimit < totalRecords);
       } else {
-        Toast.show({
-          type: 'error',
-          text1: localStrings.Profile.Posts.GetPostsFailed,
-          text2: response?.error?.message,
-        });
+        setPosts([]);
       }
     } catch (error: any) {
       console.error(error);
@@ -85,6 +81,7 @@ const UserProfileViewModel = () => {
           text1: localStrings.Profile.Info.GetInfoFailed,
           text2: response?.error?.message,
         });
+        setUserInfo(null);
       }
     } catch (error: any) {
       console.error(error);

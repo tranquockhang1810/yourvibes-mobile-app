@@ -20,8 +20,7 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
 				page: newPage,
 				limit: limit,
 			});
-
-			if (!response?.error) {
+			if (response?.message === "Success") {
 				if (newPage === 1) {
 					setNotifications(response?.data || []);
 				} else {
@@ -32,13 +31,6 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
 				setTotal(totalRecords);
 				setPage(currentPage);
 				setHasMore(currentPage * currentLimit < totalRecords);
-
-			} else {
-				Toast.show({
-					type: 'error',
-					text1: "Get Notifications Failed",
-					text2: response?.error?.message,
-				});
 			}
 		} catch (error: any) {
 			console.error(error);
