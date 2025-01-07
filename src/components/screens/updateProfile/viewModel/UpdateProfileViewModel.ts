@@ -13,6 +13,7 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
     try {
       setLoading(true)
       const res = await repo.updateProfile(data);
+      console.log("res", res);
       if (!res?.error) {
         Toast.show({
           type: 'success',
@@ -24,7 +25,7 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
         Toast.show({
           type: 'error',
           text1: localStrings.UpdateProfile.UpdateFailed,
-          text2: res?.error?.message
+          text2: res?.error?.detail_err
         })
       }
     } catch (error: any) {

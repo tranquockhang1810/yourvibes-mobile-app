@@ -343,7 +343,10 @@ const UpdateProfileScreen = () => {
                           ...updatedForm.getFieldsValue(),
                           avatar_url: newAvatar?.uri ? newAvatar : undefined,
                           capwall_url: newCapwall?.uri ? newCapwall : undefined,
-                          birthday: (dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").format('YYYY-MM-DDT00:00:00') + "Z").toString(),
+                          birthday:
+                            dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").isValid() 
+                              ? dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").format('YYYY-MM-DDT00:00:00[Z]')
+                              : dayjs().format('YYYY-MM-DDT00:00:00[Z]'),
                         })
                       })
                       .catch((error) => {
@@ -369,7 +372,7 @@ const UpdateProfileScreen = () => {
 
             {/* Date Picker Modal */}
             <MyDateTimePicker
-              value={dayjs(updatedForm.getFieldValue("birthday")).toDate()}
+              value={dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").toDate()}
               onSubmit={(date) => {
                 updatedForm.setFieldValue(
                   "birthday",
