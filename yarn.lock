@@ -8487,16 +8487,6 @@ react-native-vector-icons@^10.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-video-player@^0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/react-native-video-player/-/react-native-video-player-0.15.0.tgz#0f0ac67231bc7ab4d0212a810bb31fd3aa05c494"
-  integrity sha512-fJ2PIX/nzurxSDIZo7DUtNKZXl+f+ziWtWQQFfBRA/QzS5tEyfCeZGJQRbqshGvsFnrZ8Rx604eyhHdZ58lG0g==
-
-react-native-video@^6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.9.0.tgz#4a85da23707eb03f230e59356262bca6480a6d51"
-  integrity sha512-iWuj9XzYChUCZueKjGE2fFNLVosqmm7fXenDZjcofkNXZVYr2BNBOLlq7exr0b/H5qjVlWFiE3Mkizaxlh0vOA==
-
 react-native-web@~0.19.10:
   version "0.19.13"
   resolved "https://registry.npmjs.org/react-native-web/-/react-native-web-0.19.13.tgz"

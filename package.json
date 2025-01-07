@@ -60,8 +60,6 @@
     "react-native-screens": "^4.1.0",
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-video": "^6.9.0",
-    "react-native-video-player": "^0.15.0",
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {
