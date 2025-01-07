@@ -26,7 +26,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     profileLoading,
     userInfo,
     friends,
-    friendCount,
     resultCode,
     visibleItems,
     onViewableItemsChanged,
@@ -123,7 +122,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
                 total={total}
                 user={userInfo as UserModel}
                 loading={profileLoading}
-                friendCount={friendCount}
                 sendFriendRequest={sendFriendRequest}
                 sendRequestLoading={sendRequestLoading}
                 refuseFriendRequest={refuseFriendRequest}
@@ -141,7 +139,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
                 profileLoading={profileLoading}
                 loadMorePosts={loadMorePosts}
                 userInfo={userInfo as UserModel}
-                friendCount={friendCount}
                 friends={friends}
                 resultCode={resultCode}
               />

@@ -16,7 +16,7 @@ export const VnLocalizedStrings = {
     EditProfile: "Chỉnh sửa trang cá nhân",
     ChangePassword: "Thay đổi mật khẩu",
     LogOut: "Đăng xuất",
-    SetingProfile: "Cài đặt trang cá nhân",
+    SetingProfile: "Cài đặt",
     Mail: "Email",
     Phone: "Số điện thoại",
     Birthday: "Ngày sinh",

@@ -6,6 +6,7 @@ import translateLanguage from '../../utils/i18n/translateLanguage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { UserModel } from '../../api/features/authenticate/model/LoginModel';
+import { BaseApiResponseModel } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -44,7 +45,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     router.push('/(tabs)/home');
   }
 
-  const onUpdateProfile = async (user: any) => {
+  const onUpdateProfile = async (user: UserModel) => {
     await AsyncStorage.removeItem('user');
     await AsyncStorage.setItem('user', JSON.stringify(user));
     // AsyncStorage.setItem('refreshtoken', user.refreshtoken);

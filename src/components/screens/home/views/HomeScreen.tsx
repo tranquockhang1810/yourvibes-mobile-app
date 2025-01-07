@@ -102,8 +102,8 @@ const HomeScreen = () => {
           <Image
             source={require("@/assets/images/yourvibes_black.png")}
             style={{
-              width: "55%",
-              height: 65,
+              width: 210,
+              height: "100%",
               objectFit: "contain",
               marginLeft: 10,
             }}

@@ -18,7 +18,6 @@ const ProfileTabs = ({
   profileLoading,
   loadMorePosts,
   userInfo,
-  friendCount,
   friends,
   resultCode,
   onViewableItemsChanged,
@@ -30,7 +29,6 @@ const ProfileTabs = ({
   profileLoading: boolean,
   loadMorePosts: () => void,
   userInfo: UserModel,
-  friendCount: number,
   friends:FriendResponseModel[];
   resultCode: number;
   onViewableItemsChanged: React.MutableRefObject<({ viewableItems }: any) => void>;
@@ -58,15 +56,15 @@ const ProfileTabs = ({
   const renderBody = useCallback(() => {
     switch (tab) {
       case 0:
-        return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode} />;
+        return <AboutTab user={userInfo} loading={profileLoading} friends={friends} resultCode={resultCode} />;
       case 1:
         return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} userProfile={userInfo} onViewableItemsChanged={onViewableItemsChanged} visibleItems={visibleItems}/>;
       case 2:
         return userInfo?.id === user?.id ? <SettingsTab /> : null;
       default:
-        return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode}/>;
+        return <AboutTab user={userInfo} loading={profileLoading} friends={friends} resultCode={resultCode}/>;
     }
-  }, [tab, posts, loading, profileLoading, userInfo, friendCount, user, visibleItems, friends, resultCode]);
+  }, [tab, posts, loading, profileLoading, userInfo, user, visibleItems, friends, resultCode]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>

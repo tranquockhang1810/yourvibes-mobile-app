@@ -28,7 +28,6 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     loadMorePosts,
     total,
     friends,
-    friendCount,
     resultCode,
     fetchUserProfile,
     page,
@@ -56,14 +55,13 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
         profileLoading={false}
         loadMorePosts={loadMorePosts}
         userInfo={user as UserModel}
-        friendCount={friendCount}
         friends={friends}
         resultCode={resultCode}
         onViewableItemsChanged={onViewableItemsChanged}
         visibleItems={visibleItems}
       />
     )
-  }, [tab, posts, loading, friendCount, friends, resultCode, visibleItems]);
+  }, [tab, posts, loading, friends, resultCode, visibleItems]);
 
   return (
     <KeyboardAvoidingView
@@ -111,7 +109,6 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
                 total={total}
                 user={user as UserModel}
                 loading={false}
-                friendCount={friendCount}
               />
               {renderTab()}
               <Toast />

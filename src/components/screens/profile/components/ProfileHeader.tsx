@@ -15,7 +15,6 @@ const ProfileHeader = ({
   total,
   user,
   loading,
-  friendCount,
   sendFriendRequest,
   sendRequestLoading,
   refuseFriendRequest,
@@ -28,7 +27,6 @@ const ProfileHeader = ({
   total: number;
   user: UserModel;
   loading?: boolean;
-  friendCount: number,
   sendFriendRequest?: (userId: string) => void | Promise<void>;
   sendRequestLoading?: boolean;
   refuseFriendRequest?: (userId: string) => void | Promise<void>;

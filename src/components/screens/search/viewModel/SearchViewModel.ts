@@ -48,7 +48,6 @@ const SearchViewModel = (repo: SearchRepo) => {
           text1: localStrings.Search.SearchFailed,
           text2: res?.error?.message
         })
-        
         resetSearchResult();
       }
     } catch (error: any) {

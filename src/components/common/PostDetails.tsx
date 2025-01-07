@@ -79,8 +79,8 @@ function PostDetails(): React.JSX.Element {
     try {
       setLoading(true);
       const fetchedPost = await defaultPostRepo.getPostById(postId);
-      if (!fetchedPost.error) {
-        setPost(fetchedPost.data);
+      if (!fetchedPost?.error) {
+        setPost(fetchedPost?.data);
       }
     } catch (error) {
       console.error(error);

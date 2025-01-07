@@ -21,9 +21,7 @@ const UserProfileViewModel = () => {
   const [sendRequestLoading, setSendRequestLoading] = useState(false);
   const [newFriendStatus, setNewFriendStatus] = useState<FriendStatus | undefined>(undefined);
   const [search, setSearch] = useState<string>("");
-  const getFriendCount = () => friendCount;
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
-  const [friendCount, setFriendCount] = useState(0);
   const [resultCode, setResultCode] = useState(0);
   const [visibleItems, setVisibleItems] = useState<string[]>([]);
 
@@ -42,8 +40,8 @@ const UserProfileViewModel = () => {
         page: newPage,
         limit: limit,
       });
-
-      if (!response?.error) {
+      
+      if (response?.data) {
         if (newPage === 1) {
           setPosts(response?.data);
         } else {
@@ -77,7 +75,7 @@ const UserProfileViewModel = () => {
     try {
       setProfileLoading(true);
       const response = await defaultProfileRepo.getProfile(id);
-      if (!response?.error) {
+      if (response?.data) {
         setUserInfo(response?.data);
         setResultCode(response?.code);
         setNewFriendStatus(response?.data?.friend_status || FriendStatus.NotFriend);
@@ -204,7 +202,7 @@ const UserProfileViewModel = () => {
           text1: localStrings.Profile.Friend.FriendResponseSuccess,
         });
         setNewFriendStatus(FriendStatus.IsFriend);
-        fetchFriends(1, id);
+        fetchUserProfile(id);
       } else {
         Toast.show({
           type: 'error',
@@ -234,7 +232,8 @@ const UserProfileViewModel = () => {
           text1: localStrings.Profile.Friend.UnfriendSuccess,
         });
         setNewFriendStatus(FriendStatus.NotFriend);
-        await fetchFriends(1, id);
+        fetchUserProfile(id);
+
       } else {
         Toast.show({
           type: 'error',
@@ -262,7 +261,6 @@ const UserProfileViewModel = () => {
         limit: 10,
         user_id: userID,
       });
-
       if (response?.message === "Success") {
         if (Array.isArray(response?.data)) {
           const friends = response?.data.map(
@@ -274,10 +272,8 @@ const UserProfileViewModel = () => {
             })
           ) as FriendResponseModel[];
           setFriends(friends);
-          setFriendCount(friends?.length); //Đếm số lượng bạn bè
         } else {
           setFriends([]);
-          setFriendCount(0);
         }
       }
       return friends;
@@ -316,12 +312,10 @@ const UserProfileViewModel = () => {
     setNewFriendStatus,
     acceptFriendRequest,
     unFriend,
-    friendCount,
     search,
     setSearch,
     friends,
     page,
-    getFriendCount,
     fetchFriends,
     resultCode,
     setResultCode,

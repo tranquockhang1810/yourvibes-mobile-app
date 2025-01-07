@@ -17,7 +17,7 @@ export const ENGLocalizedStrings = {
     EditProfile: "Edit Profile",
     ChangePassword: "Change Password",
     LogOut: "Log Out",
-    SetingProfile: "Setting Profile",
+    SetingProfile: "Setting",
     Mail: "Email",
     Phone: "Phone Number",
     Birthday: "Birth Date",

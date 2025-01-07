@@ -20,13 +20,11 @@ import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 const AboutTab = ({
   user,
   loading,
-  friendCount,
   friends,
   resultCode,
 }: {
   user: UserModel;
   loading: boolean;
-  friendCount: number;
   friends: FriendResponseModel[];
   resultCode: number;
 }) => {
@@ -80,7 +78,6 @@ const AboutTab = ({
                 router.push(`/(tabs)/user/${friend.id}`);
               }}
             >
-
               <Image
                 source={{
                   uri: friend.avatar_url,
@@ -115,7 +112,7 @@ const AboutTab = ({
         </TouchableOpacity>
       </View>
     )
-  }, [friends, friendCount, user]);
+  }, [friends, user, user?.friend_count]);
 
   const renderPrivacyIcon = () => {
     switch (user?.privacy) {

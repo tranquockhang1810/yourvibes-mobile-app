@@ -107,7 +107,7 @@ const SearchScreen = React.memo(() => {
       {/* Content */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1, height: "auto", backgroundColor }}>
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 10, paddingBottom: 60 }}>
             {keyword && (
               <View style={{ marginVertical: 10, paddingHorizontal: 10 }}>
                 <Text style={{ fontWeight: "bold", fontSize: 18 }}>

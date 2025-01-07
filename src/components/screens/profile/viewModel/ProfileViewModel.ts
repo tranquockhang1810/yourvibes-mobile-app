@@ -5,10 +5,9 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Toast from "react-native-toast-message";
 import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository";
 import { FriendResponseModel } from "@/src/api/features/profile/model/FriendReponseModel";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 
 const ProfileViewModel = () => {
-  const { user, localStrings } = useAuth();
+  const { user, localStrings, onUpdateProfile } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -16,8 +15,6 @@ const ProfileViewModel = () => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
-  const [friendCount, setFriendCount] = useState(0);
-  const [selectedFriendName, setSelectedFriendName] = useState<string>("");
   const [search, setSearch] = useState<string>("");
   const [profileLoading, setProfileLoading] = useState(false);
   const [resultCode, setResultCode] = useState(0);
@@ -27,8 +24,6 @@ const ProfileViewModel = () => {
     const visibleIds = viewableItems.map((item: any) => item.item.id);
     setVisibleItems(visibleIds);
   });
-
-  const getFriendCount = () => friendCount;
   
   const fetchUserPosts = async (newPage: number = 1) => {
     try {
@@ -100,11 +95,17 @@ const ProfileViewModel = () => {
             })
           ) as FriendResponseModel[];
           setFriends(friends);
-          setFriendCount(friends.length); //Đếm số lượng bạn bè
+          onUpdateProfile({
+            ...user,
+            friend_count: response?.paging?.total
+          })
         }
         else {
-          console.error("response.data is null");
           setFriends([]);
+          onUpdateProfile({
+            ...user,
+            friend_count: 0
+          })
         }
       }
       return friends;
@@ -122,7 +123,7 @@ const ProfileViewModel = () => {
     if (user) {
       fetchMyFriends(page);
     }
-  }, [page, friendCount]);
+  }, [page]);
 
   //Privacy setting
   const fetchUserProfile = async (id: string) => {
@@ -157,12 +158,10 @@ const ProfileViewModel = () => {
     loadMorePosts,
     fetchUserPosts,
     total,
-    friendCount,
     search,
     setSearch,
     friends,
     page,
-    getFriendCount,
     fetchMyFriends,
     profileLoading,
     fetchUserProfile,
