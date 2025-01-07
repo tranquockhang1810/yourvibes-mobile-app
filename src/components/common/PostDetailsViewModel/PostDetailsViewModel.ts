@@ -105,12 +105,7 @@ const usePostDetailsViewModel = (
         if (comment.user?.id === user?.id || (reply && reply.length > 0 && reply[0].user?.id === user?.id)) {
           switch (buttonIndex) {
             case 0:
-              const commentToReport = comments.find(
-                (cmt) => cmt.id === comment.id
-              );
-              if (commentToReport) {
-                router.push(`/report?commentId=${comment.id}`);
-              }
+              router.push(`/report?commentId=${comment.id}`);
               break;
             case 1:
               setEditCommentContent(comment.content);
@@ -126,12 +121,7 @@ const usePostDetailsViewModel = (
         } else {
           switch (buttonIndex) {
             case 0:
-              const commentToReport = comments.find(
-                (cmt) => cmt.id === comment.id
-              );
-              if (commentToReport) {
-                router.push(`/report?commentId=${comment.id}`);
-              }
+              router.push(`/report?commentId=${comment.id}`);
               break;
             default:
               break;

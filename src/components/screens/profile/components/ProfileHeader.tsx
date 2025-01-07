@@ -214,7 +214,7 @@ const ProfileHeader = ({
           </Button>
         );
     }
-  }, [newFriendStatus, localStrings, sendRequestLoading]);
+  }, [newFriendStatus, localStrings, sendRequestLoading, user]);
 
   useEffect(() => {
     if (user && user?.friend_status && setNewFriendStatus) setNewFriendStatus(user?.friend_status);
@@ -276,7 +276,7 @@ const ProfileHeader = ({
                   : ""}
               </Text>
               <Text style={{ marginHorizontal: 20, fontWeight: "bold" }}>
-                {friendCount} {localStrings.Public.Friend}
+                {user?.friend_count} {localStrings.Public.Friend}
               </Text>
             </View>
           </View>

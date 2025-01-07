@@ -48,7 +48,7 @@ const AboutTab = ({
               {localStrings.Public.Friend}
             </Text>
             <Text>
-              {friendCount} {localStrings.Public.Friend}
+              {user?.friend_count} {localStrings.Public.Friend}
             </Text>
           </View>
           <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
@@ -115,7 +115,7 @@ const AboutTab = ({
         </TouchableOpacity>
       </View>
     )
-  }, [friends]);
+  }, [friends, friendCount, user]);
 
   const renderPrivacyIcon = () => {
     switch (user?.privacy) {
@@ -232,7 +232,7 @@ const AboutTab = ({
 
 
             {/* Danh sách bạn bè */}
-            {friendCount > 0 && renderFriend()}
+            {renderFriend()}
           </ScrollView>
         </View>
       )}

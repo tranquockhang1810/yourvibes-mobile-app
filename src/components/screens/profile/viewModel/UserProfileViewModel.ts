@@ -263,7 +263,7 @@ const UserProfileViewModel = () => {
         user_id: userID,
       });
 
-      if (response?.data) {
+      if (response?.message === "Success") {
         if (Array.isArray(response?.data)) {
           const friends = response?.data.map(
             (friendResponse: FriendResponseModel) => ({
@@ -274,9 +274,10 @@ const UserProfileViewModel = () => {
             })
           ) as FriendResponseModel[];
           setFriends(friends);
-          setFriendCount(friends.length); //Đếm số lượng bạn bè
+          setFriendCount(friends?.length); //Đếm số lượng bạn bè
         } else {
           setFriends([]);
+          setFriendCount(0);
         }
       }
       return friends;

@@ -1,7 +1,6 @@
 import { UpdateProfileRequestModel } from '@/src/api/features/profile/model/UpdateProfileModel';
 import { ProfileRepo } from '@/src/api/features/profile/ProfileRepository'
 import { useAuth } from '@/src/context/auth/useAuth';
-import { router } from 'expo-router';
 import { useState } from 'react'
 import Toast from 'react-native-toast-message'
 
@@ -20,7 +19,6 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
         })
         onUpdateProfile(res?.data)
       } else {
-        console.log("failed", res?.error);
         Toast.show({
           type: 'error',
           text1: localStrings.UpdateProfile.UpdateFailed,
@@ -28,7 +26,7 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
         })
       }
     } catch (error: any) {
-      console.error("có vào được đây hong",error)
+      console.error(error)
       Toast.show({
         type: 'error',
         text1: localStrings.UpdateProfile.UpdateFailed,
