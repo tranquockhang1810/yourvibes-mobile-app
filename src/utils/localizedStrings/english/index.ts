@@ -52,7 +52,7 @@ export const ENGLocalizedStrings = {
     ReportComment: "Report Comment",
     Day: "Day",
     ListUserLikePost: "List User Like Your Post",
-    WhoLike:"Discover who liked your post!",
+    WhoLike:"Discover who liked the post!",
     HideInfo: "has hidden personal information",
     FriendOnly: "only friends can see",
   },

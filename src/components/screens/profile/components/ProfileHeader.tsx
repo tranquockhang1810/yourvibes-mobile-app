@@ -13,6 +13,7 @@ import Toast from "react-native-toast-message";
 
 const ProfileHeader = ({
   total,
+  friendCount,
   user,
   loading,
   sendFriendRequest,
@@ -25,6 +26,7 @@ const ProfileHeader = ({
   setNewFriendStatus,
 }: {
   total: number;
+  friendCount: number;
   user: UserModel;
   loading?: boolean;
   sendFriendRequest?: (userId: string) => void | Promise<void>;
@@ -214,16 +216,9 @@ const ProfileHeader = ({
     }
   }, [newFriendStatus, localStrings, sendRequestLoading, user]);
 
-  useEffect(() => {
-    if (user && user?.friend_status && setNewFriendStatus) setNewFriendStatus(user?.friend_status);
-  }, [user]);
-
-  return (
-    <>
-      {loading ? (
-        <ActivityIndicator size="large" color={lightGray} />
-      ) : (
-        <>
+  const renderUserInformation = useCallback(() => {
+    return (
+      <>
           {/* Cover Image */}
           <View
             style={{ width: "100%", height: 200, backgroundColor: lightGray }}
@@ -274,7 +269,7 @@ const ProfileHeader = ({
                   : ""}
               </Text>
               <Text style={{ marginHorizontal: 20, fontWeight: "bold" }}>
-                {user?.friend_count} {localStrings.Public.Friend}
+                {friendCount} {localStrings.Public.Friend}
               </Text>
             </View>
           </View>
@@ -285,6 +280,21 @@ const ProfileHeader = ({
               {renderFriendButton()}
             </View>
           )}
+        </>
+    )
+  }, [isLoginUser, language, renderFriendButton, total, user]);
+
+  useEffect(() => {
+    if (user && user?.friend_status && setNewFriendStatus) setNewFriendStatus(user?.friend_status);
+  }, [user]);
+
+  return (
+    <>
+      {loading ? (
+        <ActivityIndicator size="large" color={lightGray} />
+      ) : (
+        <>
+          {renderUserInformation()}
         </>
       )}
       <Toast />

@@ -15,6 +15,7 @@ const ProfileViewModel = () => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
+  const [friendCount, setFriendCount] = useState(0);
   const [search, setSearch] = useState<string>("");
   const [profileLoading, setProfileLoading] = useState(false);
   const [resultCode, setResultCode] = useState(0);
@@ -91,17 +92,11 @@ const ProfileViewModel = () => {
             })
           ) as FriendResponseModel[];
           setFriends(friends);
-          onUpdateProfile({
-            ...user,
-            friend_count: response?.paging?.total
-          })
+          setFriendCount(response?.paging?.total);
         }
         else {
           setFriends([]);
-          onUpdateProfile({
-            ...user,
-            friend_count: 0
-          })
+          setFriendCount(0);
         }
       }
       return friends;
@@ -157,6 +152,7 @@ const ProfileViewModel = () => {
     search,
     setSearch,
     friends,
+    friendCount,
     page,
     fetchMyFriends,
     profileLoading,

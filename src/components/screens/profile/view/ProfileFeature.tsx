@@ -28,6 +28,7 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
     loadMorePosts,
     total,
     friends,
+    friendCount,
     resultCode,
     fetchUserProfile,
     page,
@@ -42,26 +43,35 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
         fetchUserPosts();
       }
       fetchUserProfile(user?.id as string);
-    fetchMyFriends(page);
-    }, [tab])
+      fetchMyFriends(page);
+    }, [tab, user])
   );
 
   const renderTab = useCallback(() => {
     return (
-      <ProfileTabs
-        tabNum={tab}
-        posts={posts}
-        loading={loading}
-        profileLoading={false}
-        loadMorePosts={loadMorePosts}
-        userInfo={user as UserModel}
-        friends={friends}
-        resultCode={resultCode}
-        onViewableItemsChanged={onViewableItemsChanged}
-        visibleItems={visibleItems}
-      />
+      <>
+        <ProfileHeader
+          total={total}
+          friendCount={friendCount}
+          user={user as UserModel}
+          loading={false}
+        />
+        <ProfileTabs
+          tabNum={tab}
+          posts={posts}
+          loading={loading}
+          profileLoading={false}
+          loadMorePosts={loadMorePosts}
+          userInfo={user as UserModel}
+          friends={friends}
+          friendCount={friendCount}
+          resultCode={resultCode}
+          onViewableItemsChanged={onViewableItemsChanged}
+          visibleItems={visibleItems}
+        />
+      </>
     )
-  }, [tab, posts, loading, friends, resultCode, visibleItems]);
+  }, [tab, posts, loading, friends, resultCode, visibleItems, user, total, friendCount]);
 
   return (
     <KeyboardAvoidingView
@@ -105,11 +115,6 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
           data={null}
           ListHeaderComponent={
             <>
-              <ProfileHeader
-                total={total}
-                user={user as UserModel}
-                loading={false}
-              />
               {renderTab()}
               <Toast />
             </>

@@ -263,7 +263,6 @@ const Post: React.FC<IPost> = React.memo(({
         <></>
       ) : (
         <Card.Footer
-          style={{ borderTopWidth: 1, borderColor: lightGray }}
           content={
             <View style={{
               display: "flex",
@@ -429,7 +428,7 @@ const Post: React.FC<IPost> = React.memo(({
               </View>
 
               {/* Parent Post */}
-              <Post post={likedPost} isParentPost />
+              <Post post={likedPost?.parent_post || likedPost} isParentPost />
             </Form>
           </View>
         </KeyboardAvoidingView>

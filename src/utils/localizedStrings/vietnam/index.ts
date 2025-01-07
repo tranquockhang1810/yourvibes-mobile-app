@@ -51,7 +51,7 @@ export const VnLocalizedStrings = {
     ReportComment: "Báo cáo bình luận",
     Day: "Ngày",
     ListUserLikePost: "Danh sách người thích bài viết",
-    WhoLike:"Khám phá ai đã thích bài viết của bạn !",
+    WhoLike:"Khám phá ai đã thích bài viết!",
     HideInfo: "đã ẩn thông tin cá nhân",
     FriendOnly: "chỉ bạn bè được xem"
   },

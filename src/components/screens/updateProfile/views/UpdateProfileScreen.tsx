@@ -379,6 +379,7 @@ const UpdateProfileScreen = () => {
               }}
               show={showPicker}
               onCancel={() => setShowPicker(false)}
+              maxDate={new Date()}
             />
           </ScrollView>
         </View>

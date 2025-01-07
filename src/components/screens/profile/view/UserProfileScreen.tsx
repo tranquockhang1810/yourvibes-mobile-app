@@ -26,6 +26,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     profileLoading,
     userInfo,
     friends,
+    friendCount,
     resultCode,
     visibleItems,
     onViewableItemsChanged,
@@ -120,6 +121,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
             <>
               <ProfileHeader
                 total={total}
+                friendCount={friendCount}
                 user={userInfo as UserModel}
                 loading={profileLoading}
                 sendFriendRequest={sendFriendRequest}
@@ -133,6 +135,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
               />
               <ProfileTabs
                 onViewableItemsChanged={onViewableItemsChanged}
+                friendCount={friendCount}
                 visibleItems={visibleItems}
                 tabNum={tab} posts={posts}
                 loading={loading}

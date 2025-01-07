@@ -8,10 +8,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Modal,
-  Button,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
+  Button,
 } from "react-native";
 import { Image } from "expo-image";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -21,7 +20,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { ActivityIndicator, Form, ActionSheet } from "@ant-design/react-native";
+import { ActivityIndicator, Form } from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
@@ -369,6 +368,12 @@ function PostDetails(): React.JSX.Element {
                 {post?.parent_post && <Post isParentPost post={post?.parent_post as PostResponseModel} />}
               </Post>
               <View style={{ height: 1, backgroundColor: "#000" }} />
+              <TouchableOpacity
+                onPress={() => setIsVisible(true)}
+                style={{ padding: 10 }}
+              >
+                <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>{localStrings.Public.WhoLike}</Text>
+              </TouchableOpacity>
             </>
           }
           style={{ flex: 1 }}
@@ -430,11 +435,6 @@ function PostDetails(): React.JSX.Element {
           </View>
         ) : (
           <>
-            <Button
-              title={localStrings.Public.WhoLike}
-              onPress={() => setIsVisible(true)}
-              color={brandPrimary}
-            />
             {renderFlatList(comments)}
             {/* comment input */}
             <Form
@@ -543,7 +543,7 @@ function PostDetails(): React.JSX.Element {
                 </View>
               </View>
             </Form>
-            <UserLikePostModal 
+            <UserLikePostModal
               isVisible={isVisible}
               setIsVisible={setIsVisible}
               userLikePost={userLikePost}

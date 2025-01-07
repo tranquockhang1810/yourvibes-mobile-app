@@ -22,6 +22,7 @@ const UserProfileViewModel = () => {
   const [newFriendStatus, setNewFriendStatus] = useState<FriendStatus | undefined>(undefined);
   const [search, setSearch] = useState<string>("");
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
+  const [friendCount, setFriendCount] = useState(0);
   const [resultCode, setResultCode] = useState(0);
   const [visibleItems, setVisibleItems] = useState<string[]>([]);
 
@@ -40,7 +41,6 @@ const UserProfileViewModel = () => {
         page: newPage,
         limit: limit,
       });
-      
       if (response?.data) {
         if (newPage === 1) {
           setPosts(response?.data);
@@ -269,8 +269,10 @@ const UserProfileViewModel = () => {
             })
           ) as FriendResponseModel[];
           setFriends(friends);
+          setFriendCount(response?.paging?.total);
         } else {
           setFriends([]);
+          setFriendCount(0);
         }
       }
       return friends;
@@ -287,9 +289,9 @@ const UserProfileViewModel = () => {
   useEffect(() => {
     if (userInfo) {
       fetchUserPosts();
-      fetchFriends(page);
+      fetchFriends(1);
     }
-  }, [page, userInfo]);
+  }, [userInfo]);
 
   return {
     loading,
@@ -312,6 +314,7 @@ const UserProfileViewModel = () => {
     search,
     setSearch,
     friends,
+    friendCount,
     page,
     fetchFriends,
     resultCode,

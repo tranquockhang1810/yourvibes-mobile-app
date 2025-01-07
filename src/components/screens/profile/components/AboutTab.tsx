@@ -21,14 +21,16 @@ const AboutTab = ({
   user,
   loading,
   friends,
+  friendCount,
   resultCode,
 }: {
   user: UserModel;
   loading: boolean;
   friends: FriendResponseModel[];
+  friendCount: number;
   resultCode: number;
 }) => {
-  const { brandPrimaryTap, lightGray } = useColor();
+  const { brandPrimaryTap } = useColor();
   const { isLoginUser, localStrings } = useAuth();
 
   const renderFriend = useCallback(() => {
@@ -46,7 +48,7 @@ const AboutTab = ({
               {localStrings.Public.Friend}
             </Text>
             <Text>
-              {user?.friend_count} {localStrings.Public.Friend}
+              {friendCount} {localStrings.Public.Friend}
             </Text>
           </View>
           <TouchableOpacity onPress={() => router.push("/(tabs)/search")}>
@@ -112,7 +114,7 @@ const AboutTab = ({
         </TouchableOpacity>
       </View>
     )
-  }, [friends, user, user?.friend_count]);
+  }, [friends, user, friendCount]);
 
   const renderPrivacyIcon = () => {
     switch (user?.privacy) {
