@@ -39,11 +39,13 @@ const ProfileFeatures = ({ tab }: { tab: number }) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (tab === 0 || tab === 1) {
-        fetchUserPosts();
+      if (user) {
+        if (tab === 0 || tab === 1) {
+          fetchUserPosts();
+        }
+        fetchUserProfile(user?.id as string);
+        fetchMyFriends(page);
       }
-      fetchUserProfile(user?.id as string);
-      fetchMyFriends(page);
     }, [tab, user])
   );
 
