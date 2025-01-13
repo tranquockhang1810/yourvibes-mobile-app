@@ -54,6 +54,7 @@ const UserProfileViewModel = () => {
         setHasMore(currentPage * currentLimit < totalRecords);
       } else {
         setPosts([]);
+        setTotal(0);
       }
     } catch (error: any) {
       console.error(error);

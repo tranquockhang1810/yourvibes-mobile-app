@@ -268,10 +268,6 @@ const usePostDetailsViewModel = (
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
-          Toast.show({
-            type: "success",
-            text1: `${localStrings.PostDetails.CommentSuccess}`,
-          });
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
         } else {
           Toast.show({
@@ -305,10 +301,6 @@ const usePostDetailsViewModel = (
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
-          Toast.show({
-            type: "success",
-            text1: `${localStrings.PostDetails.ReplySuccess}`,
-          });
           fetchComments();
           parentId && fetchReplies(postId, parentId);
           rootCommentID && fetchReplies(postId, rootCommentID);

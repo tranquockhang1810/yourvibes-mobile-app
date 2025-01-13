@@ -4,7 +4,6 @@ import { Platform, StatusBar, View } from "react-native";
 import useColor from "@/src/hooks/useColor";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/src/context/auth/useAuth";
-import Toast from "react-native-toast-message";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { PostProvider } from "@/src/context/post/usePostContext";
 

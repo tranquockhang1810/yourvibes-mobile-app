@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
-import { Button, WingBlank, WhiteSpace, Form, ActivityIndicator } from '@ant-design/react-native';
+import { Button, WingBlank, WhiteSpace, Form, ActivityIndicator, Modal } from '@ant-design/react-native';
 import MyInput from '@/src/components/foundation/MyInput';
 import { Feather } from '@expo/vector-icons';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
@@ -21,7 +21,6 @@ import Toast from 'react-native-toast-message';
 import LoginViewModel from '../viewModel/LoginViewModel';
 import { defaultAuthenRepo } from '@/src/api/features/authenticate/AuthenRepo';
 import { LoginRequestModel } from '@/src/api/features/authenticate/model/LoginModel';
-import * as WebBrowser from 'expo-web-browser';
 
 const LoginFeature = () => {
   const router = useRouter();

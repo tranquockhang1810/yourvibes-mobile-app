@@ -13,7 +13,6 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
     try {
       setLoading(true)
       const res = await repo.updateProfile(data);
-      console.log("res", res);
       if (!res?.error) {
         Toast.show({
           type: 'success',

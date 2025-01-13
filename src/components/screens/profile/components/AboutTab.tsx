@@ -173,38 +173,42 @@ const AboutTab = ({
                 </View>
 
                 {/* Số điện thoại */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
-                >
-                  <Feather name="phone" size={24} color="black" />
-                  <Text style={{ marginLeft: 10 }}>
-                    {localStrings.Public.Phone}:{" "}
-                    <Text style={{ fontWeight: "bold" }}>
-                      {user?.phone_number || "N/A"}
+                {user?.phone_number && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Feather name="phone" size={24} color="black" />
+                    <Text style={{ marginLeft: 10 }}>
+                      {localStrings.Public.Phone}:{" "}
+                      <Text style={{ fontWeight: "bold" }}>
+                        {user?.phone_number}
+                      </Text>
                     </Text>
-                  </Text>
-                </View>
+                  </View>
+                )}
 
                 {/* Ngày sinh */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
-                >
-                  <Feather name="calendar" size={24} color="black" />
-                  <Text style={{ marginLeft: 10 }}>
-                    {localStrings.Public.Birthday}:{" "}
-                    <Text style={{ fontWeight: "bold" }}>
-                      {DateTransfer(user?.birthday) || "N/A"}
+                {user?.birthday && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Feather name="calendar" size={24} color="black" />
+                    <Text style={{ marginLeft: 10 }}>
+                      {localStrings.Public.Birthday}:{" "}
+                      <Text style={{ fontWeight: "bold" }}>
+                        {user?.birthday ? DateTransfer(user?.birthday) : "N/A"}
+                      </Text>
                     </Text>
-                  </Text>
-                </View>
+                  </View>
+                )}
 
                 {/* Ngày tham gia */}
                 <View

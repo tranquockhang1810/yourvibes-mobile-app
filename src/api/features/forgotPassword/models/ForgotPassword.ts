@@ -1,8 +1,4 @@
-export interface VerifyOTPRequestModel {
-  email: string; 
-}
-
-export interface ForgotPasswordResponseModel {
+export interface ForgotPasswordRequestModel {
   email: string;
   new_password: string;
   otp: string;

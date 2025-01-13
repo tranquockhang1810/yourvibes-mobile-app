@@ -241,22 +241,19 @@ const Post: React.FC<IPost> = React.memo(({
           </View>
         </View>
       ) : (
-        (
-          <View style={{ paddingLeft: 65, paddingRight: 35 }}>
-            {likedPost?.content && (
-              <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
-                <Text>{likedPost?.content}</Text>
-              </View>
-            )}
-            {likedPost?.media && likedPost?.media?.length > 0 &&
-              <MediaView
-                mediaItems={likedPost?.media}
-                isVisible={isVisible}
-              />
-            }
-          </View>
-
-        )
+        <View style={{ paddingHorizontal: 20 }}>
+          {likedPost?.content && (
+            <View style={{ paddingBottom: 5, paddingLeft: 0 }}>
+              <Text>{likedPost?.content}</Text>
+            </View>
+          )}
+          {likedPost?.media && likedPost?.media?.length > 0 &&
+            <MediaView
+              mediaItems={likedPost?.media}
+              isVisible={isVisible}
+            />
+          }
+        </View>
       ))}
       {/* Footer */}
       {isParentPost || noFooter ? (

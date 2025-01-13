@@ -89,7 +89,9 @@ const UpdateProfileScreen = () => {
       name: user?.name,
       family_name: user?.family_name,
       email: user?.email,
-      birthday: dayjs(user?.birthday).format('DD/MM/YYYY'),
+      birthday: user?.birthday
+        ? dayjs(user?.birthday).format('DD/MM/YYYY')
+        : dayjs().format('DD/MM/YYYY'),
       phone_number: user?.phone_number,
       biography: user?.biography
     });
@@ -344,7 +346,7 @@ const UpdateProfileScreen = () => {
                           avatar_url: newAvatar?.uri ? newAvatar : undefined,
                           capwall_url: newCapwall?.uri ? newCapwall : undefined,
                           birthday:
-                            dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").isValid() 
+                            dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").isValid()
                               ? dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").format('YYYY-MM-DDT00:00:00[Z]')
                               : dayjs().format('YYYY-MM-DDT00:00:00[Z]'),
                         })

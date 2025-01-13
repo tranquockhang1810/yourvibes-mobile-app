@@ -10,7 +10,6 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Keyboard,
-  Button,
 } from "react-native";
 import { Image } from "expo-image";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -20,7 +19,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { useLocalSearchParams } from "expo-router";
 import { CommentsResponseModel } from "@/src/api/features/comment/models/CommentResponseModel";
-import { ActivityIndicator, Form } from "@ant-design/react-native";
+import { ActivityIndicator, Form, Button } from "@ant-design/react-native";
 import Post from "./Post";
 import { defaultPostRepo } from "@/src/api/features/post/PostRepo";
 import { PostResponseModel } from "@/src/api/features/post/models/PostResponseModel";
@@ -624,18 +623,23 @@ function PostDetails(): React.JSX.Element {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
+                  justifyContent: "flex-end",
                   alignItems: "center",
                   marginTop: 20,
                 }}
               >
                 <Button
-                  title={
-                    loading
-                      ? localStrings.Public.Save
-                      : localStrings.Public.Save
-                  }
-                  disabled={loading}
+                  onPress={() => {
+                    setEditModalVisible(false);
+                    setEditCommentContent(""); // Clear TextInput
+                  }}
+                  style={{ marginRight: 10 }}
+                >
+                  {localStrings.PostDetails.Cancel}
+                </Button>
+                <Button
+                  loading={loading}
+                  type="primary"
                   onPress={() => {
                     if (currentCommentId && editCommentContent) {
                       setLoading(true);
@@ -653,20 +657,15 @@ function PostDetails(): React.JSX.Element {
                       console.error("Invalid comment ID or content");
                     }
                   }}
-                />
-                <Button
-                  title={localStrings.PostDetails.Cancel}
-                  onPress={() => {
-                    setEditModalVisible(false);
-                    setEditCommentContent(""); // Clear TextInput
-                  }}
-                />
+                >
+                  {localStrings.Public.Save}
+                </Button>
               </View>
             </View>
           </View>
         </Modal>
       </View>
-      <Toast topOffset={100} />
+      <Toast />
     </KeyboardAvoidingView>
   );
 }

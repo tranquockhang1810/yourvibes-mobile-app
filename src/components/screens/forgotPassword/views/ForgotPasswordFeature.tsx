@@ -17,7 +17,8 @@ import { useRouter } from 'expo-router';
 import useColor from '@/src/hooks/useColor';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '@/src/context/auth/useAuth';
-import { ForgotPasswordViewModel } from '@/src/components/screens/forgotPassword/viewModel/ForgotPasswordViewModel';
+import ForgotPasswordViewModel from '../viewModel/ForgotPasswordViewModel';
+import { forgotPasswordRepo } from '@/src/api/features/forgotPassword/ForgotPasswordRepo';
 
 const ForgotPasswordFeature = () => {
   const router = useRouter();
@@ -26,36 +27,12 @@ const ForgotPasswordFeature = () => {
   const { backgroundColor, brandPrimaryTap, brandPrimary } = useColor();
   const [forgotForm] = Form.useForm();
   const { localStrings } = useAuth();
-  const forgotPasswordViewModel = new ForgotPasswordViewModel();
-
-  const onRequestOTP = async () => {
-    try {
-      const email = forgotForm.getFieldValue('email');
-      if (!email) {
-        Toast.show({ type: 'error', text1: localStrings.Form.RequiredMessages.EmailRequiredMessage });
-        return;
-      }
-      await forgotPasswordViewModel.requestOTP(email, '');
-      Toast.show({ type: 'success', text1: localStrings.SignUp.OTPSuccess });
-    } catch (error) {
-      Toast.show({ type: 'error', text1: localStrings.SignUp.OTPFailed });
-    }
-  };
-
-  const onForgotPassword = async () => {
-    try {
-      const values = await forgotForm.validateFields();
-      await forgotPasswordViewModel.resetPassword({
-        email: values.email,
-        new_password: values.new_password,
-        otp: values.otp,
-      });
-      Toast.show({ type: 'success', text1: localStrings.ChangePassword.ChangePasswordSuccess });
-      router.push('/login');
-    } catch (error) {
-      Toast.show({ type: 'error', text1: localStrings.ChangePassword.ChangePasswordFailed });
-    }
-  };
+  const {
+    loading,
+    verifyOTP,
+    otpLoading,
+    resetPassword
+  } = ForgotPasswordViewModel(forgotPasswordRepo);
 
   return (
     <KeyboardAvoidingView
@@ -121,7 +98,12 @@ const ForgotPasswordFeature = () => {
                 </View>
                 <View style={{ width: '30%' }}>
                   <Form.Item>
-                    <Button type="primary" style={{ width: '100%' }} onPress={onRequestOTP}>
+                    <Button
+                      type="primary"
+                      style={{ width: '100%' }}
+                      loading={otpLoading}
+                      onPress={() => verifyOTP({ email: forgotForm.getFieldValue('email') })}
+                    >
                       <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'semibold' }}>
                         {localStrings.Form.Label.GetOTP}
                       </Text>
@@ -129,6 +111,14 @@ const ForgotPasswordFeature = () => {
                   </Form.Item>
                 </View>
               </View>
+              
+              {/* OTP */}
+              <Form.Item
+                name="otp"
+                rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
+              >
+                <MyInput placeholder={localStrings.Form.Label.OTP} variant="outlined" />
+              </Form.Item>
 
               {/* Password */}
               <Form.Item
@@ -175,29 +165,29 @@ const ForgotPasswordFeature = () => {
                 />
               </Form.Item>
 
-              {/* OTP */}
-              <Form.Item
-                name="otp"
-                rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
-              >
-                <MyInput placeholder={localStrings.Form.Label.OTP} variant="outlined" />
-              </Form.Item>
-
               {/* Submit Button */}
-              <Button
-                type="primary"
-                style={{ marginTop: 20 }}
-                onPress={onForgotPassword}
-              >
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
-                  {localStrings.Form.Label.ConfirmPassword}
-                </Text>
-              </Button>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  style={{ marginTop: 20 }}
+                  onPress={() => {
+                    resetPassword({
+                      email: forgotForm.getFieldValue('email'),
+                      new_password: forgotForm.getFieldValue('new_password'),
+                      otp: forgotForm.getFieldValue('otp')
+                    })
+                  }}
+                >
+                  <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
+                    {localStrings.Form.Label.ConfirmPassword}
+                  </Text>
+                </Button>
+              </Form.Item>
             </Form>
+            <Toast />
           </ScrollView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
-      <Toast />
     </KeyboardAvoidingView>
   );
 };

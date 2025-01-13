@@ -5,7 +5,6 @@ import { Button, Modal } from '@ant-design/react-native';
 import { useAuth } from '@/src/context/auth/useAuth';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { router } from 'expo-router';
-import ChangePasswordScreen from '@/src/components/screens/changePassword/views/changePassword';
 import Toast from 'react-native-toast-message';
 
 const SettingsTab = () => {

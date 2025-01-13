@@ -244,7 +244,6 @@ export const ENGLocalizedStrings = {
     Block: "Block ",
     Cancel: "Cancel",
   },
-
   Ads: {
     Ads: "Post Advertisement",
     TimeAndBudget: "Duration and Budget",
@@ -270,7 +269,6 @@ export const ENGLocalizedStrings = {
     PaymentFailed: "Payment failed.",
     NoCampaign: "No campaign found",
   },
-
   Report: {
     ReportPost: "Why are you reporting this post?",
     ReportUser: "Why are you reporting this user?",
@@ -297,4 +295,8 @@ export const ENGLocalizedStrings = {
     WebSocketError: "Web Socket error",
     WebSocketErrorText: "Please check your network connection",
   },
+  ForgotPassword: {
+    ConformChangePasswordSuccess: "Change password successful!",
+    ConformChangePasswordFailed: "Change password failed!",
+  }
 }

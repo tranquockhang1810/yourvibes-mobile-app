@@ -282,7 +282,7 @@ const ProfileHeader = ({
           )}
         </>
     )
-  }, [isLoginUser, language, renderFriendButton, total, user]);
+  }, [isLoginUser, language, renderFriendButton, total, user, friendCount, localStrings]);
 
   useEffect(() => {
     if (user && user?.friend_status && setNewFriendStatus) setNewFriendStatus(user?.friend_status);

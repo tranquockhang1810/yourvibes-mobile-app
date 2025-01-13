@@ -38,10 +38,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const onLogin = async (user: any) => {
     await AsyncStorage.setItem('user', JSON.stringify(user.user));
     await AsyncStorage.setItem('accesstoken', user.access_token);
-    // AsyncStorage.setItem('refreshtoken', user.refreshtoken);
     setIsAuthenticated(true);
     setUser(user.user); 
-    router.push('/(tabs)/home');
+    router.replace('/(tabs)/home');
   }
 
   const onUpdateProfile = async (user: UserModel) => {
@@ -59,7 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // await AsyncStorage.removeItem('refreshtoken');
     setIsAuthenticated(false);
     setUser(null);
-    router.push('/login');
+    router.replace('/login');
   }
 
   const isLoginUser = (userId: string) => {

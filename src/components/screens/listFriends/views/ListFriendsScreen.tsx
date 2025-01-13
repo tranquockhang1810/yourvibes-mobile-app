@@ -51,12 +51,12 @@ const ListFriendsScreen = ({ userId }: { userId: string }) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{ paddingHorizontal: 10 }}
         onPress={() => handleMoreOptions(item)}
       >
         <Ionicons name="ellipsis-vertical" size={24} color="black" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 
@@ -92,7 +92,7 @@ const ListFriendsScreen = ({ userId }: { userId: string }) => {
     <ActionSheetProvider>
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <Header />
-        <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 20 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {loading && page === 1 ? (
             <ActivityIndicator size="large" color="blue" />
           ) : (

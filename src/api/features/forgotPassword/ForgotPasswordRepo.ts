@@ -1,35 +1,22 @@
+import { ApiPath } from "../../ApiPath";
+import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponseModel";
 import client from "../../client";
-import { ApiPath } from "@/src/api/ApiPath";
-import {
-  ForgotPasswordResponseModel,
-  VerifyOTPRequestModel,
-} from "@/src/api/features/forgotPassword/models/ForgotPassword";
+import { VerifyOTPRequestModel } from "../authenticate/model/VerifyOTPModel";
+import { ForgotPasswordRequestModel } from "./models/ForgotPassword";
 
-export class ForgotPasswordRepo {
-  private readonly apiPath = ApiPath.FORGOT_PASSWORD;
+export interface IForgotPasswordRepo {
+  verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>>;
+  resetPassword(data: ForgotPasswordRequestModel): Promise<BaseApiResponseModel<any>>;
+}
 
-  public async verifyOTP(
-    request: VerifyOTPRequestModel
-  ): Promise<ForgotPasswordResponseModel> {
-    try {
-      const response = await client.post(ApiPath.GET_OTP_FORGOOT_PASSWORD, request);
-      console.log(response); // xem thông tin chi tiết về response
-      return response.data as ForgotPasswordResponseModel;
-    } catch (error) {
-      console.error(error); // xem thông tin chi tiết về lỗi
-      throw error;
-    }
+class ForgotPasswordRepo implements IForgotPasswordRepo {
+  async verifyOTP(data: VerifyOTPRequestModel): Promise<BaseApiResponseModel<any>> {
+    return client.post(ApiPath.GET_OTP_FORGOOT_PASSWORD, data);
   }
 
-  public async resetPassword(
-    request: ForgotPasswordResponseModel
-  ): Promise<ForgotPasswordResponseModel> {
-    const response = await client.post(
-      ApiPath.FORGOT_PASSWORD,
-      request
-    );
-    return response.data as ForgotPasswordResponseModel;
+  async resetPassword(data: ForgotPasswordRequestModel): Promise<BaseApiResponseModel<any>> {
+    return client.post(ApiPath.FORGOT_PASSWORD, data);
   }
 }
 
-export const defaultForgotPasswordRepo = new ForgotPasswordRepo();
+export const forgotPasswordRepo = new ForgotPasswordRepo();

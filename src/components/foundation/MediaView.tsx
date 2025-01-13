@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Carousel } from "@ant-design/react-native";
 import { Image } from "expo-image";
 import { useVideoPlayer, VideoView } from "expo-video";
@@ -59,7 +59,7 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems, isVisible 
 
   return (
     <Carousel
-      style={{ backgroundColor: "#fff", width: "100%", minHeight: 280 }}
+      style={{ backgroundColor: "#fff", width: "100%", minHeight: 250 }}
       dotActiveStyle={{ backgroundColor: brandPrimary }}
       dotStyle={{ backgroundColor: lightGray }}
     >
@@ -89,7 +89,7 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems, isVisible 
           return (
             <VideoView
               key={index}
-              style={{ height: 250, width: "100%" }}
+              style={{ height: 250 , width: "100%" }}
               player={player}
               allowsFullscreen
               allowsPictureInPicture
@@ -100,7 +100,9 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems, isVisible 
             <Image
               key={index}
               source={{ uri: media?.media_url }}
-              style={{ height: 250, objectFit: "cover" }}
+              style={{ width: "100%", height: 250 }}
+              contentFit="contain"
+              contentPosition={"center"}
             />
           );
         }

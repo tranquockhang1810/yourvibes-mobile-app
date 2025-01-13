@@ -4,6 +4,8 @@ import IApiClient from "./IApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModelConverter from "@/src/utils/modelConvert/ModelConverter";
 import curlirize from "axios-curlirize";
+import { router } from "expo-router";
+import { Modal } from "@ant-design/react-native";
 
 const api = axios.create({
   timeout: 60000,
@@ -38,6 +40,14 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error("Response error:", error);
+    error.response || error;
+    if (error?.response?.status === 401 || error?.response?.status === 403) {
+      Modal.alert(
+        "Session Expired",
+        "Your session has expired. Please login again.",
+        [{ text: "OK", onPress: () => router.replace(`/login`), style: "cancel" }],
+      );
+    }
     return Promise.resolve(error?.response?.data);
   }
 );
