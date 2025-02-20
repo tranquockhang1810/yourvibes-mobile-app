@@ -6,13 +6,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from 'react-native';
 import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
 import useColor from '@/src/hooks/useColor';
 import MyInput from '@/src/components/foundation/MyInput';
 import { ActivityIndicator, Button } from '@ant-design/react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Video } from 'expo-av';
@@ -32,6 +33,7 @@ const AddPostScreen = () => {
   const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } = useColor();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  // const [image, setImage] = useState<string | null>(null);
   const {
     postContent,
     setPostContent,
@@ -65,6 +67,26 @@ const AddPostScreen = () => {
     }
   };
 
+  // const takePhoto = async () => {
+  //   // Yêu cầu quyền truy cập camera khi nhấn nút
+  //   const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  //   if (status !== 'granted') {
+  //     Alert.alert("Quyền bị từ chối", "Bạn cần cấp quyền để chụp ảnh!");
+  //     return;
+  //   }
+
+  //   let result = await ImagePicker.launchCameraAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     quality: 1,
+  //   });
+
+  //   if (!result.canceled) {
+  //     setImage(result.assets[0].uri);
+  //   }
+  // };
+
+  
+
   const removeImage = (index: number) => {
     const updatedImageFile = [...selectedImageFiles];
     updatedImageFile.splice(index, 1);
@@ -90,6 +112,7 @@ const AddPostScreen = () => {
     await createPost(newPost);
   };
 
+  
   const renderPrivacyText = () => {
     switch (privacy) {
       case Privacy.PUBLIC:
@@ -210,6 +233,24 @@ const AddPostScreen = () => {
                 </TouchableOpacity>
               </View>
             ))}
+            {/* Take Photo Button <TouchableOpacity
+              onPress={takePhoto}
+              style={{
+                width: 75,
+                height: 75,
+                borderRadius: 10,
+                backgroundColor: lightGray,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              disabled={loading} // Disable the button while loading
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color={brandPrimary} /> // Show loader when loading
+              ) : (
+                <FontAwesome5  name="camera-retro" size={30} color={brandPrimary} />
+              )}
+            </TouchableOpacity> */}
             {/* Add Image Button */}
             <TouchableOpacity
               onPress={pickImage}

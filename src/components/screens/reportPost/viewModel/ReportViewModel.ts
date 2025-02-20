@@ -13,7 +13,6 @@ import Toast from "react-native-toast-message";
 
 const ReportViewModel = (repo: PostRepo) => {
     const { localStrings } = useAuth();
-    const [loading, setLoading] = useState(false);
     const [reportLoading, setReportLoading] = useState(false);
 
     const reportPost = async (params: ReportPostRequestModel) => {
@@ -109,7 +108,6 @@ const ReportViewModel = (repo: PostRepo) => {
           }
         }
     return {
-        loading,
         reportLoading,
         reportPost,
         reportUser,

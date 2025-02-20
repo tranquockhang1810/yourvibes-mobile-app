@@ -12,7 +12,7 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
   const { brandPrimary, backgroundColor } = useColor();
   const [reportReason, setReportReason] = useState('');
   const { localStrings } = useAuth();
-  const { reportPost, loading, reportUser, reportComment } = ReportViewModel(defaultPostRepo);
+  const { reportPost, reportLoading, reportUser, reportComment } = ReportViewModel(defaultPostRepo);
 
     const handleReport = () => {
         if (postId) {
@@ -80,7 +80,7 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
 			    <Button type='primary' onPress={()=>{
             handleReport();
           }}
-          loading={loading}
+          loading={reportLoading}
           >
 					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Public.ReportFriend}</Text>
 				</Button>
