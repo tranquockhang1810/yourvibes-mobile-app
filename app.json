@@ -1,15 +1,23 @@
 {
   "expo": {
-    "name": "yourvibes",
+    "name": "YourVibes",
     "slug": "yourvibes",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/yourvibes_black.png",
-    "scheme": "yourvibes",
-    "platforms": ["ios", "android"],
+    "icon": "./assets/images/adaptive-icon.png",
+    "scheme": "com.tranquockhang18102004.yourvibes",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "userInterfaceStyle": "automatic",
     "entryPoint": "./node_modules/expo-router/entry.js",
     "jsEngine": "hermes",
+    "splash": {
+      "image": "./assets/images/yourvibes_splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tranquockhang18102004.yourvibes"
@@ -35,7 +43,10 @@
               "pathPrefix": "/records"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },

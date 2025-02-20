@@ -47,7 +47,6 @@ export default function RootLayout() {
             </View>
           </ActionSheetProvider>
         </GestureHandlerRootView>
-        <Toast />
       </PostProvider>
     </AuthProvider>
   );

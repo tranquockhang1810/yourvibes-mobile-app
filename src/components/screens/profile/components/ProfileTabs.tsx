@@ -9,6 +9,7 @@ import PostList from './PostList';
 import { PostResponseModel } from '@/src/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/src/api/features/authenticate/model/LoginModel';
 import { FriendResponseModel } from '@/src/api/features/profile/model/FriendReponseModel';
+import Toast from 'react-native-toast-message';
 
 const ProfileTabs = ({
   tabNum,
@@ -55,7 +56,7 @@ const ProfileTabs = ({
       case 0:
         return <AboutTab user={userInfo} loading={profileLoading} friendCount={friendCount} friends={friends} resultCode={resultCode} />;
       case 1:
-        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} user={userInfo}/>;
+        return <PostList posts={posts} loading={loading} loadMorePosts={loadMorePosts} userProfile={userInfo}/>;
       case 2:
         return userInfo?.id === user?.id ? <SettingsTab /> : null;
       default:
@@ -75,6 +76,7 @@ const ProfileTabs = ({
         style={{ height: '100%' }}
       />
       {renderBody()}
+      <Toast />
     </View>
   );
 };

@@ -50,7 +50,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // AsyncStorage.setItem('refreshtoken', user.refreshtoken);
     setIsAuthenticated(true);
     setUser(user); 
-    router.back();
   }
 
   const onLogout = async () => {

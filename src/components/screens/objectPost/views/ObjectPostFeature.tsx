@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import { usePostContext } from '@/src/context/post/usePostContext';
 import { useAuth } from '@/src/context/auth/useAuth';
+import Toast from 'react-native-toast-message';
 
 const ObjectPostFeature = () => {
 	const { localStrings } = useAuth();
@@ -106,6 +107,7 @@ const ObjectPostFeature = () => {
 					<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{localStrings.Public.Save}</Text>
 				</TouchableOpacity>
 			</View>
+			<Toast />
 		</View>
 	);
 }

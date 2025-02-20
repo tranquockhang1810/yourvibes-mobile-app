@@ -1,8 +1,10 @@
 import ChangePasswordScreen from "@/src/components/screens/changePassword/views/changePassword";
 import React from "react";
 
-const ForgotPasswordScreen = () => {
-  return <ChangePasswordScreen />;
-};
+const changePassword = () => {
+  return (
+    <ChangePasswordScreen />
+  )
+}
 
-export default ForgotPasswordScreen;
+export default changePassword

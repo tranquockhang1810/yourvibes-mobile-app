@@ -1,6 +1,7 @@
 import React from 'react';
 import ProfileFeatures from '@/src/components/screens/profile/view/ProfileFeature';
 import { useLocalSearchParams } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
 const Profile = () => {
   const { tabNum } = useLocalSearchParams();
@@ -15,9 +16,12 @@ const Profile = () => {
       return Number(tabNum);
     }
   }
-  
+
   return (
-    <ProfileFeatures tab={getTabNum()} />
+    <>
+      <ProfileFeatures tab={getTabNum()} />
+      <Toast />
+    </>
   );
 };
 

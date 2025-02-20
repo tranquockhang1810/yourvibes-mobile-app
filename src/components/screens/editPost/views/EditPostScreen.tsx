@@ -252,7 +252,7 @@ const EditPostScreen = ({ id }: { id: string }) => {
         ) : (
           <Post post={post?.parent_post} isParentPost />
         )}
-        
+
         {/* Buttons */}
         <View style={{
           flexDirection: 'row',
@@ -296,6 +296,7 @@ const EditPostScreen = ({ id }: { id: string }) => {
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{localStrings.Public.Save}</Text>
           </Button>
         </View>
+        <Toast />
       </View>
     </TouchableWithoutFeedback>
   );

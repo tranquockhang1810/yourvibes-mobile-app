@@ -110,7 +110,7 @@ const UpdateProfileScreen = () => {
             {/* Header */}
             <View
               style={{
-                marginTop: Platform.OS === 'ios' ? 30 : 0 ,
+                marginTop: Platform.OS === 'ios' ? 30 : 0,
                 height: 50,
                 paddingHorizontal: 16,
                 paddingTop: 16,
@@ -335,7 +335,7 @@ const UpdateProfileScreen = () => {
               <WingBlank size="lg">
                 <Button
                   type="primary"
-                  loading={loading} 
+                  loading={loading}
                   onPress={() => {
                     updatedForm.validateFields()
                       .then(() => {
@@ -383,6 +383,7 @@ const UpdateProfileScreen = () => {
           </ScrollView>
         </View>
       </TouchableWithoutFeedback>
+      <Toast />
     </KeyboardAvoidingView>
   )
 }

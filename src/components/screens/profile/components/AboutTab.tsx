@@ -30,10 +30,10 @@ const AboutTab = ({
   friends: FriendResponseModel[];
   resultCode: number;
 }) => {
-  const {brandPrimaryTap,lightGray} = useColor();
-  const {isLoginUser, localStrings } = useAuth();
-  
-  
+  const { brandPrimaryTap, lightGray } = useColor();
+  const { isLoginUser, localStrings } = useAuth();
+
+
 
   const renderPrivacyIcon = () => {
     switch (user?.privacy) {
@@ -48,109 +48,110 @@ const AboutTab = ({
     }
   }
 
-  
+
   return (
     <>
       {loading ? (
         <ActivityIndicator animating size="large" color={brandPrimaryTap} />
       ) : (
-        <View style={{ padding: 20, flex:1}}>
-          <ScrollView style={{flex:1}} showsVerticalScrollIndicator={false}>
-            <View style={{flex:1, flexDirection: "row", justifyContent: "space-between"
+        <View style={{ padding: 20, flex: 1 }}>
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <View style={{
+              flex: 1, flexDirection: "row", justifyContent: "space-between"
             }}>
               <Text
-              style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+                style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
               >
                 {localStrings.Public.Detail}
               </Text>
               {isLoginUser(user?.id || "") && (
-                 <View style={{flexDirection: "row"}}>
-                 <Text style={{paddingRight: 5}}>
-                 {renderPrivacyIcon()}
-                 </Text>
-                 <MaterialCommunityIcons name="circle-edit-outline" size={18} color="gray" onPress={()=> {router.push('/objectProfile')}}/>
-               </View>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={{ paddingRight: 5 }}>
+                    {renderPrivacyIcon()}
+                  </Text>
+                  <MaterialCommunityIcons name="circle-edit-outline" size={18} color="gray" onPress={() => { router.push('/objectProfile') }} />
+                </View>
               )}
-              
+
             </View>
-            
+
 
             {resultCode === 20001 ? (
-               <>
-               {/* Email */}
-                 <View
-                   style={{
-                     flexDirection: "row",
-                     alignItems: "center",
-                     marginBottom: 10,
-                   }}
-                 >
-                   <MaterialIcons name="email" size={24} color="black" />
-                   <Text style={{ marginLeft: 10 }}>
-                     {localStrings.Public.Mail}:{" "}
-                     <Text style={{ fontWeight: "bold" }}>
-                       {user?.email || "N/A"}
-                     </Text>
-                   </Text>
-                 </View>
+              <>
+                {/* Email */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <MaterialIcons name="email" size={24} color="black" />
+                  <Text style={{ marginLeft: 10 }}>
+                    {localStrings.Public.Mail}:{" "}
+                    <Text style={{ fontWeight: "bold" }}>
+                      {user?.email || "N/A"}
+                    </Text>
+                  </Text>
+                </View>
 
-                 {/* Số điện thoại */}
-                 <View
-                   style={{
-                     flexDirection: "row",
-                     alignItems: "center",
-                     marginBottom: 10,
-                   }}
-                 >
-                   <Feather name="phone" size={24} color="black" />
-                        <Text style={{ marginLeft: 10 }}>
-                          {localStrings.Public.Phone}:{" "}
-                          <Text style={{ fontWeight: "bold" }}>
-                            {user?.phone_number || "N/A"}
-                          </Text>
-                        </Text>
-                      </View>
+                {/* Số điện thoại */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <Feather name="phone" size={24} color="black" />
+                  <Text style={{ marginLeft: 10 }}>
+                    {localStrings.Public.Phone}:{" "}
+                    <Text style={{ fontWeight: "bold" }}>
+                      {user?.phone_number || "N/A"}
+                    </Text>
+                  </Text>
+                </View>
 
-                      {/* Ngày sinh */}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          marginBottom: 10,
-                        }}
-                      >
-                        <Feather name="calendar" size={24} color="black" />
-                        <Text style={{ marginLeft: 10 }}>
-                          {localStrings.Public.Birthday}:{" "}
-                          <Text style={{ fontWeight: "bold" }}>
-                            {DateTransfer(user?.birthday) || "N/A"}
-                          </Text>
-                        </Text>
-                      </View>
+                {/* Ngày sinh */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <Feather name="calendar" size={24} color="black" />
+                  <Text style={{ marginLeft: 10 }}>
+                    {localStrings.Public.Birthday}:{" "}
+                    <Text style={{ fontWeight: "bold" }}>
+                      {DateTransfer(user?.birthday) || "N/A"}
+                    </Text>
+                  </Text>
+                </View>
 
-                      {/* Ngày tham gia */}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          marginBottom: 10,
-                        }}
-                      >
-                        <MaterialIcons name="date-range" size={24} color="black" />
-                        <Text style={{ marginLeft: 10 }}>
-                          {localStrings.Public.Active}:{" "}
-                          <Text style={{ fontWeight: "bold" }}>
-                            {DateTransfer(user?.created_at) || "N/A"}
-                          </Text>
-                        </Text>
-                      </View>
-                </>
-            ): resultCode === 50016 ? (
-                 <Text style={{ color: "gray", textAlign: "center"}}> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`} </Text>
+                {/* Ngày tham gia */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <MaterialIcons name="date-range" size={24} color="black" />
+                  <Text style={{ marginLeft: 10 }}>
+                    {localStrings.Public.Active}:{" "}
+                    <Text style={{ fontWeight: "bold" }}>
+                      {DateTransfer(user?.created_at) || "N/A"}
+                    </Text>
+                  </Text>
+                </View>
+              </>
+            ) : resultCode === 50016 ? (
+              <Text style={{ color: "gray", textAlign: "center" }}> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`} </Text>
             ) : resultCode === 50015 ? (
-              <Text style={{ color: "gray", textAlign: "center"}}>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</Text>
+              <Text style={{ color: "gray", textAlign: "center" }}>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</Text>
             ) : null}
-           
+
 
             {/* Danh sách bạn bè */}
             <View style={{ paddingVertical: 20 }}>
@@ -177,7 +178,7 @@ const AboutTab = ({
                   </Text>
                 </TouchableOpacity>
               </View>
-          
+
               <View
                 style={{
                   flexDirection: "row",
@@ -186,7 +187,7 @@ const AboutTab = ({
                 }}
               >
                 {friends?.map((friend, index) => (
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     key={index}
                     style={{
                       width: "23%",
@@ -199,7 +200,7 @@ const AboutTab = ({
                       router.push(`/(tabs)/user/${friend.id}`);
                     }}
                   >
-                    
+
                     <Image
                       source={{
                         uri: friend.avatar_url,
@@ -217,12 +218,12 @@ const AboutTab = ({
                     </Text>
                   </TouchableOpacity>))}
               </View>
-           
+
 
               <TouchableOpacity
-              onPress={() => {
-                router.push(`/listFriends?userId=${user.id}`);
-              }}
+                onPress={() => {
+                  router.push(`/listFriends?userId=${user.id}`);
+                }}
               >
                 <Text
                   style={{

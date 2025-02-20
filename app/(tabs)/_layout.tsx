@@ -4,7 +4,7 @@ import { useAuth } from '@/src/context/auth/useAuth';
 import useColor from '@/src/hooks/useColor';
 import { Badge } from '@ant-design/react-native';
 import { AntDesign, FontAwesome, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import {Href, Tabs, useFocusEffect, usePathname } from 'expo-router';
+import { Href, Tabs, useFocusEffect, usePathname } from 'expo-router';
 import React, { useEffect, useState, ReactNode } from 'react';
 import { Image, View, Platform, StatusBar, Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -49,9 +49,9 @@ const TabLayout = () => {
     });
 
     if (response?.data) {
-        // // Kiểm tra trạng thái thông báo
-        const statusTrue = response?.data.some((item) => item.status === true);
-        setStatusNotifi(statusTrue);
+      // // Kiểm tra trạng thái thông báo
+      const statusTrue = response?.data.some((item) => item.status === true);
+      setStatusNotifi(statusTrue);
     }
   };
 
@@ -71,7 +71,7 @@ const TabLayout = () => {
       const status = notification?.status;
 
       setStatusNotifi(status);
-      
+
       const mapType = mapNotifiCationContent(type);
       Toast.show({
         type: 'info',
@@ -159,7 +159,7 @@ const TabLayout = () => {
       }
     }, [pathname]) // Thêm pathname vào dependencies array
   );
- 
+
   return (
     <>
 

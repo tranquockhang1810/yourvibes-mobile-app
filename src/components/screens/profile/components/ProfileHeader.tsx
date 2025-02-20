@@ -9,6 +9,7 @@ import UserProfileViewModel from "../viewModel/UserProfileViewModel";
 import { FriendStatus } from "@/src/api/baseApiResponseModel/baseApiResponseModel";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { Entypo, FontAwesome5 } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 const ProfileHeader = ({
   total,
@@ -282,6 +283,7 @@ const ProfileHeader = ({
           )}
         </>
       )}
+      <Toast />
     </>
   );
 };
