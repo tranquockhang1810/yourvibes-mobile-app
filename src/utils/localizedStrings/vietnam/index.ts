@@ -1,3 +1,5 @@
+import messages from "@/app/messages";
+
 export const VnLocalizedStrings = {
   Public: {
     All: "Tất cả",
@@ -296,5 +298,8 @@ webSocker:{
   WebSocketDisconnected: "Web Socket đã ngắt kết nối",
   WebSocketError: "Lỗi Web Socket",
   WebSocketErrorText: "Vui lòng kiểm tra kết nối mạng của bạn",
-}
+},
+Messages:{
+  Messages: "Tin nhắn",
+},
 };

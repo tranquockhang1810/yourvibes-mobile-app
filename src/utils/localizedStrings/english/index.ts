@@ -55,6 +55,7 @@ export const ENGLocalizedStrings = {
     WhoLike:"Discover who liked your post!",
     HideInfo: "has hidden personal information",
     FriendOnly: "only friends can see",
+
   },
   Form: {
     Label: {
@@ -296,5 +297,8 @@ export const ENGLocalizedStrings = {
     WebSocketDisconnected: "Web Socket disconnected",
     WebSocketError: "Web Socket error",
     WebSocketErrorText: "Please check your network connection",
+  },
+  Messages: {
+    Messages: "Messages",
   },
 }

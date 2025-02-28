@@ -28,7 +28,7 @@ import { PostResponseModel } from "@/src/api/features/post/models/PostResponseMo
 import dayjs from "dayjs";
 import Toast from "react-native-toast-message";
 
-function PostDetails(): React.JSX.Element {
+function PostDetails({postId, isModal}:{postId: string, isModal: boolean}): React.JSX.Element {
   const {
     brandPrimary,
     brandPrimaryTap,
@@ -39,9 +39,10 @@ function PostDetails(): React.JSX.Element {
 
   const router = useRouter();
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
-  const postId = useLocalSearchParams().postId as string;
+  // const postId = useLocalSearchParams().postId as string;
   const { user, localStrings } = useAuth();
   const [commentForm] = Form.useForm();
+  // const isModal = useState(false);
   const {
     comments,
     textInputRef,
@@ -73,6 +74,8 @@ function PostDetails(): React.JSX.Element {
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const parentId = replyToCommentId || replyToReplyId;
   const [isVisible, setIsVisible] = useState(false);
+  console.log("PostDetails: ", postId);
+  
 
   const fetchPostDetails = async () => {
     try {
@@ -362,12 +365,14 @@ function PostDetails(): React.JSX.Element {
     (comments: CommentsResponseModel[]) => {
       return (
         <FlatList
+        
           ListHeaderComponent={
+          isModal === false ? (
             <>
               <View style={{ height: 1, backgroundColor: "#000" }} />
               <Post noComment={true} post={post as PostResponseModel} />
               <View style={{ height: 1, backgroundColor: "#000" }} />
-            </>
+            </>) : null
           }
           style={{ flex: 1 }}
           data={comments}
@@ -392,6 +397,7 @@ function PostDetails(): React.JSX.Element {
     >
       <View style={{ flex: 1 }}>
         {/* Header */}
+        {isModal === false && (
         <View
           style={{
             flexDirection: "row",
@@ -403,10 +409,11 @@ function PostDetails(): React.JSX.Element {
           <TouchableOpacity onPress={() => router.back()}>
             <AntDesign name="arrowleft" size={24} color="black" />
           </TouchableOpacity>
+
           <Text style={{ fontSize: 18, fontWeight: "bold", marginLeft: 10 }}>
             {localStrings.Public.Comment}
           </Text>
-        </View>
+        </View>)}
 
         {/* FlatList */}
         {!post ? (
@@ -422,11 +429,14 @@ function PostDetails(): React.JSX.Element {
           </View>
         ) : (
           <>
-            <Button
+          {isModal === false && (
+              <Button
               title={localStrings.Public.WhoLike}
               onPress={() => setIsVisible(true)}
               color={brandPrimary}
             />
+            )}
+            
             {renderFlatList(comments)}
             {/* comment input */}
             <Form
@@ -536,6 +546,7 @@ function PostDetails(): React.JSX.Element {
                 </View>
               </View>
             </Form>
+            {/* Modal danh sách user like post */}
             <Modal
               visible={isVisible}
               transparent

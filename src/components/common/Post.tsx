@@ -16,6 +16,7 @@ import { Privacy } from '@/src/api/baseApiResponseModel/baseApiResponseModel';
 import MyInput from '../foundation/MyInput';
 import HomeViewModel from '../screens/home/viewModel/HomeViewModel';
 import { defaultNewFeedRepo } from '@/src/api/features/newFeed/NewFeedRepo';
+import PostDetails from './PostDetails';
 
 
 interface IPost {
@@ -38,6 +39,7 @@ const Post: React.FC<IPost> = React.memo(({
   const [shareForm] = Form.useForm();
   const { showActionSheetWithOptions } = useActionSheet();
   const [showSharePopup, setShowSharePopup] = useState(false);
+  const [showCommentPopup, setShowCommentPopup] = useState(false);
   const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
   const {
     deleteLoading,
@@ -222,7 +224,9 @@ const Post: React.FC<IPost> = React.memo(({
          <View>
          {likedPost?.content && (
            <View style={{ paddingLeft: 10 }}>
+            <TouchableOpacity onPress={() => router.push(`/postDetails?postId=${likedPost?.id}`)}>
              <Text>{likedPost?.content}</Text>
+            </TouchableOpacity>
            </View>
          )}
          {children}
@@ -231,7 +235,9 @@ const Post: React.FC<IPost> = React.memo(({
         likedPost?.parent_id ?(
           <View>
             <View style={{ paddingLeft: 10 }}>
-               <Text>{likedPost?.content}</Text>
+            <TouchableOpacity onPress={() => router.push(`/postDetails?postId=${likedPost?.id}`)}>
+             <Text>{likedPost?.content}</Text>
+            </TouchableOpacity>
             </View>
             <View style={{ paddingLeft: 5, paddingRight: 5 }}>
               <View style={{ padding: 10, borderColor: "#000", borderWidth: 1, borderRadius: 5 }}>
@@ -246,7 +252,14 @@ const Post: React.FC<IPost> = React.memo(({
             <View style={{ paddingLeft: 65, paddingRight: 35 }}>
             {likedPost?.content && (
               <View style={{ paddingBottom: 12, paddingLeft: 0 }}>
-                <Text>{likedPost?.content}</Text>
+                    <TouchableOpacity onPress={() => {
+    console.log(`Navigating to /postDetails?postId=${likedPost?.id}`);
+    console.log("Navigating with postId:", likedPost?.id);
+
+    router.push(`/postDetails?postId=${likedPost?.id}`);
+  }}>
+             <Text>{likedPost?.content}</Text>
+            </TouchableOpacity>
               </View>
             )}
             {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
@@ -286,7 +299,8 @@ const Post: React.FC<IPost> = React.memo(({
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity disabled={noComment} style={{ flexDirection: "row", alignItems: "center" }} onPress={() => router.push(`/postDetails?postId=${likedPost?.id}`)} >
+              <TouchableOpacity disabled={noComment} style={{ flexDirection: "row", alignItems: "center" }} onPress={() => {setShowCommentPopup(true); console.log("Modal Post ID:", likedPost?.id);
+              }} >
                 <FontAwesome name="comments-o" size={20} color={brandPrimary} />
                 <Text style={{ marginLeft: 5, color: brandPrimary }}>{likedPost?.comment_count}</Text>
               </TouchableOpacity>
@@ -320,6 +334,22 @@ const Post: React.FC<IPost> = React.memo(({
         size="large"
         text="Deleting..."
       />
+      
+      {/* Comment popup */}
+      <Modal 
+        popup
+        visible={showCommentPopup}
+        animationType="slide-up"
+        maskClosable
+        onClose={() => setShowCommentPopup(false)}
+      >
+        <View style={{height:600 }}>
+        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center" }}> 
+            {localStrings.Public.Comment}
+          </Text>
+        <PostDetails postId={likedPost?.id as string} isModal={true} />
+        </View>
+      </Modal>
 
       {/* Share popup */}
       <Modal

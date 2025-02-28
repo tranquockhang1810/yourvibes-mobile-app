@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { useAuth } from "@/src/context/auth/useAuth";
 import { Platform } from "react-native";
 import Toast from 'react-native-toast-message'
+import { AntDesign } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
@@ -86,8 +87,8 @@ const HomeScreen = () => {
             height: 70,
             display: "flex",
             flexDirection: "row",
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Image
@@ -99,6 +100,8 @@ const HomeScreen = () => {
               marginLeft: 10,
             }}
           />
+
+          <AntDesign size={35} name="wechat" style={{marginRight: 15}} onPress={() => router.push(`/messages`)}/>
         </View>
       </View>
       {/* Content */}

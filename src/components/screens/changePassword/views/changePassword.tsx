@@ -16,7 +16,7 @@ import { defaultProfileRepo } from "@/src/api/features/profile/ProfileRepository
 import MyInput from "@/src/components/foundation/MyInput";
 import useColor from "@/src/hooks/useColor";
 import { ChangePasswordRequestModel } from "@/src/api/features/profile/model/ChangPasswordModel";
-import Toast from "react-native-toast-message";import Toast from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 
 
 const ChangePasswordScreen = () => {

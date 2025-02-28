@@ -46,6 +46,11 @@ const AddPostScreen = () => {
   } = AddPostViewModel(defaultPostRepo);
 
   const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert("Bạn cần cấp quyền truy cập thư viện ảnh!");
+      return;
+    }
     setLoading(true);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -67,23 +72,24 @@ const AddPostScreen = () => {
     }
   };
 
-  // const takePhoto = async () => {
-  //   // Yêu cầu quyền truy cập camera khi nhấn nút
-  //   const { status } = await ImagePicker.requestCameraPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     Alert.alert("Quyền bị từ chối", "Bạn cần cấp quyền để chụp ảnh!");
-  //     return;
-  //   }
+  const takePhoto = async () => {
+    // Yêu cầu quyền truy cập camera khi nhấn nút
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert("Quyền bị từ chối", "Bạn cần cấp quyền để chụp ảnh!");
+      return;
+    }
 
-  //   let result = await ImagePicker.launchCameraAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     quality: 1,
-  //   });
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      quality: 1,
+    });
 
-  //   if (!result.canceled) {
-  //     setImage(result.assets[0].uri);
-  //   }
-  // };
+    if (!result.canceled) {
+      // setImage(result.assets[0].uri);
+      setSelectedImageFiles([...selectedImageFiles, ...result.assets]);
+    }
+  };
 
   
 
@@ -233,7 +239,8 @@ const AddPostScreen = () => {
                 </TouchableOpacity>
               </View>
             ))}
-            {/* Take Photo Button <TouchableOpacity
+            {/* Take Photo Button  */}
+            <TouchableOpacity
               onPress={takePhoto}
               style={{
                 width: 75,
@@ -250,7 +257,7 @@ const AddPostScreen = () => {
               ) : (
                 <FontAwesome5  name="camera-retro" size={30} color={brandPrimary} />
               )}
-            </TouchableOpacity> */}
+            </TouchableOpacity> 
             {/* Add Image Button */}
             <TouchableOpacity
               onPress={pickImage}
